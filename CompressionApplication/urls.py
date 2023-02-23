@@ -14,15 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from CompressionApplication import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
 
-    path('home/', views.signIn),
+    path('', views.welcome),
+    path('signIn/', views.signIn),
+    path('compress/',views.compress),
     path('postsignIn/', views.postsignIn),
     path('signUp/', views.signUp, name="signup"),
     path('logout/', views.logout, name="log"),
     path('postsignUp/', views.postsignUp),
+   #path('download/', views.download_file),
+    #path('download/', include('compression.urls.download_file')),
+    path('home/',include('ImageCompressor.urls')),
+    path('upload/', include('compression.urls')),
 ]

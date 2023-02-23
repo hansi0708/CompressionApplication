@@ -1,0 +1,139 @@
+<head>
+    <script>
+        var isAdvancedUpload = function() {
+  var div = document.createElement('div');
+  return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
+
+var $form = $('.box');
+
+if (isAdvancedUpload) {
+  $form.addClass('has-advanced-upload');
+}
+
+if (isAdvancedUpload) {
+
+  var droppedFiles = false;
+
+  $form.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  })
+  .on('dragover dragenter', function() {
+    $form.addClass('is-dragover');
+  })
+  .on('dragleave dragend drop', function() {
+    $form.removeClass('is-dragover');
+  })
+  .on('drop', function(e) {
+    droppedFiles = e.originalEvent.dataTransfer.files;
+  });
+
+}
+
+$form.on('submit', function(e) {
+  if ($form.hasClass('is-uploading')) return false;
+
+  $form.addClass('is-uploading').removeClass('is-error');
+
+  if (isAdvancedUpload) {
+    // ajax for modern browsers
+  } else {
+    // ajax for legacy browsers
+  }
+});
+
+if (isAdvancedUpload) {
+  e.preventDefault();
+
+  var ajaxData = new FormData($form.get(0));
+
+  if (droppedFiles) {
+    $.each( droppedFiles, function(i, file) {
+      ajaxData.append( $input.attr('name'), file );
+    });
+  }
+
+  $.ajax({
+    url: $form.attr('action'),
+    type: $form.attr('method'),
+    data: ajaxData,
+    dataType: 'json',
+    cache: false,
+    contentType: false,
+    processData: false,
+    complete: function() {
+      $form.removeClass('is-uploading');
+    },
+    success: function(data) {
+      $form.addClass( data.success == true ? 'is-success' : 'is-error' );
+      if (!data.success) $errorMsg.text(data.error);
+    },
+    error: function() {
+      // Log the error, show an alert, whatever works for you
+    }
+  });
+}
+
+var $input    = $form.find('input[type="file"]'),
+    $label    = $form.find('label'),
+    showFiles = function(files) {
+      $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace( '{count}', files.length ) : files[ 0 ].name);
+    };
+
+// ...
+
+.on('drop', function(e) {
+  droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
+  showFiles( droppedFiles );
+});
+
+//...
+
+$input.on('change', function(e) {
+  showFiles(e.target.files);
+});
+
+  </script>
+<style>
+    .box__dragndrop,
+    .box__uploading,
+    .box__success,
+    .box__error {
+    display: none;
+}
+
+.box.has-advanced-upload {
+  background-color: white;
+  outline: 2px dashed black;
+  outline-offset: -10px;
+}
+.box.has-advanced-upload .box__dragndrop {
+  display: inline;
+}
+
+.box.is-dragover {
+  background-color: grey;
+}
+
+.box.is-uploading .box__input {
+  visibility: none;
+}
+.box.is-uploading .box__uploading {
+  display: block;
+}
+
+</style>
+</head> 
+<body> 
+ <form class="box" method="post" action="" enctype="multipart/form-data">
+  <div class="box__input">
+    <input class="box__file" type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple />
+    <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+    <button class="box__button" type="submit">Upload</button>
+  </div>
+  <div class="box__uploading">Uploading…</div>
+    <div class="box__success"<?php if( $upload_success === true ): ?> style="display: block;"<?php endif; ?>>Done!</div>
+  <div class="box__error"<?php if( $upload_success === false ): ?> style="display: block;"<?php endif; ?>>Error! <span><?=$upload_error?></span>.</div>
+</form>
+</body>

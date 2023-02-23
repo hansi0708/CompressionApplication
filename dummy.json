@@ -1,0 +1,12 @@
+{
+	"User1":
+	{
+		"Name": "The Fellowship of the Ring",
+		"Email": "J.R.R. Tolkien"
+	},
+	"User2":
+	{
+		"Name": "The Two Towers",
+		"Email": "J.R.R. Tolkien"	
+	}
+}

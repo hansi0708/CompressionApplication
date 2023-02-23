@@ -1,0 +1,14 @@
+{% load static %}
+{% block replace %}
+<html>
+    <title>Download File</title>
+</head>
+<body>
+
+    {% for i in context %}
+    <h1>DOWNLOAD THE FILE FROM HERE<a href="{{i.upload.url}}" download>{{i.title}}</a></h1>
+    {% endfor %}
+
+</body>
+</html>
+{% endblock %}
