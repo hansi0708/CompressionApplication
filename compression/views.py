@@ -39,7 +39,8 @@ def upload(request):
 
 # IMAGE COMPRESSION
 def imageCompression(request):
-	return render(request,"ImageCompression.html")
+    uploadFile = FileForm()
+    return render(request,"ImageCompression.html",{'form':uploadFile})
      
 def compressImage(request):
             
@@ -116,10 +117,10 @@ def compressImage(request):
            return HttpResponse("Image compressed successfuly")
             #context=user_pr.objects.all()
         #    return render(request, 'file.html', {'new_filename': new_filename})
-    else:  
-        print("else1")
-        uploadFile = FileForm()  
-        print("else2")
+    #else:  
+    print("else1")
+    uploadFile = FileForm()  
+    print("else2")
     return render(request,"ImageCompression.html",{'form':uploadFile})
     # context = {"form": form,}
     # return render(request, 'ImageCompression.html', context)
@@ -130,7 +131,6 @@ def get_size_format(b, factor=1024, suffix="B"):
             return f"{b:.2f}{unit}{suffix}"
         b /= factor
     return f"{b:.2f}Y{suffix}"
-
 
 # PPT COMPRESSION
 def compressPPT(request):
@@ -178,7 +178,8 @@ def wordCompression(request):
            print("7")
            user_pr.save()
            print("8")
-           print(user_pr.file.url)
+           print(user_pr.file.path)
+        #    print(user_pr.file.path)
            doc = aw.Document(user_pr.file.path)
            doc.cleanup()
 
@@ -205,11 +206,11 @@ def wordCompression(request):
 
 # PDF COMPRESSION
 def CompressPDF(request):
-	# idToken=request.session['uid']
-	# if idToken!= None:
-	#     return render(request,"Login.html")
-    # else:
-    return render(request,"CompressPDF.html")
+    idToken=request.session['uid']
+    if idToken!= None:
+        return render(request,"Login.html")
+    else:
+        return render(request,"CompressPDF.html")
 
 def pdfCompression(request):
     if request.method == 'POST':  
