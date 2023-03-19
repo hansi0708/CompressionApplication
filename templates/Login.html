@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>WELCOME</title>
+	<title>LOGIN</title>
     <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 </head>	 
@@ -12,21 +12,19 @@
 
 	<div class="center">
 		<h1>Log In</h1>
-		<form action="/postsignIn/" method="post">
+		<form action="/user/postsignIn/" method="post">
 			{% csrf_token %}
 	
 	        <!-- Email: -->
 	        <div class="txt_field">
-				<input type="email" id="Email" required>
-				<span></span>
-				<label>Email</label>	    	            
+				<input type="email" id="Email" name="email" placeholder="Email" required>
+				<span></span>    	            
 	        </div>
 
     	    <!-- Password: -->
 	        <div class="txt_field">
-				<input type="password" id="Password" required>
-				<span></span>
-				<label>Password</label>	           
+				<input type="password" id="Password" name="password" placeholder="Password" required>
+				<span></span>          
 	        </div>
 
 			<label>
@@ -39,10 +37,10 @@
 		   
 		    <div class="signUp_Link">
 			    Not a member?
-		        <a href="/signUp/">Sign Up</a>
+		        <a href="/user/">Sign Up</a>
 	        </div>
+			<br>
         </form>
 	</div>
 </body>
 </html>
-   

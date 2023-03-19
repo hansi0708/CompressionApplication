@@ -1,9 +1,13 @@
 from django import forms  
 from django.forms import ModelForm
-from .models import InputFile
+from .models import File_Form
 
-class File_Form(forms.ModelForm):  
+class FileForm(forms.ModelForm):  
     class Meta:
-        model = InputFile
-         # for creating file input  
-        fields = ['input_file']
+         model = File_Form
+         fields = ['file']
+        #  # for creating file input  
+         
+        # model=file
+        # file=forms.FileField()
+        

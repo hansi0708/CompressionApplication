@@ -1,126 +1,23 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
-<head>
-<style>
-header {
-  background-color: #666;
-  padding: 30px;
-  text-align: center;
-  font-size: 50px;
-  color: white;
-}
-.btn{
-  border: none;
-  color: Blue;
-  padding: 14px 28px;
-  font-size: 50px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-.btn {font-size: 50px;margin: 18px 16px;}
-
-.button{
-  top: 0;
-  width:100px;
-  height: 50px;
-  border: 1px solid;
-  background: #fc075f;
-  border-radius: 25px;
-  font-size: 18px;
-  color: #e9f4fb;
-  font-weight: 700;
-  cursor: pointer;
-  outline: none;
-}
-
-.button:hover{
-  border-color: #fc075f;
-  transition: .5s;
-}
-
-
-.sidenav {
-  height: 100%;
-  width: 0;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-}
-
-.sidenav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidenav a:hover {
-  color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-}
-
-@media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
-}
-</style>
-</head>
-<body>
-<div>
-<div align="left" id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
+{% extends 'MasterWelcome.html' %}
+{% load static %}
+<div style="background-color:white;"> 
+    {% block mymessage %}    
+    <div class="buttn">
+        <h1 style="font-size:40px;">Compress files &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    Convert Files</h1>     
+        <div class="btnnn">
+            <button class="btn" onclick="location.href = '/imageCompression/'"><img width=50 height=50 src={% static "WelcomeCompress.png" %} /> Compress Image</button>
+            <button class="btn" onclick="location.href = '/PDFtoJPG/'"><img width=50 height=50 src={% static "WelcomePdfToJpg.jpg" %} /> PDF to JPG</button>
+            <button class="btn" onclick="location.href = '/PDFtoJPG/JPGtoPDF/'"><img width=50 height=50 src={% static "WelcomeJpgToPdf.png" %} /> JPG to PDF</button>
+            <button class="btn" onclick="location.href = '/imageCompression/compressPPT/'"><img width=50 height=50 src={% static "WelcomePPT.png" %}/> Compress PPT</button>
+            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoWord/'"><img width=50 height=50 src={% static "WelcomePdfToWord.png" %}/> PDF to Word</button>
+            <button class="btn" onclick="location.href = '/PDFtoJPG/WordToPDF/'"><img width=50 height=50 src={% static "WelcomeWordToPdf.jpg" %}/> Word to PDF</button>
+            <button class="btn" onclick="location.href = '/imageCompression/compressWord'"><img width=50 height=50 src={% static "WelcomeWord.png" %}/> Compress WORD</button>
+            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoExcel/'"><img width=50 height=50 src={% static "WelcomePdFToExcel.jpg" %}/> PDF to Excel</button>
+            <button class="btn" onclick="location.href = '/PDFtoJPG/ExcelToPDF/'"><img width=50 height=50 src={% static "WelcomeExcelToPdf.png" %}/> Excel to PDF</button>
+            <button class="btn" onclick="location.href = 'imageCompression/CompressPDF/'"><img width=50 height=50 src={% static "WelcomePdf.png" %}/> Compress PDF</button>
+            <button class="btn" onclick="location.href = '/'"><img width=50 height=50 src={% static "@pdf to text.png" %}/> PDF to Text</button>
+            <button class="btn" onclick="location.href = '/'"><img width=50 height=50 src={% static "@text to pdf.png" %}/> Text to PDF</button>
+        </div>
+    </div>
+    {% endblock %}
 </div>
-<span style="font-size:80px;cursor:pointer" onclick="openNav()">&#9776; </span>
-<script>
-function openNav() {
-  document.getElementById("mySidenav").style.width = "250px";
-}
-function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
-}
-</script>
-
-<div align="right">
-    <button class="button" onclick="location.href = '/signIn/'">Log in</button>
-    <button class="button" onclick="location.href = '/signUp/'">Sign up</button>
-
-</div>
-</div>
-</body>
-<body style="background-color:powderblue;">
-  <h1 style="font-size:40px;">Every tool you need to work with PDFs in one place</h1>
-  <header>
-  <h2 style="font-size:30px;">Compression and Conversion tool</h2>
-</header>
-  <button class="btn"><img width=70 height=70 src="merge4.png"/>Merge PDF</button>
-  <button class="btn"><img width=70 height=70 src="split4.png"/>Split PDF</button>
-  <button class="btn"><img width=70 height=70 src="Compress4.png"/>Compress PDF</button>
-  <button class="btn"><img width=60 height=60 src="pdf4.png"/>PDF to Word</button>
-  <button class="btn"><img width=60 height=60 src="word4.jpg"/>Word to PDF</button>
-  <button class="btn"><img width=60 height=60 src="pdf5.jpg"/>PDF to Excel</button>
-  <button class="btn"><img width=60 height=60 src="excel5.webp"/>Excel to PDF</button>
-  <button class="btn"><img width=60 height=60 src="pdf6.png"/>PDF to text</button>
-  <button class="btn"><img width=60 height=60 src="text5.png"/>text to PDF</button>
-</body>
-</html>

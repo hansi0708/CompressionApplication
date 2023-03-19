@@ -15,20 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from CompressionApplication import views
+from . import views
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
 
     path('', views.welcome),
-    path('signIn/', views.signIn),
-    path('compress/',views.compress),
-    path('postsignIn/', views.postsignIn),
-    path('signUp/', views.signUp, name="signup"),
-    path('logout/', views.logout, name="log"),
-    path('postsignUp/', views.postsignUp),
-   #path('download/', views.download_file),
+    path('user/',include('User.urls')),
+#     path('compress/',views.compress),
+#    #path('download/', views.download_file),
     #path('download/', include('compression.urls.download_file')),
-    path('home/',include('ImageCompressor.urls')),
-    path('upload/', include('compression.urls')),
+    # path('home/',include('ImageCompressor.urls')),
+    # path('upload/', include('compression.urls')),
+    path('imageCompression/',include('compression.urls')),
+    path('PDFtoJPG/',include('Conversion.urls')),
+
+   
+    # path('PDFtoJPG/',views.PDFtoJPG),
+    # path('CompressPDF/',views.CompressPDF),
+    path('home/',views.home),
+    
 ]

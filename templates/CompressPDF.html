@@ -1,0 +1,24 @@
+{% extends 'MasterHome.html' %}
+<title>PDF Compression</title>
+{% block mymessage %}
+<div>
+    <section>
+        <article>
+            <h1 style="font-size:2em">Compress PDF</h1>
+            <p style="font-size:1.5em"> Reduce the file size while optimizing for maximal PDF quality</p>
+            <div class="container">
+                <form method="post" action="/imageCompression/pdfCompression/" enctype="multipart/form-data">  
+            {% csrf_token %}  
+            {{ form.as_p }} 
+            <button type="submit" class="save btn btn-default">Save</button>  
+        </form>
+    </div>
+            {% comment %} <div class="container">
+                <!-- <button class="btn upload">Upload file</button> -->
+                <input class="btn " type="file">
+            </div> {% endcomment %}
+        </article>
+    </section>    
+</div>
+{% endblock %}
+

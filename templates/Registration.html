@@ -2,51 +2,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Sign Up</title>
+    <meta charset="UTF-8">
+	<title>SIGN UP</title>
 	<link rel="stylesheet" type="text/css" href="{% static '/css/signup.css' %}">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">	
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">	
 </head>
-
 <body>
 	<div class="center">
 		<h1>Sign Up</h1>
-		<form action="/postsignUp/" method="post">
+	    <form action="/user/postsignUp/" method="post">
 			{% csrf_token %}
-            <div class="txt_field">
-				<input type="name" id="Username" required>	           
-                <span></span>
-				<label>Username</label>
+
+			<div class="row">
+
+				<div class="column">
+					
+					<!--Name: -->
+			        <div class="txt_field">
+				        <input type="name" id="Username" name="name" placeholder="Name">
+						<span></span>
+	                </div>
+
+		            <!-- Email: -->
+	                <div class="txt_field">
+			            <input type="email" id="Email" name="email" placeholder="Email Id">
+						<span></span>
+	                </div>
+
+			        <!--Centre: -->
+			        <div class="txt_field">
+				        <input type="centre" id="Centre" name="centre" placeholder="Centre">
+						<span></span>   
+	                </div>
+
+			        <!--Staff: -->
+			        <div class="txt_field">
+				        <input type="staff" id="Staff" name="staff" placeholder="Staff">
+						<span></span>
+	                </div>
+
+			        <!--Designation: -->
+			        <div class="txt_field">
+				        <input type="designation" id="designation" name="designation" placeholder="Designation">
+						<span></span>
+	                </div>
+				
+				</div>
+				
+				<div class="column">
+					
+					<!--Department: -->
+			        <div class="txt_field">
+				        <input type="department" id="Department" name="department" placeholder="Department">
+						<span></span>
+	                </div>
+
+			        <!--Employment Type: -->
+			        <div class="txt_field">
+				        <input type="employment_type" id="Employment Type" name="employment_type" placeholder="Employment Type">
+						<span></span>
+	                </div>
+
+			        <!--Level: -->
+			        <div class="txt_field">
+				        <input type="level" id="Level" name="level" placeholder="Level">
+						<span></span>
+	                </div>
+
+		            <!-- Password: -->
+	                <div class="txt_field">
+	                    <input type="password" id="Password" name="pass" placeholder="Password">
+						<span></span>
+	                </div>
+
+		            <!-- RepeatPassword: -->
+	                <div class="txt_field">
+			            <input type="password" id="confirm_password" name="pass-repeat" placeholder="Repeat Password">
+						<span></span>
+	                </div>
+
+				</div>
+
 			</div>
-	
-	        <!-- Email: -->
-	        <div class="txt_field">
-				<input type="email" id="Email" required>
-				<span></span>
-				<label>Email</label>	    	            
-	        </div>
 
-    	    <!-- Password: -->
-	        <div class="txt_field">
-				<input type="password" id="Password" required>
-				<span></span>
-				<label>Password</label>	           
-	        </div>
+	        <input type="submit" value="SignUp"><br><br>
 
-	        <!-- RepeatPassword: -->
-	        <div class="txt_field">
-		        <input type="password" id="confirm_password" required>
-				<span></span>
-				<label>Confirm Password</label>        
-    	    </div>
-   		    
-		    <input type="submit" value="SignUp"><br><br>
-		   
-		    <div class="signIn_Link">
-			    Already a member?
-		        <a href="/signIn/">Log In</a>
+	        <div class="signUp_Link">
+				Already a member?
+				<a href="/user/signIn/">Log In</a>
 	        </div>
-        </form>
+	        <br>
+	    </form>
 	</div>
 </body>
 </html>
