@@ -39,8 +39,12 @@ def upload(request):
 
 # IMAGE COMPRESSION
 def imageCompression(request):
-    uploadFile = FileForm()
-    return render(request,"ImageCompression.html",{'form':uploadFile})
+    idToken=request.session['uid']
+    if idToken!= None:
+        return render(request,"Login.html")
+    else:
+        uploadFile = FileForm()
+        return render(request,"ImageCompression.html",{'form':uploadFile})
      
 def compressImage(request):
             
@@ -134,8 +138,13 @@ def get_size_format(b, factor=1024, suffix="B"):
 
 # PPT COMPRESSION
 def compressPPT(request):
-	return render(request,"CompressPPT.html") 
-
+    idToken=request.session['uid']
+    if idToken!= None:
+        return render(request,"Login.html")
+    else:
+        uploadFile = FileForm()
+        return render(request,"CompressPPT.html",{'form':uploadFile})
+	 
 def pptCompression(request):
     if request.method == 'POST':  
         print("1")
@@ -158,8 +167,13 @@ def pptCompression(request):
 
 # WORD COMPRESSION           
 def compressWord(request):
-	return render(request,"CompressWord.html") 
-       
+    idToken=request.session['uid']
+    if idToken!= None:
+        return render(request,"Login.html")
+    else:
+        uploadFile = FileForm()
+        return render(request,"CompressWord.html",{'form':uploadFile})
+           
 def wordCompression(request):
     if request.method == 'POST':  
         print("1")
@@ -210,7 +224,8 @@ def CompressPDF(request):
     if idToken!= None:
         return render(request,"Login.html")
     else:
-        return render(request,"CompressPDF.html")
+        uploadFile = FileForm()
+        return render(request,"CompressPDF.html",{'form':uploadFile})
 
 def pdfCompression(request):
     if request.method == 'POST':  
