@@ -6,6 +6,9 @@ urlpatterns = [
     path('textToPDF/',views.textToPDF),
     path('text2pdf/',views.text2pdf),
 
+    path('PDFtoText/',views.PDFtoText),
+    path('pdf2text/',views.pdf2text),
+
     path('PDFtoExcel/',views.PDFtoExcel),
     path('pdf2excel/',views.pdf2excel),
 
@@ -23,6 +26,7 @@ urlpatterns = [
 
     path('',views.PDFtoJPG),
     path('pdf2jpg/',views.pdf2jpg),    
+    
     ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root = settings.STATICFILES_DIRS)

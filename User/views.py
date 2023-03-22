@@ -118,3 +118,30 @@ def profile(request):
 
 
 	return render(request,"UserDashboard.html",context)
+
+def userProfile(request):
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+	name = database.child('users').child(a).child('name').get().val()
+	centre = database.child('users').child(a).child('centre').get().val()
+	department = database.child('users').child(a).child('department').get().val()
+	designation = database.child('users').child(a).child('designation').get().val()
+	email = database.child('users').child(a).child('email').get().val()
+	employment_type = database.child('users').child(a).child('employment_type').get().val()
+	level = database.child('users').child(a).child('level').get().val()
+	staff = database.child('users').child(a).child('staff').get().val()
+
+	context = {
+        'name':name,
+	    'centre':centre,
+	    'department':department,
+	    'designation':designation,
+	    'email':email,
+	    'employment_type':employment_type,
+	    'level':level,
+	    'staff':staff 
+    }
+	return render(request,"UserProfile.html",context)

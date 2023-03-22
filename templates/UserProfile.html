@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="page.css">
+
+    <title>WELCOME</title>
+    <style>
+.flex {
+    border: white;
+    display: flex;
+    flex-direction: row;
+}
+
+.flex1 {
+    display: flex;
+    justify-content: space-between;
+    /* width: 80%; */
+}
+html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+
+            }
+
+.profile {
+    text-align: center;
+    margin-top: 0%;
+    background-color: #99CCFF;
+    box-shadow: 5px 5px 20px black;
+}
+
+.menu {
+    font-size: 20px;
+    color: white;
+    background-color: indianred;
+    flex-basis: 22%;
+}
+
+.menu1 {
+    flex-basis: 90%;
+}
+
+.helper {
+    font-size: 20px;
+}
+
+.helper2 {
+    font-size: 20px;
+}
+
+.helper1 {
+    font-size: 20px;
+}
+
+label {
+    text-align: left;
+    clear: both;
+    float: left;
+    margin-right: 55px;
+    margin-top: 75px;
+}
+
+input {
+    text-align: left;
+    float: right;
+    margin-left: 55px;
+    margin-top: 20px;
+}
+
+#button-container {
+    width: 100%;
+    display: block;
+    position: relative;
+    text-align: center;
+    height: auto;
+    background-color: #99CCFF;
+
+}
+
+#button {
+    cursor: pointer;
+    max-width: 180%;
+    max-height: 100%;
+    width: 15%;
+    height: 50px;
+    font-size: 100%;
+    text-align: center;
+}
+         </style>
+</head>
+
+<body>
+    <div class="flex">
+        <nav class="menu">
+            <ul style="list-style: none;">
+
+                <li>
+                    <h3>Profile</h3>
+                </li>
+                <li>
+                    <h3>Users</h3>
+                </li>
+                <li>
+                    <h3>Department</h3>
+                </li>
+                <li>
+                    <h3>Designation</h3>
+                </li>
+                <li>
+                    <h3>File Operation</h3>
+                </li>
+                <li>
+                    <h3>Permission</h3>
+                </li>
+            </ul>
+        </nav>
+        <div class="menu1">
+            <!-- <div class="profile"></div> -->
+
+            <h1 class="profile"> USER </h1>           
+
+            <div class="flex1">
+                <main>
+                    <div class="helper">
+                        <label> Name:</label>
+                        <!-- <input type="text" /> -->
+                        <label> Centre:</label>
+                        <!-- <input type="text" /> -->
+                        <label> Staff:</label>
+                        <!-- <input type="text" /> -->
+                        <label> Designation:</label>
+                        <!-- <input type="text" /> -->
+                        <label> Department:</label>
+                        <!-- <input type="text" /> -->
+                    </div>
+                </main>
+                <div class="helper2">
+                    <label>{{name}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{centre}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{staff}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{designation}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{department}}</label>
+                    <!-- <input type="text" /> -->
+                </div>
+                <div class="helper1">
+                    <label>Employement Type:</label>
+                    <!-- <input type="text" /> -->
+                    <label>Level:</label>
+                    <!-- <input type="text" /> -->
+                    <label>Email:</label>
+                    <!-- <input type="text" /> -->
+                </div>
+                <div class="helper1">
+                    <label>{{employment_type}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{level}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{email}}</label>
+                    <!-- <input type="text" /> -->
+                </div>
+            </div>
+            <hr>
+            <div id="button-container">
+                <button id="button">Reset Password</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -35,4 +35,6 @@ urlpatterns = [
     # path('CompressPDF/',views.CompressPDF),
     path('home/',views.home),
     
+    
+    
 ]

@@ -74,6 +74,55 @@ def text2pdf(request):
 		print("else2")
 	return render(request,"TextToPDF.html",{'form':uploadFile})		
 
+def PDFtoText(request):
+    uploadFile = FileForm()
+    return render(request,"PDFtoText.html",{'form':uploadFile}) 
+
+def pdf2text(request):
+	if request.method == 'POST':  
+		print("1")
+		uploadFile = FileForm(request.POST, request.FILES) 
+		print("2") 
+		if uploadFile.is_valid():  
+			print("3")
+			user_pr = uploadFile.save(commit=False)
+			print("4")
+			user_pr.file = request.FILES['file']
+			print("5")
+			file_type = user_pr.file.url.split('.')[-1]
+			print("6")
+			file_type = file_type.lower()
+			print("7")
+			user_pr.save()
+			print("8")
+			
+			filename, ext = os.path.splitext(user_pr.file.path)
+			new_filename = f"{filename}_pdf_to_text_converted"
+			PdfFileObject = open(user_pr.file.path, 'rb')
+
+			output_file = open(f"{new_filename}.txt", "w", encoding="utf-8")
+
+			pdfReader = PyPDF2.PdfReader(PdfFileObject)
+
+			numOfPages = len(pdfReader.pages)
+
+
+			# print(f"No. of pages: {pdfReader.numPages}")
+			for i in range(numOfPages):
+				page = pdfReader.pages[i]
+				text = page.extract_text()
+				output_file.write(text)
+			output_file.close()    
+			PdfFileObject.close()
+
+
+			return HttpResponse("PDF to Text converted successfuly")
+	else:  
+		print("else1")
+		uploadFile = FileForm()  
+		print("else2")
+	return render(request,"PDFtoText.html",{'form':uploadFile})	
+
 
 def PDFtoExcel(request):
 	uploadFile = FileForm()
