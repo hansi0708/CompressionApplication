@@ -1,5 +1,8 @@
+{% extends 'UserMaster.html' %}
 {% load static %}
-<!DOCTYPE html>
+
+
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -59,6 +62,9 @@
         </div>
       </div>
     </div>
+ {% endcomment %}
+
+ {% block mymessage %}  
     <div class="content">
       <div class="cards">
         <div class="card">
@@ -93,6 +99,9 @@
       </div>
     </div>
   </div>
+  {% endblock %}
+
+{% comment %}   
 </body>
 </html>
-{% comment %} <button type="button" onclick="location.href='{% url 'log' %}' ">Logout</button> {% endcomment %}
+{% comment %} <button type="button" onclick="location.href='{% url 'log' %}' ">Logout</button> {%  %} {% endcomment %}

@@ -2,9 +2,9 @@
 {% load static %}
 <div style="background-color:white;"> 
     {% block mymessage %}    
-    <div class="buttn">
-        <h1 style="font-size:40px;">Compress files &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    Convert Files</h1>     
-        <div class="btnnn">
+    <div class="welcome-container">
+        <h1>Compress files &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    Convert Files</h1>     
+        <div>
             <button class="btn" onclick="location.href = '/imageCompression/'"><img width=50 height=50 src={% static "WelcomeCompress.png" %} /> Compress Image</button>
             <button class="btn" onclick="location.href = '/PDFtoJPG/'"><img width=50 height=50 src={% static "WelcomePdfToJpg.jpg" %} /> PDF to JPG</button>
             <button class="btn" onclick="location.href = '/PDFtoJPG/JPGtoPDF/'"><img width=50 height=50 src={% static "WelcomeJpgToPdf.png" %} /> JPG to PDF</button>

@@ -28,6 +28,16 @@ h2{
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+
+     
+      /* width: 40; */
+      
+      z-index: 1;
+      left: 0;
+      /* background-color: indianred; */
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 30px;
 }
 
 .side-menu li{
@@ -36,10 +46,31 @@ h2{
       color: white;
       display: flex;
       align-items:center;
+
+      /* padding: 8px 8px 8px 32px; */
+    text-decoration: none;
+    /* font-size: 25px; */
+    /* color: white; */
+    /* display: block; */
+    transition: 0.3s;
 }
 .side-menu li:hover {
       background: white;
       color: #f05462;
+      /* color: #f1f1f1; */
+}
+.navLeft{
+    margin-right: 30px;
+    display: flex;
+    
+}
+
+.side-menu .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
 }
 
 .container {
@@ -85,6 +116,8 @@ h2{
       width: 100%;
       height: 100%;
   }
+
+  
   
   .container .content {
       position: relative;

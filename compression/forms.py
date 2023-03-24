@@ -4,10 +4,6 @@ from .models import File_Form
 
 class FileForm(forms.ModelForm):  
     class Meta:
-         model = File_Form
-         fields = ['file']
-        #  # for creating file input  
-         
-        # model=file
-        # file=forms.FileField()
-        
+        model = File_Form
+        fields=['file']
+              

@@ -34,6 +34,7 @@ import pdftables_api
 #import pypdfium2 as pdfium
 
 from pdf2jpg import pdf2jpg
+import comtypes.client
 
 
 def textToPDF(request):
@@ -147,12 +148,17 @@ def pdf2excel(request):
 			print("8")
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_pdf_to_excel_converted"	
-			c = pdftables_api.Client('am6ebz6z2eei')
-			output = f"{new_filename}.xlsx"
-			path=user_pr.file.path
-			print(os.path.isdir())
-			for file in os.listdir(user_pr.file.path):
-				c.xlsx(os.path.join(user_pr.file.path,file),output)
+
+			df = tabula.read_pdf(user_pr.file.path, pages = "all")[0]
+			# Convert into Excel File
+			df.to_excel(f"{new_filename}.csv")
+
+			# c = pdftables_api.Client('am6ebz6z2eei')
+			# output = f"{new_filename}.xlsx"
+			# path=user_pr.file.path
+			# print(os.path.isdir())
+			# for file in os.listdir(user_pr.file.path):
+			# 	c.xlsx(os.path.join(user_pr.file.path,file),output)
 			#input = open(user_pr.file.path, 'rb')
 			
 			
@@ -291,11 +297,26 @@ def word2pdf(request):
 			print("7")
 			user_pr.save()
 			print("8")
-			open_file = open(user_pr.file.path, 'r',encoding='utf-8')# docx2pdf.convert(open_file)
+			#open_file = open(user_pr.file.path, 'r',encoding='utf-8')# docx2pdf.convert(open_file)
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_word_to_pdf_converted"
-			file_save = open(f"{new_filename}.pdf", "w")
-			docx2pdf.convert(open_file, file_save)
+			wordformatpdf=17
+
+			for inFilename in os.listdir(user_pr.file.path):
+				print(inFilename)
+				inFile=user_pr.file.path+inFilename
+				word=comtypes.client.CreateObject('Word.Application')
+				doc=word.documents.open(inFile)
+				print("opened")
+
+				output_filename=inFilename.replace("docx","pdf")
+				out_file=new_filename+output_filename
+				doc.SaveAs(out_file,FileFormat=wordformatpdf)
+				doc.Close()
+				word.Quit()
+
+			#file_save = open(f"{new_filename}.pdf", "w")
+			#docx2pdf.convert(open_file, file_save)
 			return HttpResponse("Word to PDF converted successfuly")
 	else:  
 		print("else1")
