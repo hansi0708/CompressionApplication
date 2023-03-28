@@ -211,7 +211,7 @@ def compressImage(request):
 		    }
 
             #Storing original file in firebase storage
-            storage.child("/comp_files/"+user_pr.id+"/"+file_name).put(user_pr.file.path)
+            storage.child("/comp_files/"+file_name).put(user_pr.file.path)
             print("stored ")
 
             #org_url=storage.child("/comp_files/"+file_name).get_url(.id)

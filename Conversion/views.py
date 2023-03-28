@@ -1,7 +1,6 @@
 from django.shortcuts import render
 import tabula 
 import os 
-#mport pyautogui
 import pdf2docx, docx2pdf
 import PyPDF2
 from pdf2docx import Converter
@@ -12,10 +11,10 @@ from pdf2image import convert_from_path
 import img2pdf
 from PIL import Image 
 import textwrap
-from fpdf import FPDF
+from fpdf import FPDF 
 import os
-# import win32com.client
-# from pywintypes import com_error
+from win32com import client
+from pywintypes import com_error
 from collections.abc import MutableMapping
 # Import mimetypes module
 import mimetypes
@@ -30,16 +29,16 @@ from .forms import FileForm
 from .models import File_Form
 # Create your views here.
 import pdftables_api
-
-#import pypdfium2 as pdfium
+import  jpype, asposecells  
 
 from pdf2jpg import pdf2jpg
-import comtypes.client
-
+# import comtypes.client
+# import win32com.client as win32com
+import aspose.words as aw
 
 def textToPDF(request):
     uploadFile = FileForm()
-    return render(request,"TextToPDF.html") 
+    return render(request,"TextToPDF.html",{'form':uploadFile}) 
 
 def text2pdf(request):
 	if request.method == 'POST':  
@@ -58,16 +57,14 @@ def text2pdf(request):
 			print("7")
 			user_pr.save()
 			print("8")
-			pdf = FPDF()      
-			pdf.add_page()  # Add a page 
-			pdf.set_font("Arial", size = 15)    # set style and size of font  # that you want in the pdf
-			f = open(user_pr.file.path, 'r')       # open the text file in read mode 
-			for x in f:      # insert the texts in pdf 
-				pdf.cell(200,10, txt = x, ln = 2, align = 'L') 
 			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_text_to_pdf_converted"	
-			pdf.output(f"{new_filename}.pdf","f")    # save the pdf with name .pdf 
-			# f.save(new_filename)
+			new_filename = f"{filename}_text_to_pdf_converted.pdf"
+			# load TXT document
+			doc = aw.Document(user_pr.file.path)
+
+			# save TXT as PDF file
+			doc.save(new_filename, aw.SaveFormat.PDF)
+			
 			return HttpResponse("Text to PDF converted successfuly")
 	else:  
 		print("else1")
@@ -148,21 +145,10 @@ def pdf2excel(request):
 			print("8")
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_pdf_to_excel_converted"	
-
-			df = tabula.read_pdf(user_pr.file.path, pages = "all")[0]
-			# Convert into Excel File
-			df.to_excel(f"{new_filename}.csv")
-
-			# c = pdftables_api.Client('am6ebz6z2eei')
-			# output = f"{new_filename}.xlsx"
-			# path=user_pr.file.path
-			# print(os.path.isdir())
-			# for file in os.listdir(user_pr.file.path):
-			# 	c.xlsx(os.path.join(user_pr.file.path,file),output)
-			#input = open(user_pr.file.path, 'rb')
+			c = pdftables_api.Client('am6ebz6z2eei')
+			c.xlsx(user_pr.file.path, new_filename)
 			
-			
-			# tabula.convert_into(user_pr.file, f"{new_filename}.csv", pages="all", output_format = "csv", stream = True)
+			# tabula.convert_into(user_pr.file.path, f"{new_filename}.csv", pages="all", output_format = "csv", stream = True)
 			return HttpResponse("PDF to Excel converted successfuly")
 	else:  
 		print("else1")
@@ -192,11 +178,33 @@ def excel2pdf(request):
 			print("7")
 			user_pr.save()
 			print("8")
+			
 			WB_PATH = open(user_pr.file.path, 'rb')   # Path to original excel file
 			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_excel_to_pdf_converted"	
-			PATH_TO_PDF = f"{new_filename}.pdf","wb"    # PDF path when saving
-
+			new_filename = f"{filename}_excel_to_pdf_converted.pdf"
+			jpype.startJVM() 
+			from asposecells.api import Workbook
+			workbook = Workbook(user_pr.file.path)
+			workbook.save(new_filename)
+			# jpype.shutdownJVM()
+			# Open Microsoft Excel
+			# excel = client.DispatchEx("Excel.Application")
+			# excel.interactive = False
+			# excel.Visible = False
+			# # Read Excel File
+			# sheets = excel.Workbooks.Open(WB_PATH)
+			# work_sheets = sheets.Worksheets[0]
+			# new_filename = f"{filename}_Excel_to_pdf_converted"
+			# # Convert into PDF File
+			# work_sheets.ActiveSheet.ExportAsFixedFormat(0, new_filename)
+			# work_sheets.close()
+			
+			# # PATH_TO_PDF = open(f"{new_filename}.pdf","w+" ) 
+			# with open(f"{new_filename}.pdf", "wb") as file:  # PDF path when saving
+			# 	file.write()
+			# WB_PATH.close()
+			# user_pr.file.close()
+			
 			# excel = win32com.client.Dispatch("Excel.Application")
 			# excel.Visible = False
 			# try:
@@ -213,27 +221,10 @@ def excel2pdf(request):
 			# else:
 			# 	print('Succeeded.')
 			# finally:
-			# 	wb.Close()
-			# 	excel.Quit()  
+			# 	 
 	
 
-			# with open(f"{new_filename}.pdf", "wb") as file:      #write file 
-			# 	file.write(pdf_bytes)
-			#excel = win32com.client.Dispatch("Excel.Application")
-			# excel.Visible = False
-			# try:
-			# 	print('Start conversion to PDF')# Open
-			# 	wb = excel.Workbooks.Open(WB_PATH)# Specify the sheet you want to save by index. 1 is the first (leftmost) sheet.
-			# 	ws_index_list = [1,2,3,4,5,6,7,8,9,10,11,12]
-			# 	wb.WorkSheets(ws_index_list).Select()# Save
-			# 	wb.ActiveSheet.ExportAsFixedFormat(0, PATH_TO_PDF)
-			# except com_error as e:
-			# 	print('failed.')
-			# else:
-			# 	print('Succeeded.')
-			# finally:
-			# 	wb.Close()
-			# 	excel.Quit()
+			
 			return HttpResponse("Excel to PDF converted successfuly") 
 	else:  
 		print("else1")
@@ -297,26 +288,13 @@ def word2pdf(request):
 			print("7")
 			user_pr.save()
 			print("8")
-			#open_file = open(user_pr.file.path, 'r',encoding='utf-8')# docx2pdf.convert(open_file)
+			open_file = open(user_pr.file.path, 'r',encoding='utf-8')# docx2pdf.convert(open_file)
 			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_word_to_pdf_converted"
-			wordformatpdf=17
-
-			for inFilename in os.listdir(user_pr.file.path):
-				print(inFilename)
-				inFile=user_pr.file.path+inFilename
-				word=comtypes.client.CreateObject('Word.Application')
-				doc=word.documents.open(inFile)
-				print("opened")
-
-				output_filename=inFilename.replace("docx","pdf")
-				out_file=new_filename+output_filename
-				doc.SaveAs(out_file,FileFormat=wordformatpdf)
-				doc.Close()
-				word.Quit()
-
-			#file_save = open(f"{new_filename}.pdf", "w")
-			#docx2pdf.convert(open_file, file_save)
+			new_filename = f"{filename}_word_to_pdf_converted.pdf"
+			
+			doc = aw.Document(user_pr.file.path)
+            # Save as PDF
+			doc.save(new_filename)
 			return HttpResponse("Word to PDF converted successfuly")
 	else:  
 		print("else1")
@@ -388,28 +366,8 @@ def pdf2jpg(request):
 			print("8")
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_pdf_to_jpg_converted.jpg"
-
-			# result = pdf2jpg.convert_pdf2jpg(user_pr.file.path,new_filename, pages="ALL")
-
-			# print(result,"dghfdg")
-			# pdf = pdfium.PdfDocument(user_pr.file.path)
-			# n_pages = len(pdf)
-			# for page_number in range(n_pages):
-			# 	page = pdf.get_page(page_number)
-			# 	pil_image = page.render_topil(
-			# 		scale=1,
-			# 		rotation=0,
-			# 		crop=(0, 0, 0, 0),
-			# 		colour=(255, 255, 255, 255),
-			# 		annotations=True,
-			# 		greyscale=False,
-			# 		optimise_mode=pdfium.OptimiseMode.NONE,
-			# 	)
-			# 	pil_image.save(f"image_{page_number+1}.jpg")
-
-
-			# poppler_path = r"C:\Users\nutan\Downloads\Release-23.01.0-0 (1)\poppler-23.01.0\Library\bin"
-			images = convert_from_path(user_pr.file.path,500)
+			poppler_path = r"C:\Users\nutan\Downloads\Release-23.01.0-0 (1)\poppler-23.01.0\Library\bin"
+			images = convert_from_path(user_pr.file.path,poppler_path = poppler_path)
 			for image in images:
 				image.save(f"{images.index(image)}.jpg", "JPEG")
 				print(f"{images.index(image)}.jpg")
