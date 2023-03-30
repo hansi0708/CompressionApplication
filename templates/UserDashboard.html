@@ -1,70 +1,34 @@
 {% extends 'UserMaster.html' %}
 {% load static %}
 
-
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+{% block mymessage %}
+<meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE-edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{% static '/css/dash.css' %}">
-  <title>Dashboard</title>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-database.js"></script>
-  <script type="text/javascript">
-    google.charts.load('current', {'packages':['bar']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Year', 'Files Converted', 'Files Compressed', 'Files Shared'],
-        ['2014', 100, 400, 200],
-        ['2015', 17, 460, 250],
-        ['2016', 160, 112, 300],
-        ['2017', 103, 540, 350]
-      ]);
-      var options = {
-        chart: {
-          title: 'User Performance',
-          subtitle: ' Files converted, compressed, Shared ',
-        },
-        bars: 'vertical' // Required for Material Bar Charts.
-      };
-      var chart = new google.charts.Bar(document.getElementById('barchart_material'));
-      chart.draw(data, google.charts.Bar.convertOptions(options));
-    }
-  </script>
-</head>
-<body >
-  <div class="side-menu">
-    <h1></h1>
-    <ul>
-      <li><img onclick="location.href = '/home/'" src={% static "Username_icon.PNG" %} height="30" width="30" alt="">&nbsp; Home</li>
-      <li><img src={% static "dashboard_icon.PNG" %} height="30" width="30" alt="">&nbsp; Dashboard</li>
-      <li><img onclick="location.href = '/user/userProfile/'" src={% static "Profile_icon.PNG" %} height="30" width="30" alt="">&nbsp; Profile</li>
-      <li><img src={% static "Conversion_icon.PNG" %} height="30" width="30" alt="">&nbsp; Converted Files</li>
-      <li><img src={% static "Compression_icon.PNG" %} height="30" width="30" alt="">&nbsp; Compressed Files</li>
-      <li><img src={% static "Notification_icon.PNG" %} height="30" width="30" alt="">&nbsp; Notifications</li>
-    </ul>
-  </div>
-  <div class="container">
-    <div class="header">
-      <div class="nav">
-        <div class="user">
-          <div class="img-case">
-            <p id="username">{{name}}</p>
-          </div>
-        </div>
-      </div>
-    </div>
- {% endcomment %}
-
- {% block mymessage %}  
+  
+ <title>Dashboard</title>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['bar']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      ['Year', 'Files Converted', 'Files Compressed', 'Files Shared'],
+      ['2014', 100, 400, 200],
+      ['2015', 17, 460, 250],
+      ['2016', 160, 112, 300],
+      ['2017', 103, 540, 350]
+    ]);
+    var options = {
+      chart: {
+        title: 'User Performance',
+        subtitle: ' Files converted, compressed, Shared ',
+      },
+      bars: 'vertical' // Required for Material Bar Charts.
+    };
+    var chart = new google.charts.Bar(document.getElementById('barchart_material'));
+    chart.draw(data, google.charts.Bar.convertOptions(options));
+  }
+</script>   
     <div class="content">
       <div class="cards">
         <div class="card">
@@ -82,7 +46,7 @@
             <h3>File Converted</h3>
           </div>
           <div class="icon-case">
-            <img src={% static "Conversion_icon.PNG" %}% width="60" height="60" alt="">
+            <img src={% static "Conversion_icon.PNG" %} width="60" height="60" alt="">
           </div>
         </div>
         <div class="card">

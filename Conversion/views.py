@@ -182,11 +182,12 @@ def excel2pdf(request):
 			WB_PATH = open(user_pr.file.path, 'rb')   # Path to original excel file
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_excel_to_pdf_converted.pdf"
-			jpype.startJVM() 
 			from asposecells.api import Workbook
+
 			workbook = Workbook(user_pr.file.path)
+			
 			workbook.save(new_filename)
-			# jpype.shutdownJVM()
+			jpype.shutdownJVM()
 			# Open Microsoft Excel
 			# excel = client.DispatchEx("Excel.Application")
 			# excel.interactive = False
@@ -365,12 +366,12 @@ def pdf2jpg(request):
 			user_pr.save()
 			print("8")
 			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_pdf_to_jpg_converted.jpg"
-			poppler_path = r"C:\Users\nutan\Downloads\Release-23.01.0-0 (1)\poppler-23.01.0\Library\bin"
-			images = convert_from_path(user_pr.file.path,poppler_path = poppler_path)
+			new_filename = f"{filename}_pdf_to_jpg_converted"
+			images = convert_from_path(user_pr.file.path,500)
+			output = "outfile.jpg"
 			for image in images:
-				image.save(f"{images.index(image)}.jpg", "JPEG")
-				print(f"{images.index(image)}.jpg")
+				image.save(output)
+				
 			return HttpResponse("PDF to JPG converted successfuly")
 	else:  
 		print("else1")
