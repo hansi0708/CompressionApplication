@@ -1,15 +1,21 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+	
 <head>
     <meta charset="UTF-8">
 	<title>SIGN UP</title>
 	<link rel="stylesheet" type="text/css" href="{% static '/css/signup.css' %}">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">	
 </head>
+
 <body>
+
 	<div class="center">
+
 		<h1>Sign Up</h1>
+
 	    <form action="/user/postsignUp/" method="post">
 			{% csrf_token %}
 
@@ -91,8 +97,13 @@
 				Already a member?
 				<a href="/user/signIn/">Log In</a>
 	        </div>
+
 	        <br>
+
 	    </form>
+
 	</div>
+
 </body>
+
 </html>

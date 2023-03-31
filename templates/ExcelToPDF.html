@@ -1,23 +1,29 @@
 {% extends 'MasterHome.html' %}
 <title>Excel to PDF</title>    
 {% block mymessage %}
+
 <div>
     <section>
         <article>
+
             <h1 style="font-size:2em">EXCEL to PDF</h1>
             <p style="font-size:1.5em">Make Excel spreadsheets easy to read by converting them to pdf</p>
+            
             <div class="container">
                 <form method="post" action="/PDFtoJPG/excel2pdf/" enctype="multipart/form-data">  
-                {% csrf_token %}  
-                {{ form.as_p }} 
-                <button type="submit" class="save btn btn-default">Save</button>  
-            </form>
-        </div>
+                    {% csrf_token %}  
+                    {{ form.as_p }} 
+                    <button type="submit" class="save btn btn-default">Save</button>  
+                </form>
+            </div>
+
             {% comment %} <div class="container">
                 <!-- <button class="btn upload">Upload file</button> -->
                 <input class="btn " type="file">
             </div> {% endcomment %}
+
         </article>
     </section>
 </div>
+
 {% endblock %}

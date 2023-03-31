@@ -5,24 +5,64 @@
 
     {% block mymessage %}
     
-    <div class="buttn">
+    <div class="home-container">
+
         <h1 style="font-size:40px;">Compress files &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    Convert Files</h1>
       
-        <div class="btnnn">
-            <button class="btn" onclick="location.href = '/imageCompression/'"><img width=50 height=50 src={% static "WelcomeCompress.png" %} /> Compress Image</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/'"><img width=50 height=50 src={% static "WelcomePdfToJpg.jpg" %}/> PDF to JPG</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/JPGtoPDF/'"><img width=50 height=50 src={% static "WelcomeJpgToPdf.png" %}/> JPG to PDF</button>
-            <button class="btn" onclick="location.href = 'imageCompression/compressPPT/'"><img width=50 height=50 src={% static "WelcomePPT.png" %}/> Compress PPT</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoWord/'"><img width=50 height=50 src={% static "WelcomePdfToWord.png" %}/> PDF to Word</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/WordToPDF/'"><img width=50 height=50 src={% static "WelcomeWordToPdf.jpg" %}/> Word to PDF</button>
-            <button class="btn" onclick="location.href = '/imageCompression/compressWord'"><img width=50 height=50 src={% static "WelcomeWord.png" %}/> Compress WORD</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoExcel/'"><img width=50 height=50 src={% static "WelcomePdFToExcel.jpg" %}/> PDF to Excel</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/ExcelToPDF/'"><img width=50 height=50 src={% static "WelcomeExcelToPdf.png" %}/> Excel to PDF</button>
-            <button class="btn" onclick="location.href = 'imageCompression/compressPDF/'"><img width=50 height=50 src={% static "WelcomePdf.png" %}/> Compress PDF</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoText'"><img width=50 height=50 src={% static "@pdf to text.png" %}/> PDF to Text</button>
-            <button class="btn" onclick="location.href = '/PDFtoJPG/textToPDF'"><img width=50 height=50 src={% static "@text to pdf.png" %} /> Text to PDF</button>
-        </div>
-    </div>
-    {% endblock %}
-</div>
+        <div>
 
+            <button class="btn" onclick="location.href = '/imageCompression/'">
+                <img width=50 height=50 src={% static "COMPRESS.png" %} /> Compress Image
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/'">
+                <img width=50 height=50 src={% static "PDFtoJPG.jpg" %}/> PDF to JPG
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/JPGtoPDF/'">
+                <img width=50 height=50 src={% static "JPGtoPDF.png" %}/> JPG to PDF
+            </button>
+
+            <button class="btn" onclick="location.href = '/imageCompression/compressPPT/'">
+                <img width=50 height=50 src={% static "PPT.png" %}/> Compress PPT
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoWord/'">
+                <img width=50 height=50 src={% static "PDFtoWORD.png" %}/> PDF to Word
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/WordToPDF/'">
+                <img width=50 height=50 src={% static "WORDtoPDF.jpg" %}/> Word to PDF
+            </button>
+
+            <button class="btn" onclick="location.href = '/imageCompression/compressWord'">
+                <img width=50 height=50 src={% static "WORD.png" %}/> Compress WORD
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoExcel/'">
+                <img width=50 height=50 src={% static "PDFtoEXCEL.jpg" %}/> PDF to Excel
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/ExcelToPDF/'">
+                <img width=50 height=50 src={% static "EXCELtoPDF.png" %}/> Excel to PDF
+            </button>
+
+            <button class="btn" onclick="location.href = '/imageCompression/compressPDF/'">
+                <img width=50 height=50 src={% static "PDF.png" %}/> Compress PDF
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/PDFtoText'">
+                <img width=50 height=50 src={% static "PDFtoTEXT.png" %}/> PDF to Text
+            </button>
+
+            <button class="btn" onclick="location.href = '/PDFtoJPG/textToPDF'">
+                <img width=50 height=50 src={% static "TEXTtoPDF.png" %} /> Text to PDF
+            </button>
+
+        </div>
+
+    </div>
+
+    {% endblock %}
+
+</div>

@@ -11,6 +11,8 @@ import zipfile
 import io
 import zlib,sys
 import pyrebase
+import firebase_admin
+from firebase_admin import credentials, firestore, storage
 
 #FIREBASE CONFIG
 config = {
@@ -23,6 +25,12 @@ config = {
   'appId': "1:295626631784:web:ed35e114286e3d3b6069dd",
   'measurementId': "G-2XZEBYKFC6"
 }
+
+cred=credentials.Certificate('serviceAccountKey.json')
+firebase_admin.initialize_app(cred, {
+    'storageBucket': "compression-tool-6af95.appspot.com"
+})
+
 
 # Initialising database, auth, firebase and storage   
 firebase=pyrebase.initialize_app(config)
@@ -201,24 +209,35 @@ def compressImage(request):
 
             #Print the saving percentage
             print(f"[+] Image size change: {saving_diff/image_size*100:.2f}% of the original image size.")
-
+            
+            idToken=request.session['uid']
+            a=authe.get_account_info(idToken)
+            print(a.get('localId'))
             data={
-			'file':user_pr.file.url,
-			'file_type':file_type,
-			'image_size':image_size,
-			'new_file':new_filename,
-			'new_image_size':new_image_size
+                'user_id':idToken,
+                'file':user_pr.file.url,
+			    'file_type':file_type,
+			    'image_size':image_size,
+			    'new_file':new_filename,
+			    'new_image_size':new_image_size
 		    }
 
             #Storing original file in firebase storage
-            storage.child("/comp_files/"+file_name).put(user_pr.file.path)
+            storage.child("/comp_files/"+idToken+"/"+str(user_pr.id)+"/"+file_name).put(user_pr.file.path)
             print("stored ")
 
+            # bucket = storage.bucket()
+            # blob = bucket.get_blob(file_name) #this is the name of your image
+            # blob.download_to_filename(r"./image.png")
+            #blob = bucket.blob(file_name)
+            #blob.upload_from_filename("/comp_files/"+str(user_pr.id)+"/"+file_name)
+            #print(blob.public_url)
+             
             #org_url=storage.child("/comp_files/"+file_name).get_url(.id)
             #print(org_url)
             
             #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').set(user_pr.id)
+            database.child('compression').push(user_pr.id)
             database.child('compression').child(user_pr.id).set(data)
             print("Success")  
             print(user_pr.id)  
@@ -236,6 +255,7 @@ def get_size_format(b, factor=1024, suffix="B"):
             return f"{b:.2f}{unit}{suffix}"
         b /= factor
     return f"{b:.2f}Y{suffix}"
+
 
 # PPT COMPRESSION
 def compressPPT(request):
@@ -292,6 +312,7 @@ def pptCompression(request):
 
     return render(request,"CompressPPT.html",{'form':uploadFile})
 
+
 # WORD COMPRESSION           
 def compressWord(request):
     # idToken=request.session['uid']
@@ -346,6 +367,7 @@ def wordCompression(request):
         uploadFile = FileForm()  
 
     return render(request,"CompressWord.html",{'form':uploadFile})
+
 
 # PDF COMPRESSION
 def CompressPDF(request):
