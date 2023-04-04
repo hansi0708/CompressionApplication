@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from firebase_admin import auth
 import pyrebase
+from django.views.decorators.cache import cache_control
 
 config = {
   'apiKey': "AIzaSyBbNBjeBbpTnaq2ikJ2Aut5UvW0KqhQ7dQ",
@@ -22,6 +23,8 @@ database=firebase.database()
 def signIn(request):
 	return render(request,"Login.html")
 
+@cache_control(no_cache=True, must_revalidate=True,no_store=True)
+# @login_required(login_url='/login/')
 def postsignIn(request):
 
 	email=request.POST.get('email')
@@ -105,8 +108,22 @@ def profile(request):
 	name = database.child('users').child(a).child('name').get().val()
 	print(name)
 
+	all_user_comp=database.child('compression').shallow().get().val()
+	list_comp=[]
+
+	for i in all_user_comp:                                              
+		list_comp.append(i)
+	
+	print(list_comp)
+
+	comp_list=[]
+	for i in list_comp:
+		comp=database.child('compression').child(i).child('user_id').get().val()
+		if comp == a: comp_list.append(i)
+
 	context = {
-          'name':name
+          'name':name,
+	      'count_comp':len(comp_list)
     }
 
 	return render(request,"UserDashboard.html",context)
@@ -140,3 +157,114 @@ def userProfile(request):
     }
 	
 	return render(request,"UserProfile.html",context)
+
+def check(request):
+	all_users=database.child('users').shallow().get().val()
+	list_users=[]
+
+	for i in all_users:                                              
+		list_users.append(i)
+	
+	print(list_users)
+	#list_users.sort(reverse=True) when time stamp based sorting
+
+	names=[]
+	for i in list_users:
+		name=database.child('users').child(i).child('name').get().val()
+		names.append(name)
+
+	print(names)
+
+	centres=[]
+	for i in list_users:
+		centre=database.child('users').child(i).child('centre').get().val()
+		centres.append(centre)
+
+	print(centres)
+
+	departments=[]
+	for i in list_users:
+		department=database.child('users').child(i).child('department').get().val()
+		departments.append(department)
+
+	print(departments)
+	
+	comb_list=zip(list_users,names,centres,departments)	
+		    
+	return render(request,"ListUsers.html",{'comb_list':comb_list})
+
+def userConvList(request):
+	all_users=database.child('users').shallow().get().val()
+	list_users=[]
+
+	for i in all_users:                                              
+		list_users.append(i)
+	
+	print(list_users)
+	#list_users.sort(reverse=True) when time stamp based sorting
+
+	names=[]
+	for i in list_users:
+		name=database.child('users').child(i).child('name').get().val()
+		names.append(name)
+
+	print(names)
+
+	centres=[]
+	for i in list_users:
+		centre=database.child('users').child(i).child('centre').get().val()
+		centres.append(centre)
+
+	print(centres)
+
+	departments=[]
+	for i in list_users:
+		department=database.child('users').child(i).child('department').get().val()
+		departments.append(department)
+
+	print(departments)
+	
+	comb_list=zip(list_users,names,centres,departments)	
+		    
+	return render(request,"UserConvList.html",{'comb_list':comb_list})
+
+def userCompList(request):
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	all_user_comp=database.child('compression').shallow().get().val()
+	list_comp=[]
+
+	for i in all_user_comp:                                              
+		list_comp.append(i)
+	
+	print(list_comp)
+
+	comp_list=[]
+	for i in list_comp:
+		comp=database.child('compression').child(i).child('user_id').get().val()
+		if comp == a: comp_list.append(i)
+
+	context = {
+          'name':name,
+	      'count_comp':len(comp_list)
+    }
+
+	
+
+	all_users=database.child('users').shallow().get().val()
+	list_users=[]
+
+	for i in all_users:                                              
+		list_users.append(i)
+	
+	print(list_users)
+	#list_users.sort(reverse=True) when time stamp based sorting
+
+	
+	comb_list=zip(list_users,names,centres,departments)	
+		    
+	return render(request,"UserCompList.html",{'comb_list':comb_list})

@@ -1,6 +1,28 @@
 {% extends 'MasterHome.html' %}
 {% load static %}
+<script type="text/javascript">
 
+    {% comment %} function preventBack() {
+        window.history.forward(); 
+    }  {% endcomment %}
+
+    {% comment %} window.onbeforeunload = function() {
+        if (request.session['uid'] != null)
+          window.history.forward();
+        return true;
+    };
+
+    {% comment %} window.onload{
+        if (request.session['uid'] != null)
+         preventBack();
+    }
+    {% comment %} window.onload=preventBack(); {% endcomment %}
+	 {% comment %} window.onpageshow = function(e) {
+		if (e.persisted)
+         window.history.forward();
+	}  {% endcomment %} 
+
+</script>
 <div style="background-color:white;"> 
 
     {% block mymessage %}

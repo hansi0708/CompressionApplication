@@ -11,5 +11,8 @@ urlpatterns = [
     path('postsignUp/', views.postsignUp),
     path('profile/', views.profile),
     path('userProfile/',views.userProfile),
+    path('usersList/',views.check),
+    path('userConvList/',views.userConvList),
+    path('userCompList/',views.userCompList),
 
     ]

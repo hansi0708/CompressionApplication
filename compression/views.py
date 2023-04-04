@@ -12,7 +12,11 @@ import io
 import zlib,sys
 import pyrebase
 import firebase_admin
-from firebase_admin import credentials, firestore, storage
+from firebase_admin import credentials, storage
+from compress_pptx.compress_pptx import CompressPptx
+import time
+from datetime import datetime, timezone
+import pytz
 
 #FIREBASE CONFIG
 config = {
@@ -39,46 +43,6 @@ database=firebase.database()
 storage=firebase.storage()
 
 
-def upload(request):
-    if request.method == 'POST':  
-         print("1")
-         uploadFile = FileForm(request.POST, request.FILES) 
-         print("2") 
-         if uploadFile.is_valid():  
-           print("3")
-           user_pr = uploadFile.save(commit=False)
-           print("4")
-           user_pr.file = request.FILES['file']
-           print("5")
-           file_type = user_pr.file.url.split('.')[-1]
-           print("6")
-           file_type = file_type.lower()
-           print("7")
-           user_pr.save()
-           print("8")
-          # handle_uploaded_file(request.FILES['file'])  
-           return HttpResponse("File uploaded successfuly")
-    else:  
-        print("else1")
-        uploadFile = FileForm()  
-        print("else2")
-    return render(request,"ImageCompression.html",{'form':uploadFile}) 
- 
-
-def write_data_to_files(inp_data, file_name):
-    """
-     function : create a csv file with the data passed to this code
-     args : inp_data : data to be written to the target file
-     file_name : target file name to store the data
-     return : none
-     assumption : File to be created and this code are in same directory. 
-    """
-    print(f" *** Writing the data to - {file_name}")
-    throwaway_storage = io.StringIO(inp_data)
-    with open(file_name, 'w') as f:
-        for line in throwaway_storage:
-            f.write(line)
-
 def file_compress(inp_file_names, out_zip_file):
     """
     function : file_compress
@@ -96,11 +60,11 @@ def file_compress(inp_file_names, out_zip_file):
     print(f' *** out_zip_file is - {out_zip_file}')
     zf = zipfile.ZipFile(out_zip_file, mode="w")
     try:
-        for file_to_write in inp_file_names:
-# Add file to the zip file
-# first parameter file to zip, second filename in zip
-            print(f' *** Processing file {file_to_write}')
-            zf.write(file_to_write, file_to_write, compress_type=compression)
+#         for file_to_write in inp_file_names:
+# # Add file to the zip file
+# # first parameter file to zip, second filename in zip
+#             print(f' *** Processing file {file_to_write}')
+            zf.write(inp_file_names, compress_type=compression)
     except FileNotFoundError as e:
         print(f' *** Exception occurred during zip process - {e}')
     finally:
@@ -110,151 +74,117 @@ def file_compress(inp_file_names, out_zip_file):
 
 # IMAGE COMPRESSION
 def imageCompression(request):
-    # idToken=request.session['uid']
-    # if idToken!= None:
-    #     return render(request,"Login.html")
-    # else:
+    idToken=request.session['uid']
+    print(idToken)
+    if idToken== None:
+        return render(request,"Login.html")
+    else:
         uploadFile = FileForm()
         return render(request,"ImageCompression.html",{'form':uploadFile})
      
 def compressImage(request):
             
     if request.method == 'POST':  
-
         uploadFile = FileForm(request.POST, request.FILES) 
 
         if uploadFile.is_valid():
-
-            user_pr = uploadFile.save(commit=False)
-            user_pr.file = request.FILES['file']
+            uFile = uploadFile.save(commit=False)
+            uFile.file = request.FILES['file']
 
             #FILE TYPE
-            file_type = user_pr.file.url.split('.')[-1]
+            file_type = uFile.file.url.split('.')[-1]
             file_type = file_type.lower()
-
-            print("url ",user_pr.file.url)
-            print("path ",user_pr.file.path)
-
-            new_size_ratio=0.9 
-            quality=90
-            width=None
-            height=None
-
+            
             #FILENAME
-            filename, ext = os.path.splitext(user_pr.file.path)
-            print(filename)
+            filename, ext = os.path.splitext(uFile.file.path)
 
             #NEW FILENAME
             new_filename = f"{filename}_compressed{ext}"
 
             #Saving original file locally
-            user_pr.save()
+            uFile.save()
 
             #Filename to store in firebase
-            file_name= user_pr.file.url.split('/')[-1]
-            print(file_name)
+            file_name= uFile.file.url.split('/')[-1]
+            new_file_name= new_filename.split('/')[-1]
 
+            #Image compression code
+            quality=90
+            
             #Loading image to memory
-            img = Image.open(user_pr.file.path)
-            print("file open")
+            img = Image.open(uFile.file.path)
 
             #Print original image shape
             print("[*] Image shape:", img.size)
             
-            #Get the original image size in bytes
-            image_size = os.path.getsize(user_pr.file.path)
+            #Get the original file size in bytes
+            file_size = os.path.getsize(uFile.file.path)
 
             #Print size before compression/resizing
-            print("[*] Size before compression:", get_size_format(image_size))
-
-            if new_size_ratio < 1.0:
-                
-                #If resizing ratio is below 1.0, then multiply width & height with this ratio to reduce image size
-                img = img.resize((int(img.size[0] * new_size_ratio), int(img.size[1] * new_size_ratio)), Image.ANTIALIAS)
-                
-                #Print new image shape
-                print("[+] New Image shape:", img.size)
-
-            elif width and height:
-                
-                #If width and height are set, resize with them instead
-                img = img.resize((width, height), Image.ANTIALIAS)
-
-                #Print new image shape
-                print("[+] New Image shape:", img.size)
+            print("[*] Size before compression:", get_size_format(file_size))
             
             try:
-              
                 #Save the image with the corresponding quality and optimize set to True
                 img.save(new_filename, quality=quality, optimize=True)
 
             except OSError:
-              
                 #Convert the image to RGB mode first
                 img = img.convert("RGB")
 
                 #Save the image with the corresponding quality and optimize set to True
                 img.save(new_filename, quality=quality, optimize=True)
 
-            print("[+] New file saved:", new_filename)
-
-            #Get the new image size in bytes
-            new_image_size = os.path.getsize(new_filename)
+            #Get the new file size in bytes
+            new_file_size = os.path.getsize(new_filename)
             
             #Print the new size in a good format
-            print("[+] Size after compression:", get_size_format(new_image_size))
+            print("[+] Size after compression:", get_size_format(new_file_size))
 
             #Calculate the saving bytes
-            saving_diff = new_image_size - image_size
+            saving_diff = new_file_size - file_size
 
             #Print the saving percentage
-            print(f"[+] Image size change: {saving_diff/image_size*100:.2f}% of the original image size.")
+            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
             
             idToken=request.session['uid']
             a=authe.get_account_info(idToken)
-            print(a.get('localId'))
+            a=a['users']
+            a=a[0]
+            a=a['localId']
+
+            #Storing files in firebase storage
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+
+            tz =pytz.timezone('Asia/Kolkata')
+            time_now=datetime.now(timezone.utc).astimezone(tz)
+            millis=int(time.mktime(time_now.timetuple()))
+
+            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
+            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+            
             data={
-                'user_id':idToken,
-                'file':user_pr.file.url,
+                'user_id':a,
+                'date_time':millis,
+                'file':org_url,
 			    'file_type':file_type,
-			    'image_size':image_size,
-			    'new_file':new_filename,
-			    'new_image_size':new_image_size
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_size':new_file_size
 		    }
-
-            #Storing original file in firebase storage
-            storage.child("/comp_files/"+idToken+"/"+str(user_pr.id)+"/"+file_name).put(user_pr.file.path)
-            print("stored ")
-
-            # bucket = storage.bucket()
-            # blob = bucket.get_blob(file_name) #this is the name of your image
-            # blob.download_to_filename(r"./image.png")
-            #blob = bucket.blob(file_name)
-            #blob.upload_from_filename("/comp_files/"+str(user_pr.id)+"/"+file_name)
-            #print(blob.public_url)
-             
-            #org_url=storage.child("/comp_files/"+file_name).get_url(.id)
-            #print(org_url)
+            
+            #download url
+            #storage.child("/comp_files/"+email+"/"+str(user_pr.id)+"/"+file_name).download(org_url,file_name)
             
             #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').push(user_pr.id)
-            database.child('compression').child(user_pr.id).set(data)
-            print("Success")  
-            print(user_pr.id)  
+            database.child('compression').child(uFile.id).set(data)  
 
             return HttpResponse("Image compressed successfuly")  
              
     else:  
-
         uploadFile = FileForm()
-        return render(request,"ImageCompression.html",{'form':uploadFile})
-
-def get_size_format(b, factor=1024, suffix="B"):
-    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
-        if b < factor:
-            return f"{b:.2f}{unit}{suffix}"
-        b /= factor
-    return f"{b:.2f}Y{suffix}"
+    
+    return render(request,"ImageCompression.html",{'form':uploadFile})
 
 
 # PPT COMPRESSION
@@ -269,45 +199,83 @@ def compressPPT(request):
 def pptCompression(request):
 
     if request.method == 'POST':
-
         uploadFile = FileForm(request.POST, request.FILES)
 
         if uploadFile.is_valid():
-           
-           user_pr = uploadFile.save(commit=False)
-           user_pr.file = request.FILES['file']
-           file_type = user_pr.file.url.split('.')[-1]
-           file_type = file_type.lower()
-           user_pr.save()
+            uFile = uploadFile.save(commit=False)
+            uFile.file = request.FILES['file']
 
-           filename, ext = os.path.splitext(user_pr.file.path)
-           new_filename = f"{filename}_compressed{ext}"
-
-           with open(user_pr.file.path, mode="rb") as fin, open(new_filename, mode="wb") as fout:
+            #FILE TYPE
+            file_type = uFile.file.url.split('.')[-1]
+            file_type = file_type.lower()
             
-            data = fin.read()
-            compressed_data = zlib.compress(data, zlib.Z_BEST_COMPRESSION)
-            print(f"Original size: {sys.getsizeof(data)}")
+            #FILENAME
+            filename, ext = os.path.splitext(uFile.file.path)
 
-            # Original size: 1000033
-            print(f"Compressed size: {sys.getsizeof(compressed_data)}")
-            
-            # Compressed size: 1024
-            fout.write(compressed_data)
+            #NEW FILENAME
+            new_filename = f"{filename}_compressed{ext}"
 
-           with open(new_filename, mode="rb") as fin:
-            
-            data = fin.read()
-            compressed_data = zlib.decompress(data)
-            print(f"Compressed size: {sys.getsizeof(data)}")
-            
-            # Compressed size: 1024
-            print(f"Decompressed size: {sys.getsizeof(compressed_data)}")
+            #Saving original file locally
+            uFile.save()
 
+            #Filename to store in firebase
+            file_name= uFile.file.url.split('/')[-1]
+            new_file_name= new_filename.split('/')[-1]
+
+            #Get the original file size in bytes
+            file_size = os.path.getsize(uFile.file.path)
+
+            #Print size before compression/resizing
+            print("[*] Size before compression:", get_size_format(file_size))
+
+            #PPT compression code
+            CompressPptx(uFile.file.path,new_filename).run()
+
+            #Get the new file size in bytes
+            new_file_size = os.path.getsize(new_filename)
+            
+            #Print the new size in a good format
+            print("[+] Size after compression:", get_size_format(new_file_size))
+
+            #Calculate the saving bytes
+            saving_diff = new_file_size - file_size
+
+            #Print the saving percentage
+            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+
+            idToken=request.session['uid']
+            a=authe.get_account_info(idToken)
+            a=a['users']
+            a=a[0]
+            a=a['localId']
+            
+            #Storing original file in firebase storage
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+
+            tz =pytz.timezone('Asia/Kolkata')
+            time_now=datetime.now(timezone.utc).astimezone(tz)
+            millis=int(time.mktime(time_now.timetuple()))
+
+            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
+            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+            
+            data={
+                'user_id':a,
+                'date_time':millis,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_size':new_file_size
+		    }
+
+            #Storing data in compression table in Firebase Realtime Database
+            database.child('compression').child(uFile.id).set(data)
+            
             return HttpResponse("PPT files compressed successfuly")
     
     else:  
-
         uploadFile = FileForm()  
 
     return render(request,"CompressPPT.html",{'form':uploadFile})
@@ -325,45 +293,92 @@ def compressWord(request):
 def wordCompression(request):
 
     if request.method == 'POST':  
-        
         uploadFile = FileForm(request.POST, request.FILES) 
         
-        if uploadFile.is_valid(): 
-           
-           user_pr = uploadFile.save(commit=False)
-           user_pr.file = request.FILES['file']
-           file_type = user_pr.file.url.split('.')[-1]
-           file_type = file_type.lower()
-           user_pr.save()
+        if uploadFile.is_valid():
+            uFile = uploadFile.save(commit=False)
+            uFile.file = request.FILES['file']
 
-           filename, ext = os.path.splitext(user_pr.file.path)
-           new_filename = f"{filename}_compressed{ext}"
-
-           with open(user_pr.file.path, mode="rb") as fin, open(new_filename, mode="wb") as fout:
+            #FILE TYPE
+            file_type = uFile.file.url.split('.')[-1]
+            file_type = file_type.lower()
             
-            data = fin.read()
-            compressed_data = zlib.compress(data, zlib.Z_BEST_COMPRESSION)
-            print(f"Original size: {sys.getsizeof(data)}")
+            #FILENAME
+            filename, ext = os.path.splitext(uFile.file.path)
 
-            # Original size: 1000033
-            print(f"Compressed size: {sys.getsizeof(compressed_data)}")
+            #NEW FILENAME
+            new_filename = f"{filename}_compressed{ext}"
 
-            # Compressed size: 1024
-            fout.write(compressed_data)
+            #Saving original file locally
+            uFile.save()
 
-           with open(new_filename, mode="rb") as fin:
+            #Filename to store in firebase
+            file_name= uFile.file.url.split('/')[-1]
+            new_file_name= new_filename.split('/')[-1] 
 
-            data = fin.read()
-            compressed_data = zlib.decompress(data)
-            print(f"Compressed size: {sys.getsizeof(data)}")
+            #Get the original file size in bytes
+            file_size = os.path.getsize(uFile.file.path)
 
-            # Compressed size: 1024
-            print(f"Decompressed size: {sys.getsizeof(compressed_data)}")
+            #Print size before compression/resizing
+            print("[*] Size before compression:", get_size_format(file_size))    
 
-           return HttpResponse("WORD file compressed successfuly")
+            #Word compression code
+            with open(uFile.file.path, mode="rb") as fin, open(new_filename, mode="wb") as fout:
+                data = fin.read()
+                compressed_data = zlib.compress(data, zlib.Z_BEST_COMPRESSION)
+                print(f"Original size: {sys.getsizeof(data)}")
+
+                # Original size: 1000033
+                print(f"Compressed size: {sys.getsizeof(compressed_data)}")
+
+                # Compressed size: 1024
+                fout.write(compressed_data)
+
+            #Get the new file size in bytes
+            new_file_size = os.path.getsize(new_filename)
+            
+            #Print the new size in a good format
+            print("[+] Size after compression:", get_size_format(new_file_size))
+
+            #Calculate the saving bytes
+            saving_diff = new_file_size - file_size
+
+            #Print the saving percentage
+            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+
+            idToken=request.session['uid']
+            a=authe.get_account_info(idToken)
+            a=a['users']
+            a=a[0]
+            a=a['localId']
+
+            #Storing original file in firebase storage
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+
+            tz =pytz.timezone('Asia/Kolkata')
+            time_now=datetime.now(timezone.utc).astimezone(tz)
+            millis=int(time.mktime(time_now.timetuple()))
+
+            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
+            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+            
+            data={
+                'user_id':a,
+                'date_time':millis,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_size':new_file_size
+		    }
+
+            #Storing data in compression table in Firebase Realtime Database
+            database.child('compression').child(uFile.id).set(data)  
+
+            return HttpResponse("WORD file compressed successfuly")
         
     else:  
-
         uploadFile = FileForm()  
 
     return render(request,"CompressWord.html",{'form':uploadFile})
@@ -381,19 +396,38 @@ def CompressPDF(request):
 def pdfCompression(request):
 
     if request.method == 'POST': 
-
         uploadFile = FileForm(request.POST, request.FILES)
 
         if uploadFile.is_valid():  
+            uFile = uploadFile.save(commit=False)
+            uFile.file = request.FILES['file']
 
-            user_pr = uploadFile.save(commit=False)
-            user_pr.file = request.FILES['file']
-            file_type = user_pr.file.url.split('.')[-1]
+            #FILE TYPE
+            file_type = uFile.file.url.split('.')[-1]
             file_type = file_type.lower()
-            user_pr.save()
+            
+            #FILENAME
+            filename, ext = os.path.splitext(uFile.file.path)
 
+            #NEW FILENAME
+            new_filename = f"{filename}_compressed{ext}"
+
+            #Saving original file locally
+            uFile.save()
+
+            #Filename to store in firebase
+            file_name= uFile.file.url.split('/')[-1]
+            new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+            file_size = os.path.getsize(uFile.file.path)
+
+            #Print size before compression/resizing
+            print("[*] Size before compression:", get_size_format(file_size))
+
+            #PDF compression code
             PDFNet.Initialize("demo:1679382800894:7d172aad03000000006e4e8c2e43b0a1edd4e0fe31883bada9d6815484")
-            doc = PDFDoc(user_pr.file.path)
+            doc = PDFDoc(uFile.file.path)
 
             #Optimize PDF with the default settings
             doc.InitSecurityHandler()
@@ -401,20 +435,67 @@ def pdfCompression(request):
             #Reduce PDF size by removing redundant information and compressing data streams
             Optimizer.Optimize(doc)
 
-            filename, ext = os.path.splitext(user_pr.file.path)
-            new_filename = f"{filename}_compressed.pdf"
             doc.Save(new_filename, SDFDoc.e_linearized)
             doc.Close()
+
+            #Get the new file size in bytes
+            new_file_size = os.path.getsize(new_filename)
+            
+            #Print the new size in a good format
+            print("[+] Size after compression:", get_size_format(new_file_size))
+
+            #Calculate the saving bytes
+            saving_diff = new_file_size - file_size
+
+            #Print the saving percentage
+            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+
+            idToken=request.session['uid']
+            a=authe.get_account_info(idToken)
+            a=a['users']
+            a=a[0]
+            a=a['localId']
+
+            #Storing original file in firebase storage
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
+            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+
+            tz =pytz.timezone('Asia/Kolkata')
+            time_now=datetime.now(timezone.utc).astimezone(tz)
+            millis=int(time.mktime(time_now.timetuple()))
+
+            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
+            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+            
+            data={
+                'user_id':a,
+                'date_time':millis,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_size':new_file_size
+		    }
+
+            #Storing data in compression table in Firebase Realtime Database
+            database.child('compression').child(uFile.id).set(data)  
 
             return HttpResponse("PDF files compressed successfuly")
         
     else:
-          
         uploadFile = FileForm()  
-
+    
     return render(request,"CompressPDF.html",{'form':uploadFile})
 
-def set_page_size(page_setup, width, height):
 
+
+def set_page_size(page_setup, width, height):
     page_setup.page_width = width
     page_setup.page_height = height
+
+def get_size_format(b, factor=1024, suffix="B"):
+    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
+        if b < factor:
+            return f"{b:.2f}{unit}{suffix}"
+        b /= factor
+    return f"{b:.2f}Y{suffix}"

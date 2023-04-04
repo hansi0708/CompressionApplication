@@ -1,8 +1,7 @@
-{% load static %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 
-    <head>
+    <head> 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,38 +10,38 @@
 
     <title>WELCOME</title>
     <style>
-.flex {
+ {% comment %} .flex {
     border: white;
     display: flex;
     flex-direction: row;
-}
+} {% endcomment %}
 
 .flex1 {
     display: flex;
     justify-content: space-between;
     /* width: 80%; */
 }
-html, body {
+{% comment %} html, body {
                 width: 100%;
                 height: 100%;
                 margin: 0;
                 padding: 0;
 
-            }
+            } {% endcomment %}
 
-.profile {
+{% comment %} .profile {
     text-align: center;
     margin-top: 0%;
     background-color: #99CCFF;
     box-shadow: 5px 5px 20px black;
-}
+} {% endcomment %}
 
-.menu {
+{% comment %} .menu {
     font-size: 20px;
     color: white;
     background-color: indianred;
     flex-basis: 22%;
-}
+} {% endcomment %}
 
 .menu1 {
     flex-basis: 90%;
@@ -73,7 +72,7 @@ input {
     float: right;
     margin-left: 55px;
     margin-top: 20px;
-}
+} \
 
 #button-container {
     width: 100%;
@@ -93,13 +92,13 @@ input {
     height: 50px;
     font-size: 100%;
     text-align: center;
-}
-         </style>
-</head>
+} 
+</style>
 
-<body>
-    <div class="flex">
-        <nav class="menu">
+ <body>
+    <div class="flex"> 
+
+        {% comment %} <nav class="menu">
             <ul style="list-style: none;">
 
                 <li>
@@ -121,8 +120,8 @@ input {
                     <h3>Permission</h3>
                 </li>
             </ul>
-        </nav>
-        <div class="menu1">
+        </nav> {% endcomment %}
+       <div class="content"> <div class="menu1">
             <!-- <div class="profile"></div> -->
 
             <h1 class="profile"> USER </h1>           
@@ -173,10 +172,13 @@ input {
             </div>
             <hr>
             <div id="button-container">
-                <button id="button">Reset Password</button>
+                <button onClick="location.href = '/user/usersList/'" id="button">Reset Password</button>
             </div>
+
         </div>
+
+    </div>
     </div>
 </body>
 
-</html>
+</html> 
