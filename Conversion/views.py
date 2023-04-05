@@ -182,12 +182,15 @@ def excel2pdf(request):
 			WB_PATH = open(user_pr.file.path, 'rb')   # Path to original excel file
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_excel_to_pdf_converted.pdf"
+			import  jpype     
+			import  asposecells 
+			jpype.startJVM() 
 			from asposecells.api import Workbook
-
+			
 			workbook = Workbook(user_pr.file.path)
 			
 			workbook.save(new_filename)
-			jpype.shutdownJVM()
+			# jpype.shutdownJVM()
 			# Open Microsoft Excel
 			# excel = client.DispatchEx("Excel.Application")
 			# excel.interactive = False
@@ -256,7 +259,7 @@ def pdf2word(request):
 			user_pr.save()
 			print("8")
 			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_pdf_to_word_converted"	
+			new_filename = f"{filename}_pdf_to_word_converted.docx"	
 			cv = Converter(user_pr.file.path)
 			cv.convert(new_filename, start = 0, end = None)
 			return HttpResponse("PDF to Word converted successfuly")   # pdf2docx.parse(user_pr.file, f"{new_filename}.docx", start=0, end=None)
@@ -332,7 +335,8 @@ def jpg2pdf(request):
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_jpg_to_pdf_converted"
 			with open(f"{new_filename}.pdf", "wb") as file:      #write file 
-				file.write(pdf_bytes)
+				# file.write(pdf_bytes)
+				
 			image.close()    # closing image file
 			user_pr.file.close()     # closing pdf file
 			print("Successfully made pdf file")    # output
@@ -367,10 +371,12 @@ def pdf2jpg(request):
 			print("8")
 			filename, ext = os.path.splitext(user_pr.file.path)
 			new_filename = f"{filename}_pdf_to_jpg_converted"
-			images = convert_from_path(user_pr.file.path,500)
-			output = "outfile.jpg"
-			for image in images:
-				image.save(output)
+			poppler_path = r"C:\Users\nutan\Downloads\Release-23.01.0-0 (1)\poppler-23.01.0\Library\bin"
+			images = convert_from_path(user_pr.file.path,poppler_path=poppler_path)
+			# output = "outfile.jpg"
+			for image in range(len(images)):
+				# fname = 'image'+str(i)+'.JPG'
+				images[image].save('page '+str(image)+'.jpg','JPEG')
 				
 			return HttpResponse("PDF to JPG converted successfuly")
 	else:  

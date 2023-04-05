@@ -325,7 +325,7 @@ def wordCompression(request):
             print(f"Original size: {sys.getsizeof(data)}")
 
             # Original size: 1000033
-            print(f"Compressed size: {sys.getsizeof(compressed_data)}")
+            # print(f"Compressed size: {sys.getsizeof(compressed_data)}")
 
             # Compressed size: 1024
             fout.write(compressed_data)
