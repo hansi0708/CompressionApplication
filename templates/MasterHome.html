@@ -123,15 +123,15 @@
             margin-center: 30px;
             display: flex;
         }
-        .buttn {
+        .home-container {
             background-color: #D9D9D9;
             margin-top: -26px;
         }
-        .buttn h1 {
+        .home-container h1 {
             margin: 0%;
             padding: 40px;
         }
-        .buttn .btn {
+        .home-container .btn {
             width: 30%;
             border-radius: 15px;
             background-color: #2691d9;
@@ -151,39 +151,49 @@
     </style>
 </head>
 <body style="background-color:#ffeaef;">
-    <header>
-        <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Compression and Conversion tool</h2>
-        <div id="mySidenav" class="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="imageCompression/">Image Compression</a>
-            <a href="PDFtoJPG">PDF to JPG</a>
-            <a href="JPGtoPDF">JPG to PDF</a>
-            <a href="compressPPT">Compress PPT</a>
-            <a href="PDFtoWord">PDF To Word</a>
-            <a href="WordToPDF">Word To PDF</a>
-            <a href="#">Compress Word</a>
-            <a href="PDFtoExcel">PDF to Excel</a>
-            <a href="ExcelToPDF">Excel To PDF</a>
-            <a href="CompressPDF">Compress PDF</a>
-            <a href="#">PDF To Text</a>
-            <a href="#">Text To PDF</a>
-        </div>
-        <div class="navLeft">
-            <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
-        </div>        
-        <div style="text-align: right;" >
-            <img onclick="location.href = '/user/profile/'" src={% static "Username_icon.PNG" %} height="50" width="50" alt="">
-        </div>
-        <script>
-            function openNav() {
-                document.getElementById("mySidenav").style.width = "150px";
-            }
-            function closeNav() {
-                document.getElementById("mySidenav").style.width = "0";
-            }
-        </script>
-    </header>
-    {% block mymessage %}
-    {% endblock %}
-</body>
+
+        <header>
+
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Compression and Conversion tool</h2>
+            
+            <div id="mySidenav" class="sidenav">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <a href="/imageCompression">Image Compression</a>
+                <a href="/PDFtoJPG">PDF to JPG</a>
+                <a href="/PDFtoJPG/JPGtoPDF">JPG to PDF</a>
+                <a href="/imageCompression/compressPPT">Compress PPT</a>
+                <a href="/PDFtoJPG/PDFtoWord">PDF To Word</a>
+                <a href="/PDFtoJPG/WordToPDF">Word To PDF</a>
+                <a href="/imageCompression/compressWord">Compress Word</a>
+                <a href="/PDFtoJPG/PDFtoExcel">PDF to Excel</a>
+                <a href="/PDFtoJPG/ExcelToPDF">Excel To PDF</a>
+                <a href="/imageCompression/compressPDF">Compress PDF</a>
+                <a href="/PDFtoJPG/PDFtoText">PDF To Text</a>
+                <a href="/PDFtoJPG/textToPDF">Text To PDF</a>
+            </div>
+
+            <div class="navLeft">
+                <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
+            </div> 
+
+            <div class="rightNav">
+                <img onclick="location.href = '/user/profile/'" src={% static "UsernameIcon.PNG" %} height="50" width="50" alt="">
+            </div>
+
+            <script>
+                function openNav() {
+                    document.getElementById("mySidenav").style.width = "150px";
+                }
+                function closeNav() {
+                    document.getElementById("mySidenav").style.width = "0";
+                }
+            </script>
+
+        </header>
+
+        {% block mymessage %}
+        {% endblock %}
+
+    </body>
+
 </html>

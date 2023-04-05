@@ -75,7 +75,7 @@
             position: fixed;
             z-index: 1;
             left: 0;
-            background-color: indianred;
+            background-color: #fc075f;
             overflow-x: hidden;
             transition: 0.5s;
             padding-top: 30px;
@@ -91,7 +91,7 @@
         .navLeft{
             margin-right: 30px;
             display: flex;
-            
+            color:white;
         }
         .sidenav a:hover {
             color: #f1f1f1;
@@ -149,13 +149,14 @@
             width: 30%;
             border-radius: 15px;
             background-color: #2691d9;
-            {% comment %} background-image: linear-gradient( 109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% );
-        } {% endcomment %} }
+        }
 
     </style>
 </head>
 <body style="background-color:#bee0ec;">
+   
     <header>
+
         <h2>Compression and Conversion tool </h2>
 
         <div class="rightNav">
@@ -165,18 +166,18 @@
 
         <div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="imageCompression/">Image Compression</a>
-            <a href="PDFtoJPG">PDF to JPG</a>
-            <a href="JPGtoPDF">JPG to PDF</a>
-            <a href="compressPPT">Compress PPT</a>
-            <a href="PDFtoWord">PDF To Word</a>
-            <a href="WordToPDF">Word To PDF</a>
-            <a href="#">Compress Word</a>
-            <a href="PDFtoExcel">PDF to Excel</a>
-            <a href="ExcelToPDF">Excel To PDF</a>
-            <a href="CompressPDF">Compress PDF</a>
-            <a href="#">PDF To Text</a>
-            <a href="#">Text To PDF</a>
+            <a href="/imageCompression">Image Compression</a>
+            <a href="/PDFtoJPG">PDF to JPG</a>
+            <a href="/PDFtoJPG/JPGtoPDF">JPG to PDF</a>
+            <a href="/imageCompression/compressPPT">Compress PPT</a>
+            <a href="/PDFtoJPG/PDFtoWord">PDF To Word</a>
+            <a href="/PDFtoJPG/WordToPDF">Word To PDF</a>
+            <a href="/imageCompression/compressWord">Compress Word</a>
+            <a href="/PDFtoJPG/PDFtoExcel">PDF to Excel</a>
+            <a href="/PDFtoJPGExcelToPDF">Excel To PDF</a>
+            <a href="/imageCompression/compressPDF">Compress PDF</a>
+            <a href="/PDFtoJPG/PDFtoText">PDF To Text</a>
+            <a href="/PDFtoJPG/textToPDF">Text To PDF</a>
         </div>
 
         <div class="navLeft">
@@ -198,4 +199,5 @@
     {% endblock %}
 
 </body>
+
 </html>

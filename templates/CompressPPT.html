@@ -1,23 +1,29 @@
 {% extends 'MasterHome.html' %}
 <title>PPT Compression</title>
 {% block mymessage %}
+
 <div>
     <section>
         <article>
+
             <h1 style="font-size:2em">Compress PPT</h1>
             <p style="font-size:1.5em">  Compressing a PowerPoint file reduces the size of media within the presentation, like pictures or videos</p>
+            
             <div class="container">
                 <form method="post" action="/imageCompression/pptCompression/" enctype="multipart/form-data">  
-            {% csrf_token %}  
-            {{ form.as_p }} 
-            <button type="submit" class="save btn btn-default">Save</button>
-            </form>
+                    {% csrf_token %}  
+                    {{ form.as_p }} 
+                    <button type="submit" class="save btn btn-default">Save</button>
+                </form>
             </div>
+
             {% comment %} <div class="container">
                 <!-- <button class="btn upload">Upload file</button> -->
                 <input class="btn " type="file">
             </div> {% endcomment %}
+
         </article>
     </section>
 </div>
+
 {% endblock %}
