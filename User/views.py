@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from firebase_admin import auth
 import pyrebase
-from django.views.decorators.cache import cache_control
 
 config = {
   'apiKey': "AIzaSyBbNBjeBbpTnaq2ikJ2Aut5UvW0KqhQ7dQ",
@@ -23,8 +22,6 @@ database=firebase.database()
 def signIn(request):
 	return render(request,"Login.html")
 
-@cache_control(no_cache=True, must_revalidate=True,no_store=True)
-# @login_required(login_url='/login/')
 def postsignIn(request):
 
 	email=request.POST.get('email')
@@ -249,23 +246,16 @@ def userCompList(request):
 		comp=database.child('compression').child(i).child('user_id').get().val()
 		if comp == a: comp_list.append(i)
 
-	context = {
-          'name':name,
-	      'count_comp':len(comp_list)
-    }
+	filenames=[]
+	for i in comp_list:   
+		filename=database.child('compression').child(i).child('file_name').get().val()                                           
+		filenames.append(filename)
 
+	times=[]
+	for i in all_user_comp:  
+		time=database.child('compression').child(i).child('date_time').get().val()                                            
+		times.append(time)
 	
-
-	all_users=database.child('users').shallow().get().val()
-	list_users=[]
-
-	for i in all_users:                                              
-		list_users.append(i)
+	comb_list=zip(comp_list,filenames,times)	
 	
-	print(list_users)
-	#list_users.sort(reverse=True) when time stamp based sorting
-
-	
-	comb_list=zip(list_users,names,centres,departments)	
-		    
 	return render(request,"UserCompList.html",{'comb_list':comb_list})
