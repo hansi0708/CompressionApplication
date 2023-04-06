@@ -316,7 +316,7 @@ def jpg2pdf(request):
 			new_filename = f"{filename}_jpg_to_pdf_converted"
 			
 			with open(f"{new_filename}.pdf", "wb") as file:      #write file 
-				# file.write(pdf_bytes)
+				file.write(pdf_bytes)
 				
 			image.close()    # closing image file
 			user_pr.file.close()     # closing pdf file

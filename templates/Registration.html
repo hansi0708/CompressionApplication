@@ -8,15 +8,47 @@
 	<title>SIGN UP</title>
 	<link rel="stylesheet" type="text/css" href="{% static '/css/signup.css' %}">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">	
-</head>
 
+<script>
+	function InvalidMsg(email) 
+	{
+	if (email.value === '') {
+		email.setCustomValidity('Required email address');
+	} else if (email.validity.typeMismatch){
+		email.setCustomValidity('please enter a valid email address');
+	} else {
+	   email.setCustomValidity('');
+	}
+
+	return true;
+
+	function InvalidMsgPass(password) 
+	{
+		if(password.value === '') {
+			password.setCustomValidity('Required password');
+		} 
+		else if(password.value < 6) {
+			password.setCustomValidity('Password must be atleast 6 characters');
+		} 
+		else {
+		   password.setCustomValidity('');
+		}
+	
+		return true;
+    }
+</script>
+
+</head>
 <body>
 
 	<div class="center">
 
 		<h1>Sign Up</h1>
+		
+        <form action="/user/postsignUp/" method="post" >
 
-	    <form action="/user/postsignUp/" method="post">
+			
+			
 			{% csrf_token %}
 
 			<div class="row">
@@ -25,31 +57,31 @@
 					
 					<!--Name: -->
 			        <div class="txt_field">
-				        <input type="name" id="Username" name="name" placeholder="Name">
+				        <input type="name" id="Username" name="name" placeholder="Name" required oninvalid = "this.setCustomValidity('Please enter username')" onchange = "this.setCustomValidity('')" >
 						<span></span>
 	                </div>
 
 		            <!-- Email: -->
 	                <div class="txt_field">
-			            <input type="email" id="Email" name="email" placeholder="Email Id">
+			            <input id="Email" oninvalid="InvalidMsg(this);" oninput = "InvalidMsg(this);"  type="email"  name="email" placeholder="Email Id" required = "required"/>
 						<span></span>
 	                </div>
 
 			        <!--Centre: -->
 			        <div class="txt_field">
-				        <input type="centre" id="Centre" name="centre" placeholder="Centre">
+				        <input type="centre" id="Centre" name="centre" placeholder="Centre" required>
 						<span></span>   
 	                </div>
 
 			        <!--Staff: -->
 			        <div class="txt_field">
-				        <input type="staff" id="Staff" name="staff" placeholder="Staff">
+				        <input type="staff" id="Staff" name="staff" placeholder="Staff" required>
 						<span></span>
 	                </div>
 
 			        <!--Designation: -->
 			        <div class="txt_field">
-				        <input type="designation" id="designation" name="designation" placeholder="Designation">
+				        <input type="designation" id="designation" name="designation" placeholder="Designation" required>
 						<span></span>
 	                </div>
 				
@@ -59,31 +91,31 @@
 					
 					<!--Department: -->
 			        <div class="txt_field">
-				        <input type="department" id="Department" name="department" placeholder="Department">
+				        <input type="department" id="Department" name="department" placeholder="Department" required>
 						<span></span>
 	                </div>
 
 			        <!--Employment Type: -->
 			        <div class="txt_field">
-				        <input type="employment_type" id="Employment Type" name="employment_type" placeholder="Employment Type">
+				        <input type="employment_type" id="Employment Type" name="employment_type" placeholder="Employment Type" required>
 						<span></span>
 	                </div>
 
 			        <!--Level: -->
 			        <div class="txt_field">
-				        <input type="level" id="Level" name="level" placeholder="Level">
+				        <input type="level" id="Level" name="level" placeholder="Level" required>
 						<span></span>
 	                </div>
 
 		            <!-- Password: -->
 	                <div class="txt_field">
-	                    <input type="password" id="Password" name="pass" placeholder="Password">
+	                    <input id="Password" oninvalid="InvalidMsgPass(this);" oninput = "InvalidMsgPass(this);" type="password"  name="password" placeholder="Password" >
 						<span></span>
 	                </div>
 
 		            <!-- RepeatPassword: -->
 	                <div class="txt_field">
-			            <input type="password" id="confirm_password" name="pass-repeat" placeholder="Repeat Password">
+			            <input type="password" id="confirm_password" oninvalid="InvalidMsgPass(this);" oninput = "InvalidMsgPass(this);" name="pass-repeat" placeholder="Repeat Password"  >
 						<span></span>
 	                </div>
 
@@ -99,6 +131,7 @@
 	        </div>
 
 	        <br>
+			
 
 	    </form>
 
