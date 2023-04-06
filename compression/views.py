@@ -166,6 +166,7 @@ def compressImage(request):
             data={
                 'user_id':a,
                 'date_time':millis,
+                'file_name':file_name,
                 'file':org_url,
 			    'file_type':file_type,
 			    'file_size':file_size,
