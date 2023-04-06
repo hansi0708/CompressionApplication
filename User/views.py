@@ -58,7 +58,7 @@ def signUp(request):
 def postsignUp(request):
 
 	email = request.POST.get('email')
-	passs = request.POST.get('pass')
+	passs = request.POST.get('password')
 	name = request.POST.get('name')
 	centre=request.POST.get('centre')
 	staff=request.POST.get('staff')
@@ -68,10 +68,10 @@ def postsignUp(request):
 	level=request.POST.get('level')
 
 	try:
-
+		
 		#Creating a user with the given email and password
 		user=authe.create_user_with_email_and_password(email,passs)
-
+		
 		uid = user.get('localId')
 
 		data={
@@ -84,8 +84,9 @@ def postsignUp(request):
 			'employment_type':employment_type,
 			'level':level
 		}
-
+		print("before registration")
 		database.child('users').push(uid)
+		print("ID pushed")
 		database.child('users').child(uid).set(data)
 		print("Success")
 		print(uid)
