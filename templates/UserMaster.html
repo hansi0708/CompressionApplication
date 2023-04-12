@@ -124,6 +124,21 @@
         justify-content: space-around;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
       }
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 20%;
+      }
+      
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
 
     </style>
     
@@ -158,7 +173,7 @@
         <div class="nav">
           <div class="user">
             <div class="img-case">
-              <p id="username">{{name}}</p>
+              <p id="username">{{FirstName}} {{LastName}}</p>
             </div>
           </div>
         </div>

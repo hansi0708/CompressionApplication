@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+	    <title>LOGIN</title>
+        <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+
+    </head>	 
+
+	<script type="text/javascript">
+		
+	</script>
+  
+	<body>
+
+		<div class="center">
+
+			<h1>Forgot Password?</h1>
+            <font size="2.9"> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter your registered email for sending the message.</font>
+		
+
+			<form action="/user/postsignIn/" method="post">
+				{% csrf_token %}
+		
+
+				<!-- Email: -->
+				<div class="txt_field">
+					<input type="email" id="Email" name="email" placeholder="Email" required>
+					<span></span>    	            
+				</div>
+
+				
+							
+				{% comment %} <div class="pass">Forgot Password?</div> {% endcomment %}
+
+				<input type="submit" value="Continue"><br><br>
+				
+			
+				
+				<br>
+
+			</form>
+
+		</div>
+
+	</body>
+
+</html>

@@ -59,13 +59,13 @@ def postsignUp(request):
 
 	email = request.POST.get('email')
 	passs = request.POST.get('password')
-	name = request.POST.get('name')
-	centre=request.POST.get('centre')
-	staff=request.POST.get('staff')
+	name = request.POST.get('Salutation')
+	FirstName=request.POST.get('FirstName')
+	LastName=request.POST.get('LastName')
 	designation=request.POST.get('designation')
 	department=request.POST.get('department')
 	employment_type=request.POST.get('employment_type')
-	level=request.POST.get('level')
+	MiddleName=request.POST.get('MiddleName')
 
 	try:
 		
@@ -76,13 +76,14 @@ def postsignUp(request):
 
 		data={
 			'email':email,
-			'name':name,
-			'centre':centre,
-			'staff':staff,
+			'Salutation' : name,
+			'FirstName':FirstName,
+			'LastName':LastName,
+			'MiddleName':MiddleName,
 			'designation':designation,
 			'department':department,
 			'employment_type':employment_type,
-			'level':level
+			
 		}
 		print("before registration")
 		database.child('users').push(uid)
@@ -103,7 +104,7 @@ def profile(request):
 	a=a['users']
 	a=a[0]
 	a=a['localId']
-	name = database.child('users').child(a).child('name').get().val()
+	name = database.child('users').child(a).child('Salutation').get().val()
 	print(name)
 
 	all_user_comp=database.child('compression').shallow().get().val()
@@ -120,7 +121,7 @@ def profile(request):
 		if comp == a: comp_list.append(i)
 
 	context = {
-          'name':name,
+          'Salutation':name,
 	      'count_comp':len(comp_list)
     }
 
@@ -134,24 +135,24 @@ def userProfile(request):
 	a=a[0]
 	a=a['localId']
 
-	name = database.child('users').child(a).child('name').get().val()
-	centre = database.child('users').child(a).child('centre').get().val()
+	name = database.child('users').child(a).child('Salutation').get().val()
+	MiddleName = database.child('users').child(a).child('MiddleName').get().val()
 	department = database.child('users').child(a).child('department').get().val()
 	designation = database.child('users').child(a).child('designation').get().val()
 	email = database.child('users').child(a).child('email').get().val()
 	employment_type = database.child('users').child(a).child('employment_type').get().val()
-	level = database.child('users').child(a).child('level').get().val()
-	staff = database.child('users').child(a).child('staff').get().val()
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
 
 	context = {
-        'name':name,
-	    'centre':centre,
+        'Salutation':name,
+	    'MiddleName':MiddleName,
 	    'department':department,
 	    'designation':designation,
 	    'email':email,
 	    'employment_type':employment_type,
-	    'level':level,
-	    'staff':staff 
+	    'FirstName':FirstName,
+	    'LastName':LastName 
     }
 	
 	return render(request,"UserProfile.html",context)
@@ -173,12 +174,12 @@ def check(request):
 
 	print(names)
 
-	centres=[]
+	FirstNames=[]
 	for i in list_users:
-		centre=database.child('users').child(i).child('centre').get().val()
-		centres.append(centre)
+		FirstName=database.child('users').child(i).child('FirstName').get().val()
+		FirstNames.append(FirstName)
 
-	print(centres)
+	print(FirstName)
 
 	departments=[]
 	for i in list_users:
@@ -187,7 +188,7 @@ def check(request):
 
 	print(departments)
 	
-	comb_list=zip(list_users,names,centres,departments)	
+	comb_list=zip(list_users,names,FirstName,departments)	
 		    
 	return render(request,"ListUsers.html",{'comb_list':comb_list})
 
@@ -259,3 +260,6 @@ def userCompList(request):
 	comb_list=zip(comp_list,filenames,times)	
 	
 	return render(request,"UserCompList.html",{'comb_list':comb_list})
+
+def forgot(request):
+	return render(request, "ForgotPass.html")

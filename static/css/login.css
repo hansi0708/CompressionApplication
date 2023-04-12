@@ -8,9 +8,9 @@
 body{
   margin: 0;
   padding: 0;
-  background: #ffeaef;
+  background-color: #2691d9;
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
 }
 .center{
   position: absolute;

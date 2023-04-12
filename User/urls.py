@@ -14,5 +14,5 @@ urlpatterns = [
     path('usersList/',views.check),
     path('userConvList/',views.userConvList),
     path('userCompList/',views.userCompList),
-
+    path('forgot/', views.forgot)
     ]

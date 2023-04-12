@@ -1,4 +1,8 @@
+{% extends 'UserMaster.html' %}
 {% load static %}
+
+{% block mymessage %}
+
 
 <!DOCTYPE html>
 
@@ -14,15 +18,24 @@
 			
 			<a>HELLO</a>
 			<br>
+			<div style="margin-top:200px ;margin-left: 270px;margin-right: 100px;">
+				<table style="width: 70%;">
+				  <tr>
+					<th>Name</th>
+					<th>time</th>
+					<th style="padding-left: 10px;"><button type="button"> view</button></th>
+				&nbsp;&nbsp;</tr>
+				</table>
+			</div>
 			
 			{% for list_users,name,centre,department in comb_list %}
-			{{name}} &nbsp; {{centre}} &nbsp; {{department}} &nbsp;
+			<td>{{name}} &nbsp; {{centre}} &nbsp; {{department}} &nbsp;</td>
             <button>View</button>
 			<br>
 			{% endfor %}
 
 		</div>
-
+		{% endblock %}
 	</body>
 
 </html>

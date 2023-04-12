@@ -103,29 +103,7 @@ input {
  <body>
     <div class="flex"> 
 
-        {% comment %} <nav class="menu">
-            <ul style="list-style: none;">
-
-                <li>
-                    <h3>Profile</h3>
-                </li>
-                <li>
-                    <h3>Users</h3>
-                </li>
-                <li>
-                    <h3>Department</h3>
-                </li>
-                <li>
-                    <h3>Designation</h3>
-                </li>
-                <li>
-                    <h3>File Operation</h3>
-                </li>
-                <li>
-                    <h3>Permission</h3>
-                </li>
-            </ul>
-        </nav> {% endcomment %}
+       
        <div class="content"> <div class="menu1">
             <!-- <div class="profile"></div> -->
 
@@ -136,48 +114,54 @@ input {
                     <div class="helper">
                         <label> Name:</label>
                         <!-- <input type="text" /> -->
-                        <label> Centre:</label>
+                        <label> Middle Name:</label>
                         <!-- <input type="text" /> -->
-                        <label> Staff:</label>
+                        <label> Email:</label>
                         <!-- <input type="text" /> -->
-                        <label> Designation:</label>
+                        <label> Employement Type:</label>
                         <!-- <input type="text" /> -->
-                        <label> Department:</label>
-                        <!-- <input type="text" /> -->
+                       
                     </div>
                 </main>
                 <div class="helper2">
-                    <label>{{name}}</label>
+                    <label>{{Salutation}}</label>
                     <!-- <input type="text" /> -->
-                    <label>{{centre}}</label>
+                    <label>{{MiddleName}}</label>
                     <!-- <input type="text" /> -->
-                    <label>{{staff}}</label>
+                    <label>{{email}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{employment_type}}</label>
+                    <!-- <input type="text" /> -->
+                    
+                </div>
+                <div class="helper1">
+                    <label>FirstName:</label>
+                    <!-- <input type="text" /> -->
+                    <label>LastName:</label>
+                    <!-- <input type="text" /> -->
+                    <label> Designation:</label>
+                    <!-- <input  type="text" /> -->
+                    <label> Department:</label>
+                    <!-- <input  type="text" /> -->
+                    
+                    
+                </div>
+                <div class="helper1">
+                    <label>{{FirstName}}</label>
+                    <!-- <input type="text" /> -->
+                    <label>{{LastName}}</label>
                     <!-- <input type="text" /> -->
                     <label>{{designation}}</label>
                     <!-- <input type="text" /> -->
                     <label>{{department}}</label>
                     <!-- <input type="text" /> -->
-                </div>
-                <div class="helper1">
-                    <label>Employement Type:</label>
-                    <!-- <input type="text" /> -->
-                    <label>Level:</label>
-                    <!-- <input type="text" /> -->
-                    <label>Email:</label>
-                    <!-- <input type="text" /> -->
-                </div>
-                <div class="helper1">
-                    <label>{{employment_type}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{level}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{email}}</label>
-                    <!-- <input type="text" /> -->
+                    
+                
                 </div>
             </div>
             <hr>
             <div id="button-container">
-                <button onClick="location.href = '/user/usersList/'" id="button">Reset Password</button>
+                <button onClick="location.href = '/user/forgot/'" id="button"> Reset Password </button>
             </div>
 
         </div>
