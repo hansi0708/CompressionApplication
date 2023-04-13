@@ -1,28 +1,42 @@
+{% extends 'UserMaster.html' %}
 {% load static %}
 
-<!DOCTYPE html>
+{% block mymessage %}
 
-<html lang="en">
+<title>COMPRESSED FILES</title>
+		
+<div class="content">	
 
-	<head>
-		<meta charset="UTF-8">
-    </head>	 
-  
-	<body>
+	<div class="header-card">
+		<h1>COMPRESSED FILES LIST</h1>
+	</div>
 
-		<div class="center">	
-			
-			<a>HELLO</a>
-			<br><br><br>
-			
-			{% for comp_list,filename,time in comb_list %}
-			{{filename}} &nbsp; {{time}} &nbsp;
-            <button>View</button>
+	<div class="list-cards">
+
+		<div class="card1">
+		
+			{% for time,comp_list,filename,dat in comb_list %}
+
+			<div class="card2">
+
+				<div class="card3">{{filename}}
+				</div>  
+
+				<div class="card3">{{dat}} 
+				</div>
+
+            	<button onclick="location.href = '/home/details/?z={{comp_list}}'" class="view">View</button>
+
+			</div>
+
 			<br>
+
 			{% endfor %}
 
 		</div>
 
-	</body>
+	</div>
 
-</html>
+</div>
+
+{% endblock %}

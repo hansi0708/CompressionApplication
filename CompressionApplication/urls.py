@@ -6,11 +6,11 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
 
     path('', views.welcome),
-    path('user/',include('User.urls')),
+    path('home/',include('User.urls')),
     path('imageCompression/',include('compression.urls')),
     #path(r'^imageCompression/',include('compression.urls')),
    # r'^polls/'
     path('PDFtoJPG/',include('Conversion.urls')),
-    path('home/',views.home),
+    # path('home/',views.home),
 
    ]

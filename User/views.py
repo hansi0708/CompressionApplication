@@ -1,7 +1,18 @@
+import os
 from django.shortcuts import render
 from firebase_admin import auth
 import pyrebase
 
+import time
+from datetime import datetime, timezone
+import pytz
+
+from django.http.response import HttpResponse
+import pyrebase
+import firebase_admin
+from firebase_admin import credentials, storage
+
+#FIREBASE CONFIG
 config = {
   'apiKey': "AIzaSyBbNBjeBbpTnaq2ikJ2Aut5UvW0KqhQ7dQ",
   'authDomain': "compression-tool-6af95.firebaseapp.com",
@@ -13,11 +24,32 @@ config = {
   'measurementId': "G-2XZEBYKFC6"
 }
 
-# Initialising database, auth and firebase
+cred=credentials.Certificate('serviceAccountKey.json')
+firebase_admin.initialize_app(cred, {
+    'storageBucket': "compression-tool-6af95.appspot.com"
+})
+
+
+# Initialising database, auth, firebase and storage   
 firebase=pyrebase.initialize_app(config)
 authe = firebase.auth()
 database=firebase.database()
+storage=firebase.storage()
 
+def home(request):
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+	name = database.child('users').child(a).child('name').get().val()
+	print(name)
+
+	context = {
+        'name':name,
+    }
+	
+	return render(request,"Home.html",context)
 
 def signIn(request):
 	return render(request,"Login.html")
@@ -59,13 +91,13 @@ def postsignUp(request):
 
 	email = request.POST.get('email')
 	passs = request.POST.get('password')
-	name = request.POST.get('name')
-	centre=request.POST.get('centre')
-	staff=request.POST.get('staff')
+	name = request.POST.get('Salutation')
+	FirstName=request.POST.get('FirstName')
+	LastName=request.POST.get('LastName')
 	designation=request.POST.get('designation')
 	department=request.POST.get('department')
 	employment_type=request.POST.get('employment_type')
-	level=request.POST.get('level')
+	MiddleName=request.POST.get('MiddleName')
 
 	try:
 		
@@ -76,14 +108,15 @@ def postsignUp(request):
 
 		data={
 			'email':email,
-			'name':name,
-			'centre':centre,
-			'staff':staff,
+			'Salutation' : name,
+			'FirstName':FirstName,
+			'LastName':LastName,
+			'MiddleName':MiddleName,
 			'designation':designation,
 			'department':department,
-			'employment_type':employment_type,
-			'level':level
+			'employment_type':employment_type
 		}
+
 		print("before registration")
 		database.child('users').push(uid)
 		print("ID pushed")
@@ -134,24 +167,24 @@ def userProfile(request):
 	a=a[0]
 	a=a['localId']
 
-	name = database.child('users').child(a).child('name').get().val()
-	centre = database.child('users').child(a).child('centre').get().val()
+	name = database.child('users').child(a).child('Salutation').get().val()
+	MiddleName = database.child('users').child(a).child('MiddleName').get().val()
 	department = database.child('users').child(a).child('department').get().val()
 	designation = database.child('users').child(a).child('designation').get().val()
 	email = database.child('users').child(a).child('email').get().val()
 	employment_type = database.child('users').child(a).child('employment_type').get().val()
-	level = database.child('users').child(a).child('level').get().val()
-	staff = database.child('users').child(a).child('staff').get().val()
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
 
 	context = {
-        'name':name,
-	    'centre':centre,
+                'Salutation':name,
+	    'MiddleName':MiddleName,
 	    'department':department,
 	    'designation':designation,
 	    'email':email,
 	    'employment_type':employment_type,
-	    'level':level,
-	    'staff':staff 
+	    'FirstName':FirstName,
+	    'LastName':LastName 
     }
 	
 	return render(request,"UserProfile.html",context)
@@ -173,12 +206,10 @@ def check(request):
 
 	print(names)
 
-	centres=[]
+	FirstNames=[]
 	for i in list_users:
-		centre=database.child('users').child(i).child('centre').get().val()
-		centres.append(centre)
-
-	print(centres)
+		FirstName=database.child('users').child(i).child('FirstName').get().val()
+		FirstNames.append(FirstName)
 
 	departments=[]
 	for i in list_users:
@@ -187,7 +218,7 @@ def check(request):
 
 	print(departments)
 	
-	comb_list=zip(list_users,names,centres,departments)	
+	comb_list=zip(list_users,names,FirstName,departments)	
 		    
 	return render(request,"ListUsers.html",{'comb_list':comb_list})
 
@@ -255,7 +286,77 @@ def userCompList(request):
 	for i in all_user_comp:  
 		time=database.child('compression').child(i).child('date_time').get().val()                                            
 		times.append(time)
+
+	date=[]
+	for i in times:
+		i=float(i)
+		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+		date.append(dat)
 	
-	comb_list=zip(comp_list,filenames,times)	
+	comb_list=zip(times,comp_list,filenames,date)	
 	
 	return render(request,"UserCompList.html",{'comb_list':comb_list})
+
+def details(request):
+	comp_id=request.GET.get('z')
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	filename=database.child('compression').child(comp_id).child('file_name').get().val()
+	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
+	file_size=database.child('compression').child(comp_id).child('file_size').get().val()
+	new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
+	time=database.child('compression').child(comp_id).child('date_time').get().val()
+
+	i=float(str(time))
+	dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+
+	context = {
+		'comp_id':comp_id,
+        'filename':filename,
+	    'file_type':file_type,
+	    'file_size':get_size_format(file_size),
+	    'new_file_size':get_size_format(new_file_size),
+	    'dat':dat
+    }
+
+	return render(request,"ListDetails.html",context)
+
+def oDow(request):
+    comp_id=request.GET.get('z')
+    idToken=request.session['uid']
+    a=authe.get_account_info(idToken)
+    a=a['users']
+    a=a[0]
+    a=a['localId']
+    
+    file_name=database.child('compression').child(comp_id).child('file_name').get().val()
+    org_url=database.child('compression').child(comp_id).child('file').get().val()
+    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
+    return HttpResponse("Image downloaded successfuly")
+
+def cDow(request):
+    comp_id=request.GET.get('z')
+    idToken=request.session['uid']
+    a=authe.get_account_info(idToken)
+    a=a['users']
+    a=a[0]
+    a=a['localId']
+    new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
+    new_url=database.child('compression').child(comp_id).child('new_file').get().val()
+    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
+    
+    return HttpResponse("Image downloaded successfuly")  
+
+def forgot(request):
+	return render(request, "ForgotPass.html")
+
+def get_size_format(b, factor=1024, suffix="B"):
+    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
+        if b < factor:
+            return f"{b:.2f}{unit}{suffix}"
+        b /= factor
+    return f"{b:.2f}Y{suffix}"

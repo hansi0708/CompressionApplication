@@ -1,28 +1,30 @@
-{% extends 'MasterHome.html' %}  
+{% extends 'UserMaster.html' %}  
 {% block mymessage %}
 
-<div>
-    <section>
-        <article>
+<div class="content">
 
-            <h1 style="font-size:2em">PDF to EXCEL</h1>
-            <p style="font-size:1.5em">Pull data straight from PDF into Excel spreadsheets into a few short seconds.</p>
-            
-            <div class="container">
-                <form method="post" action="/PDFtoJPG/pdf2excel/" enctype="multipart/form-data">  
-                    {% csrf_token %}  
-                    {{ form.as_p }} 
-                    <button type="submit" class="save btn btn-default">Save</button>  
-                </form>
-            </div>
+    <div class="header-card">
+		<h1>PDF to EXCEL</h1>
+        <p style="font-size:1.5em">Pull data straight from PDF into Excel spreadsheets into a few short seconds.</p>
+        <br>
+	</div>
 
-            {% comment %} <div class="container">
-                <!-- <button class="btn upload">Upload file</button> -->
-                <input class="btn" type="file">
-            </div> {% endcomment %}
+    <div class="cards">
+        
+        <div class="container">
 
-        </article>
-    </section>
+            <form class="form" method="post" action="/PDFtoJPG/pdf2excel/" enctype="multipart/form-data">  
+                {% csrf_token %}  
+                {{ form.as_p }} 
+                <div style="display: flex,align-items: center;">
+                <button type="submit" class="save btn btn-default">Save</button>  
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}

@@ -1,6 +1,7 @@
 #Import os module
 import os
 from PIL import Image
+from django.http import HttpResponseRedirect
 #Import HttpResponse module
 from django.http.response import HttpResponse
 from django.shortcuts import render
@@ -17,6 +18,7 @@ from compress_pptx.compress_pptx import CompressPptx
 import time
 from datetime import datetime, timezone
 import pytz
+from django.core.files.storage import default_storage
 
 #FIREBASE CONFIG
 config = {
@@ -30,13 +32,13 @@ config = {
   'measurementId': "G-2XZEBYKFC6"
 }
 
-cred=credentials.Certificate('serviceAccountKey.json')
-firebase_admin.initialize_app(cred, {
-    'storageBucket': "compression-tool-6af95.appspot.com"
-})
+# cred=credentials.Certificate('serviceAccountKey.json')
+# firebase_admin.initialize_app(cred, {
+#     'storageBucket': "compression-tool-6af95.appspot.com"
+# })
 
 
-# Initialising database, auth, firebase and storage   
+# # Initialising database, auth, firebase and storage   
 firebase=pyrebase.initialize_app(config)
 authe = firebase.auth()
 database=firebase.database()
@@ -167,6 +169,7 @@ def compressImage(request):
                 'user_id':a,
                 'date_time':millis,
                 'file_name':file_name,
+                'new_file_name':new_file_name,
                 'file':org_url,
 			    'file_type':file_type,
 			    'file_size':file_size,
@@ -174,13 +177,14 @@ def compressImage(request):
 			    'new_file_size':new_file_size
 		    }
             
-            #download url
-            #storage.child("/comp_files/"+email+"/"+str(user_pr.id)+"/"+file_name).download(org_url,file_name)
-            
             #Storing data in compression table in Firebase Realtime Database
             database.child('compression').child(uFile.id).set(data)  
 
-            return HttpResponse("Image compressed successfuly")  
+            #Deleting from local storage
+            default_storage.delete(uFile.file.path)
+            default_storage.delete(new_filename)
+
+            return HttpResponseRedirect('/home/userCompList/')  
              
     else:  
         uploadFile = FileForm()
@@ -264,6 +268,8 @@ def pptCompression(request):
             data={
                 'user_id':a,
                 'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
                 'file':org_url,
 			    'file_type':file_type,
 			    'file_size':file_size,
@@ -273,8 +279,12 @@ def pptCompression(request):
 
             #Storing data in compression table in Firebase Realtime Database
             database.child('compression').child(uFile.id).set(data)
+
+            #Deleting from local storage
+            default_storage.delete(uFile.file.path)
+            default_storage.delete(new_filename)
             
-            return HttpResponse("PPT files compressed successfuly")
+            return HttpResponseRedirect('/home/userCompList/') 
     
     else:  
         uploadFile = FileForm()  
@@ -367,6 +377,8 @@ def wordCompression(request):
             data={
                 'user_id':a,
                 'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
                 'file':org_url,
 			    'file_type':file_type,
 			    'file_size':file_size,
@@ -377,7 +389,11 @@ def wordCompression(request):
             #Storing data in compression table in Firebase Realtime Database
             database.child('compression').child(uFile.id).set(data)  
 
-            return HttpResponse("WORD file compressed successfuly")
+            #Deleting from local storage
+            default_storage.delete(uFile.file.path)
+            default_storage.delete(new_filename)
+
+            return HttpResponseRedirect('/home/userCompList/') 
         
     else:  
         uploadFile = FileForm()  
@@ -471,6 +487,8 @@ def pdfCompression(request):
             data={
                 'user_id':a,
                 'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
                 'file':org_url,
 			    'file_type':file_type,
 			    'file_size':file_size,
@@ -479,9 +497,13 @@ def pdfCompression(request):
 		    }
 
             #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').child(uFile.id).set(data)  
+            database.child('compression').child(uFile.id).set(data)
 
-            return HttpResponse("PDF files compressed successfuly")
+            #Deleting from local storage
+            default_storage.delete(uFile.file.path)
+            default_storage.delete(new_filename)  
+
+            return HttpResponseRedirect('/home/userCompList/') 
         
     else:
         uploadFile = FileForm()  

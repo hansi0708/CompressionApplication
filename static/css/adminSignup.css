@@ -20,7 +20,7 @@ body{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
+  width: 600px;
   background: white;
   border-radius: 10px;
   box-shadow: 10px 10px 15px rgba(0,0,0,0.05);
@@ -57,7 +57,7 @@ form .txt_field{
   position: absolute;
   top: 50%;
   left: 5px;
-  color: #fc075f;
+  color: #2691d9;
   transform: translateY(-50%);
   font-size: 16px;
   pointer-events: none;
@@ -71,14 +71,14 @@ form .txt_field{
   left: 0;
   width: 0%;
   height: 2px;
-  background: #fc075f;
+  background: #2691d9;
   transition: .5s;
 }
 
 .txt_field input:focus ~ label,
 .txt_field input:valid ~ label{
   top: -5px;
-  color: #fc075f;
+  color: #2691d9;
 }
 
 .txt_field input:focus ~ span::before,
@@ -86,21 +86,11 @@ form .txt_field{
   width: 100%;
 }
 
-.pass{
-  margin: -5px 0 20px 5px;
-  color: #fc075f;
-  cursor: pointer;
-}
-
-.pass:hover{
-  text-decoration: underline;
-}
-
 input[type="submit"]{
   width: 100%;
   height: 50px;
   border: 1px solid;
-  background: #fc075f;
+  background: #2691d9;
   border-radius: 25px;
   font-size: 18px;
   color: #e9f4fb;
@@ -110,23 +100,40 @@ input[type="submit"]{
 }
 
 input[type="submit"]:hover{
-  border-color: #fc075f;
+  border-color: #2691d9;
   transition: .5s;
 }
 
-.signUp_link{
+.signIn_link{
   margin: 30px 0;
   margin-bottom:15px;
   text-align: center;
   font-size: 16px;
-  color: #fc075f;
+  color: #2691d9;
 }
 
-.signUp_link a{
-  color: #fc075f;
+.signIn_link a{
+  color: #2691d9;
   text-decoration: none;
 }
 
-.signUp_link a:hover{
+.signIn_link a:hover{
   text-decoration: underline;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  flex: 50%;
+  margin: 0 10px;
+}
+
+.row{
+  display: flex;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }

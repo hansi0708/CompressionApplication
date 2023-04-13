@@ -3,188 +3,52 @@
 
 {% block mymessage %}
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<title>PROFILE</title>
 
-    <head> 
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="page.css">
+<div class="content">
 
-    <title>WELCOME</title>
-    <style>
- {% comment %} .flex {
-    border: white;
-    display: flex;
-    flex-direction: row;
-} {% endcomment %}
-
-.flex1 {
-    display: flex;
-    justify-content: space-between;
-    /* width: 80%; */
-}
-{% comment %} html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-
-            } {% endcomment %}
-
-{% comment %} .profile {
-    text-align: center;
-    margin-top: 0%;
-    background-color: #99CCFF;
-    box-shadow: 5px 5px 20px black;
-} {% endcomment %}
-
-{% comment %} .menu {
-    font-size: 20px;
-    color: white;
-    background-color: indianred;
-    flex-basis: 22%;
-} {% endcomment %}
-
-.menu1 {
-    flex-basis: 90%;
-}
-
-.helper {
-    font-size: 20px;
-}
-
-.helper2 {
-    font-size: 20px;
-}
-
-.helper1 {
-    font-size: 20px;
-}
-
-label {
-    text-align: left;
-    clear: both;
-    float: left;
-    margin-right: 55px;
-    margin-top: 75px;
-}
-
-input {
-    text-align: left;
-    float: right;
-    margin-left: 55px;
-    margin-top: 20px;
-} \
-
-#button-container {
-    width: 100%;
-    display: block;
-    position: relative;
-    text-align: center;
-    height: auto;
-    background-color: #99CCFF;
-
-}
-
-#button {
-    cursor: pointer;
-    max-width: 180%;
-    max-height: 100%;
-    width: 15%;
-    height: 50px;
-    font-size: 100%;
-    text-align: center;
-} 
-</style>
-
- <body>
-    <div class="flex"> 
-
-        {% comment %} <nav class="menu">
-            <ul style="list-style: none;">
-
-                <li>
-                    <h3>Profile</h3>
-                </li>
-                <li>
-                    <h3>Users</h3>
-                </li>
-                <li>
-                    <h3>Department</h3>
-                </li>
-                <li>
-                    <h3>Designation</h3>
-                </li>
-                <li>
-                    <h3>File Operation</h3>
-                </li>
-                <li>
-                    <h3>Permission</h3>
-                </li>
-            </ul>
-        </nav> {% endcomment %}
-       <div class="content"> <div class="menu1">
-            <!-- <div class="profile"></div> -->
-
-            <h1 class="profile"> USER </h1>           
-
-            <div class="flex1">
-                <main>
-                    <div class="helper">
-                        <label> Name:</label>
-                        <!-- <input type="text" /> -->
-                        <label> Centre:</label>
-                        <!-- <input type="text" /> -->
-                        <label> Staff:</label>
-                        <!-- <input type="text" /> -->
-                        <label> Designation:</label>
-                        <!-- <input type="text" /> -->
-                        <label> Department:</label>
-                        <!-- <input type="text" /> -->
-                    </div>
-                </main>
-                <div class="helper2">
-                    <label>{{name}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{centre}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{staff}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{designation}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{department}}</label>
-                    <!-- <input type="text" /> -->
-                </div>
-                <div class="helper1">
-                    <label>Employement Type:</label>
-                    <!-- <input type="text" /> -->
-                    <label>Level:</label>
-                    <!-- <input type="text" /> -->
-                    <label>Email:</label>
-                    <!-- <input type="text" /> -->
-                </div>
-                <div class="helper1">
-                    <label>{{employment_type}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{level}}</label>
-                    <!-- <input type="text" /> -->
-                    <label>{{email}}</label>
-                    <!-- <input type="text" /> -->
-                </div>
-            </div>
-            <hr>
-            <div id="button-container">
-                <button onClick="location.href = '/user/usersList/'" id="button">Reset Password</button>
+    <div class="header-card">
+		<h1>USER PROFILE</h1>
+	</div>
+    
+    <div class="cards">         
+  
+            <div class="helper">
+                <label> Name:</label><br>
+                <label> Centre:</label><br>
+                <label> Staff:</label><br>
+                <label> Designation:</label><br>
+                <label> Department:</label><br>
+                <label> Employement Type:</label><br>
+                <label> Level:</label><br>
+                <label> Email:</label><br>
             </div>
 
+            <div class="helper">
+                <label>n{{name}}</label><br>
+                <label>c{{centre}}</label><br>
+                <label>s{{MiddleName}}</label><br>
+                <label>d{{designation}}</label><br>  
+                <label>d{{department}}</label><br>
+                <label>et{{FirstName}}</label><br>
+                <label>l{{LastName}}</label><br>
+                <label>e{{email}}</label><br>
+            </div>
+
+    </div>
+        
+    <div class="cards">
+
+        <div >
+            <button class="button-container" onClick="location.href = '/home/usersList/'" id="button">Reset Password</button>
+        </div>
+
+        <div >
+            <button class="button-container" onClick="location.href = '/home/usersList/'" id="button">Update Profile</button>
         </div>
 
     </div>
-    </div>
-     {% endblock %} 
-</body>
 
-</html> 
+</div>
+    
+{% endblock %} 

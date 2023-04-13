@@ -309,17 +309,23 @@ def jpg2pdf(request):
 			file_type = user_pr.file.url.split('.')[-1]
 			file_type = file_type.lower()
 			user_pr.save()
-			image = Image.open(user_pr.file.path)  # opening image\
-			pdf_bytes = img2pdf.convert(image.filename)   # converting into chunks using img2pdf
+			
 			
 			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_jpg_to_pdf_converted"
 			
-			with open(f"{new_filename}.pdf", "wb") as file:      #write file 
-				file.write(pdf_bytes)
-				
-			image.close()    # closing image file
-			user_pr.file.close()     # closing pdf file
+			new_filename = f"{filename}_jpg_to_pdf_converted.pdf"
+			pdf  = FPDF()
+			pdf.set_auto_page_break(0)
+
+			img_list = [x for x in os.listdir('user_pr.file.path')]
+
+			for img in img_list:
+				pdf.add_page()
+				image = user_pr.file.path + img
+				pdf.image(image,w=200,h=260) 
+
+			pdf.output("images.pdf")
+				    
 			print("Successfully made pdf file")    # output
 			
 			return HttpResponse("JPG to PDF converted successfuly")

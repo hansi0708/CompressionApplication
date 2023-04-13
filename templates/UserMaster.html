@@ -1,131 +1,12 @@
 {% load static %}
+
 <!DOCTYPE html>
+
 <html lang="en">
   
   <head>
-    
-    <style>
-      
-      *{
-        margin:0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'poppins', sans-serif;
-      }
 
-      body{
-        min-height: 100vh;
-      }
-
-      a{
-        text-decoration: none;
-      }
-
-      li{
-        list-style: none;
-      }
-
-      h1,h2{
-        color: #444;
-      }
-
-      .side-menu{
-        position: fixed;
-        background: indianred;
-        min-width: 100vh;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .side-menu li{
-        font-size: 24px;
-        padding: 10px 40px;
-        color: white;
-        display: flex;
-        align-items:center;
-      }
-
-      .side-menu li:hover {
-        background: white;
-        color: #f05462;
-      }
-
-      .container {
-        position: absolute;
-        right: 0;
-        width: 80vw;
-        height: 100vh;
-        background: #f1f1f1;
-      }
-
-      .container .header {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 80vw;
-        height: 10vh;
-        background: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        z-index: 1;
-      }
-
-      .container .header .nav .user {
-        flex: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .container .header .nav .user img {
-        width: 40px;
-        height: 40px;
-      }
-
-      .container .header .nav .user .img-case {
-        position: relative; left: 450px; top: 7px;
-        width: 40px;
-        height: 40px;
-      }
-      
-      .container .header .nav .user .img-case img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-
-      .container .content {
-        position: relative;
-        margin-top: 10vh;
-        min-height: 90vh;
-        background: #f1f1f1;
-      }
-
-      .container .content .cards {
-        padding: 20px 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-      }
-
-      .container .content .cards .card {
-        width: 250px;
-        height: 150px;
-        background: white;
-        margin: 20px 10px;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-      }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/user.css' %}">
     
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
@@ -138,37 +19,46 @@
   </head>
 
   <body>
-    
-    <div class="side-menu">
-      
-      <ul>
-        <li><img onclick="location.href = '/home/'" src={% static "UsernameIcon.png" %} height="30" width="30" alt="">&nbsp; Home</li>
-        <li><img onclick="location.href = '/user/profile/'" src={% static "DashboardIcon.png" %} height="30" width="30" alt="">&nbsp; Dashboard</li>
-        <li><img onclick="location.href = '/user/userProfile/'" src={% static "ProfileIcon.png" %} height="30" width="30" alt="">&nbsp; Profile</li>
-        <li><img onclick="location.href = '/user/userConvList/'" src={% static "ConversionIcon.png" %} height="30" width="30" alt="">&nbsp; Converted Files</li>
-        <li><img onclick="location.href = '/user/userCompList/'" src={% static "CompressionIcon.png" %} height="30" width="30" alt="">&nbsp; Compressed Files</li>
-        <li><img onclick="location.href = '/user/userProfile/'" src={% static "NotificationIcon.png" %} height="30" width="30" alt="">&nbsp; Notifications</li>
-      </ul>
-    
+  
+    <div>
+
+      <header>
+
+        <div class="navLeft">
+          <p id="username">HELLO, {{FirstName}} {{LastName}} !</p>
+        </div>
+
+        <div class="rightNav">
+          <p>Logout</p>
+        </div>
+
+      </header>
+
     </div>
-    
+
     <div class="container">
       
-      <div class="header">
-        <div class="nav">
-          <div class="user">
-            <div class="img-case">
-              <p id="username">{{name}}</p>
-            </div>
-          </div>
-        </div>
+      <div class="side-menu">
+        
+        <ul>
+          <li><img onclick="location.href = '/home/'" src={% static "UsernameIcon.png" %} height="30" width="30" alt="">&nbsp; Home</li>
+          <li><img onclick="location.href = '/home/profile/'" src={% static "DashboardIcon.png" %} height="30" width="30" alt="">&nbsp; Dashboard</li>
+          <li><img onclick="location.href = '/home/userProfile/'" src={% static "ProfileIcon.png" %} height="30" width="30" alt="">&nbsp; Profile</li>
+          <li><img onclick="location.href = '/home/userConvList/'" src={% static "ConversionIcon.png" %} height="30" width="30" alt="">&nbsp; Converted Files</li>
+          <li><img onclick="location.href = '/home/userCompList/'" src={% static "CompressionIcon.png" %} height="30" width="30" alt="">&nbsp; Compressed Files</li>
+        </ul>
+      
       </div>
-    
-      {% block mymessage %}
-      {% endblock %} 
+
+      <div class="user-container">
+        
+        {% block mymessage %}
+        {% endblock %} 
+
+      </div>
 
     </div>
-
+    
   </body>
 
 </html>

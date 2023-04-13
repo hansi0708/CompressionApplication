@@ -1,0 +1,48 @@
+{% extends 'UserMaster.html' %}
+{% load static %}
+
+{% block mymessage %}
+
+<title>FILE DETAILS</title>
+		
+<div class="content">	
+
+    <div class="header-card">
+		<h1>FILES DETAILS</h1>
+	</div>
+
+    <div class="cards">         
+  
+        <div class="helper">
+            <label> FILENAME:</label><br>
+            <label> FILE TYPE:</label><br>
+            <label> FILE SIZE:</label><br>
+            <label> NEW FILE SIZE:</label><br>
+            <label> TIME:</label><br>
+        </div>
+
+        <div class="helper">
+            <label>{{filename}}</label><br>
+            <label>{{file_type}}</label><br>
+            <label>{{file_size}}</label><br>
+            <label>{{new_file_size}}</label><br>  
+            <label>{{dat}}</label><br>
+        </div>
+
+    </div>
+
+    <div class="cards">
+
+        <div >
+            <button class="button-container" onclick="location.href = '/home/orgDownload/?z={{comp_id}}'"id="button">DOWNLOAD ORIGINAL FILE</button>
+        </div>
+
+        <div >
+            <button class="button-container" onclick="location.href = '/home/compDownload/?z={{comp_id}}'" id="button">DOWNLOAD COMPRESSED FILE</button>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

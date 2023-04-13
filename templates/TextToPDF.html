@@ -1,28 +1,30 @@
-{% extends 'MasterHome.html' %}  
+{% extends 'UserMaster.html' %}  
 {% block mymessage %}
 
-<div>
-    <section>
-        <article>
+<div class="content">
 
-            <h1 style="font-size:2em">TEXT to PDF</h1>
-            <p style="font-size:1.5em">  You can easily change your Text files to PDF with this online tool - just in a few seconds and completely free.</p>
-            
-            <div class="container">
-                <form method="post" action="/PDFtoJPG/text2pdf/" enctype="multipart/form-data">  
-                    {% csrf_token %}  
-                    {{ form.as_p }} 
-                    <button type="submit" class="save btn btn-default">Save</button>  
-                </form>
-            </div>
-           
-            {% comment %} <div class="container">
-                <!-- <button class="btn upload">Upload file</button> -->
-                <input class="btn " type="file">
-            </div> {% endcomment %}
+    <div class="header-card">
+		<h1>TEXT to PDF</h1>
+        <p style="font-size:1.5em">You can easily change your Text files to PDF with this online tool - just in a few seconds and completely free.</p>
+        <br>
+	</div>
 
-        </article>
-    </section>
+    <div class="cards">
+        
+        <div class="container">
+
+            <form class="form" method="post" action="/PDFtoJPG/text2pdf/" enctype="multipart/form-data">  
+                {% csrf_token %}  
+                {{ form.as_p }} 
+                <div style="display: flex,align-items: center;">
+                <button type="submit" class="save btn btn-default">Save</button>  
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}

@@ -7,7 +7,7 @@
 	<head>
 		<meta charset="UTF-8">
 	    <title>LOGIN</title>
-        <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/css/adminLogin.css' %}">
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
     </head>	 
@@ -22,7 +22,7 @@
 
 			<h1>Log In</h1>
 
-			<form action="/home/postsignIn/" method="post">
+			<form action="/user/postsignIn/" method="post">
 				{% csrf_token %}
 		
 				<!-- Email: -->
@@ -36,16 +36,18 @@
 					<input type="password" id="Password" name="password" placeholder="Password" required>
 					<span></span>          
 				</div>
+
+				<label>
+					<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+				</label>
 							
-				<div class="pass" onClick="location.href = '/user/forgot/'">
-					Forgot Password?
-				</div>
+				<div class="pass">Forgot Password?</div>
 
 				<input type="submit" value="LogIn"><br><br>
 			
 				<div class="signUp_Link">
 					Not a member?
-					<a href="/home/signUp">Sign Up</a>
+					<a href="/user/">Sign Up</a>
 				</div>
 				<br>
 

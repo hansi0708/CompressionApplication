@@ -1,28 +1,30 @@
-{% extends 'MasterHome.html' %}  
+{% extends 'UserMaster.html' %}  
 {% block mymessage %}
 
-<div>
-    <section>
-        <article>
+<div class="content">
 
-            <h1 style="font-size:2em">PDF to WORD</h1>
-            <p style="font-size:1.5em">Easily convert your PDF files into easy to edit DOC and DOCX documents.The converted WORD document is almost 100% accurate</p>
-            
-            <div class="container">
-                <form method="post" action="/PDFtoJPG/pdf2word/" enctype="multipart/form-data">  
-                    {% csrf_token %}  
-                    {{ form.as_p }} 
-                    <button type="submit" class="save btn btn-default">Save</button>  
-                </form>
-            </div>
-            
-            {% comment %} <div class="container">
-                <!-- <button class="btn upload">Upload file</button> -->
-                <input class="btn " type="file">
-            </div> {% endcomment %}
+    <div class="header-card">
+		<h1>PDF to WORD</h1>
+        <p style="font-size:1.5em">Easily convert your PDF files into easy to edit DOC and DOCX documents.The converted WORD document is almost 100% accurate</p>
+        <br>
+	</div>
 
-        </article>
-    </section>
+    <div class="cards">
+        
+        <div class="container">
+
+            <form class="form" method="post" action="/PDFtoJPG/pdf2word/" enctype="multipart/form-data">  
+                {% csrf_token %}  
+                {{ form.as_p }} 
+                <div style="display: flex,align-items: center;">
+                <button type="submit" class="save btn btn-default">Save</button>  
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}
