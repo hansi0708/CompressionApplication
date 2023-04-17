@@ -98,6 +98,7 @@ def postsignUp(request):
 	department=request.POST.get('department')
 	employment_type=request.POST.get('employment_type')
 	MiddleName=request.POST.get('MiddleName')
+	MiddleName=request.POST.get('MiddleName')
 
 	try:
 		
@@ -136,7 +137,7 @@ def profile(request):
 	a=a['users']
 	a=a[0]
 	a=a['localId']
-	name = database.child('users').child(a).child('name').get().val()
+	name = database.child('users').child(a).child('Salutation').get().val()
 	print(name)
 
 	all_user_comp=database.child('compression').shallow().get().val()
@@ -153,7 +154,7 @@ def profile(request):
 		if comp == a: comp_list.append(i)
 
 	context = {
-          'name':name,
+          'Salutation':name,
 	      'count_comp':len(comp_list)
     }
 
@@ -210,6 +211,8 @@ def check(request):
 	for i in list_users:
 		FirstName=database.child('users').child(i).child('FirstName').get().val()
 		FirstNames.append(FirstName)
+
+
 
 	departments=[]
 	for i in list_users:
@@ -302,67 +305,3 @@ def userCompList(request):
 	comb_list=zip(times,comp_list,filenames,date)	
 	
 	return render(request,"UserCompList.html",{'comb_list':comb_list})
-
-def details(request):
-	comp_id=request.GET.get('z')
-	idToken=request.session['uid']
-	a=authe.get_account_info(idToken)
-	a=a['users']
-	a=a[0]
-	a=a['localId']
-
-	filename=database.child('compression').child(comp_id).child('file_name').get().val()
-	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
-	file_size=database.child('compression').child(comp_id).child('file_size').get().val()
-	new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
-	time=database.child('compression').child(comp_id).child('date_time').get().val()
-
-	i=float(str(time))
-	dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
-
-	context = {
-		'comp_id':comp_id,
-        'filename':filename,
-	    'file_type':file_type,
-	    'file_size':get_size_format(file_size),
-	    'new_file_size':get_size_format(new_file_size),
-	    'dat':dat
-    }
-
-	return render(request,"ListDetails.html",context)
-
-def oDow(request):
-    comp_id=request.GET.get('z')
-    idToken=request.session['uid']
-    a=authe.get_account_info(idToken)
-    a=a['users']
-    a=a[0]
-    a=a['localId']
-    
-    file_name=database.child('compression').child(comp_id).child('file_name').get().val()
-    org_url=database.child('compression').child(comp_id).child('file').get().val()
-    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
-    return HttpResponse("Image downloaded successfuly")
-
-def cDow(request):
-    comp_id=request.GET.get('z')
-    idToken=request.session['uid']
-    a=authe.get_account_info(idToken)
-    a=a['users']
-    a=a[0]
-    a=a['localId']
-    new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
-    new_url=database.child('compression').child(comp_id).child('new_file').get().val()
-    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
-    
-    return HttpResponse("Image downloaded successfuly")  
-
-def forgot(request):
-	return render(request, "ForgotPass.html")
-
-def get_size_format(b, factor=1024, suffix="B"):
-    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
-        if b < factor:
-            return f"{b:.2f}{unit}{suffix}"
-        b /= factor
-    return f"{b:.2f}Y{suffix}"
