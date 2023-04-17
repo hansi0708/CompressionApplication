@@ -1,28 +1,42 @@
+{% extends 'UserMaster.html' %}
 {% load static %}
 
-<!DOCTYPE html>
+{% block mymessage %}
 
-<html lang="en">
+<title>CONVERTED FILES</title>
+		
+<div class="content">	
 
-	<head>
-		<meta charset="UTF-8">
-    </head>	 
-  
-	<body>
+	<div class="header-card">
+		<h1>CONVERTED FILES LIST</h1>
+	</div>
 
-		<div class="center">	
-			
-			<a>HELLO</a>
+	<div class="list-cards">
+
+		<div class="card1">
+		
+			{% for time,conv_list,filename,dat in comb_list %}
+
+			<div class="card2">
+
+				<div class="card3">{{filename}}
+				</div>  
+
+				<div class="card3">{{dat}} 
+				</div>
+
+            	<button onclick="location.href = '/home/details/?z={{conv_list}}'" class="view">View</button>
+
+			</div>
+
 			<br>
-			
-			{% for list_users,name,centre,department in comb_list %}
-			{{name}} &nbsp; {{centre}} &nbsp; {{department}} &nbsp;
-            <button>View</button>
-			<br>
+
 			{% endfor %}
 
 		</div>
 
-	</body>
+	</div>
 
-</html>
+</div>
+
+{% endblock %}

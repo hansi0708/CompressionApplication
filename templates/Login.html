@@ -22,7 +22,7 @@
 
 			<h1>Log In</h1>
 
-			<form action="/home/postsignIn/" method="post">
+			<form action="/postsignIn/" method="post">
 				{% csrf_token %}
 		
 				<!-- Email: -->
@@ -37,7 +37,7 @@
 					<span></span>          
 				</div>
 							
-				<div class="pass" onClick="location.href = '/user/forgot/'">
+				<div class="pass" onClick="location.href = '/forgot/'">
 					Forgot Password?
 				</div>
 
@@ -45,7 +45,7 @@
 			
 				<div class="signUp_Link">
 					Not a member?
-					<a href="/home/signUp">Sign Up</a>
+					<a href="/signUp/">Sign Up</a>
 				</div>
 				<br>
 

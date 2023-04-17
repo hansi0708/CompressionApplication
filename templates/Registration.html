@@ -4,6 +4,7 @@
 <html lang="en">
 	
 	<head>
+
 		<meta charset="UTF-8">
 		<title>SIGN UP</title>
 		<link rel="stylesheet" type="text/css" href="{% static '/css/signup.css' %}">
@@ -17,9 +18,10 @@
 
 			<h1>Sign Up</h1>
 			
-			<form action="/home/postsignUp/" method="post" >
+			<form action="/postsignUp/" method="post" >
 			
 				<div id='captcha'></div>
+
 				{% csrf_token %}
 	
 				<div class="row">
@@ -28,12 +30,12 @@
 						
 						<!--Name: -->
 						<div class="txt_field">
+
 							<select type="text" class = "drop_down" style = "width: 130px; height: 39px" value="Salutation" name=""  required>
 								<option value="" disabled selected hidden>Salutation</option>
 								<option>Ms.</option>
 								<option>Mr.</option>
 								<option>Mrs.</option>
-	
 							</select>  
 	
 						</div>
@@ -61,19 +63,22 @@
 							<input type="password" id="Password" name="password" placeholder="Password" oninvalid="InvalidMsgPass(this);" oninput = "InvalidMsgPass(this);" required>
 							<span></span>
 						</div>
-
-
-	
-						
 					
 					</div>
 					
 					<div class="column">
-						
 
-						<input type="FirstName" id="Username" name="FirstName" placeholder="First Name" required oninvalid = "this.setCustomValidity('Please enter username')" onchange = "this.setCustomValidity('')" >
+						<!--First Name: -->
+						<div class="txt_field">
+							<input type="FirstName" id="Username" name="FirstName" placeholder="First Name" required oninvalid = "this.setCustomValidity('Please enter username')" onchange = "this.setCustomValidity('')" >
+							<span></span>
+						</div>
 
-						<input type="LastName" id="LastName" name="LastName" placeholder="Last Name" required>
+						<!--Last Name: -->
+						<div class="txt_field">
+							<input type="LastName" id="LastName" name="LastName" placeholder="Last Name" required>
+							<span></span>
+						</div>
 
 						<!--Designation: -->
 						<div class="txt_field">
@@ -100,71 +105,76 @@
 				<div class="wrapper">
 
 					<div class="captcha-area">
-					  <div class="captcha-img">
-						<img src= {% static "captcha-bg.png" %} alt="Captch Background">
-						<span class="captcha"></span>
-					</div>
-					<button class="reload-btn"><i class="fas fa-redo-alt"></i></button>
-				  </div>
-				  <form action="#" class="input-area">
-					<input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
-					<button class="check-btn">Check</button>
-				  </form>
-				  <div class="status-text"></div>
+					  	<div class="captcha-img">
+							<img src= {% static "captcha-bg.png" %} alt="Captch Background">
+							<span class="captcha"></span>
+						</div>
+						<button class="reload-btn"><i class="fas fa-redo-alt"></i></button>
+				  	</div>
+				  	
+					<form action="#" class="input-area">
+						<input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
+						<button class="check-btn">Check</button>
+				  	</form>
+				  	
+					<div class="status-text"></div>
+				
 				</div>
-				  <script src="script.js"></script>
+				  	
+				<script src="script.js"></script>
 	
-				<input type="submit" value="SignUp"><br><br>
-	
+				<input type="submit" value="SignUp"><br>
 
 				<div class="signUp_Link">
 					Already a member?
-					<a href="/home/signIn/">Log In</a>
+					<a href="/signIn/">Log In</a>
 				</div>
-	
-				<br>
-	
+
 			</form>
+
 			<br>
+
 			<div id="message">
 				<h3>Password must contain the following:</h3>
 				<p id="letter" class="invalid">A <b>lowercase</b> letter</p>
 				<p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
 				<p id="number" class="invalid">A <b>number</b></p>
 				<p id="length" class="invalid">Minimum <b>8 characters</b></p>
-			  </div>
+			</div>
 
-			  <script>
-				function InvalidMsg(email) 
-				{
-				if (email.value === '') {
-					email.setCustomValidity('Required email address');
-				} else if (email.validity.typeMismatch){
-					email.setCustomValidity('please enter a valid email address');
-				} else {
-				   email.setCustomValidity('');
+			<script>
+				
+				function InvalidMsg(email) {
+					if (email.value === '') {
+						email.setCustomValidity('Required email address');
+					} else if (email.validity.typeMismatch){
+						email.setCustomValidity('please enter a valid email address');
+					} else {
+					email.setCustomValidity('');
+					}
+
+					return true;
 				}
 
-				return true;
-				}
 				var myInput = document.getElementById("password");
-				  var letter = document.getElementById("letter");
-				  var capital = document.getElementById("capital");
-				  var number = document.getElementById("number");
-				  var length = document.getElementById("length");
+				var letter = document.getElementById("letter");
+				var capital = document.getElementById("capital");
+				var number = document.getElementById("number");
+				var length = document.getElementById("length");
 
-				  // When the user clicks on the password field, show the message box
-				  myInput.onfocus = function() {
+				// When the user clicks on the password field, show the message box
+				myInput.onfocus = function() {
 					document.getElementById("message").style.display = "block";
-				  }
+				}
 
-				  // When the user clicks outside of the password field, hide the message box
-				  myInput.onblur = function() {
+				// When the user clicks outside of the password field, hide the message box
+				myInput.onblur = function() {
 					document.getElementById("message").style.display = "none";
-				  }
+				}
 
-				  // When the user starts to type something inside the password field
-				  myInput.onkeyup = function() {
+				// When the user starts to type something inside the password field
+				myInput.onkeyup = function() {
+
 					// Validate lowercase letters
 					var lowerCaseLetters = /[a-z]/g;
 					if(myInput.value.match(lowerCaseLetters)) {  
@@ -174,6 +184,7 @@
 					  letter.classList.remove("valid");
 					  letter.classList.add("invalid");
 					}
+
 					// Validate capital letters
 					var upperCaseLetters = /[A-Z]/g;
 					if(myInput.value.match(upperCaseLetters)) {  
@@ -202,54 +213,68 @@
 						length.classList.remove("valid");
 					  length.classList.add("invalid");
 					}
-				  }
 
-				   /* captcha*/
-				   const captcha = document.querySelector(".captcha"),
-				   reloadBtn = document.querySelector(".reload-btn"),
-				   inputField = document.querySelector(".input-area input"),
-				   checkBtn = document.querySelector(".check-btn"),
-				   statusTxt = document.querySelector(".status-text");
-				   //storing all captcha characters in array
-				   let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-									   'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
-									   'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-									   't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-				   function getCaptcha(){
-				   for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
-					   let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
-					   captcha.innerText += ` ${randomCharacter}`; //passing 6 random characters inside captcha innerText
-				   }
-				   }
-				   getCaptcha(); //calling getCaptcha when the page open
-				   //calling getCaptcha & removeContent on the reload btn click
-				   reloadBtn.addEventListener("click", ()=>{
-				   removeContent();
-				   getCaptcha();
-				   });
-				   checkBtn.addEventListener("click", e =>{
+				}
+
+				/* captcha*/
+				const captcha = document.querySelector(".captcha"),
+				reloadBtn = document.querySelector(".reload-btn"),
+				inputField = document.querySelector(".input-area input"),
+				checkBtn = document.querySelector(".check-btn"),
+				statusTxt = document.querySelector(".status-text");
+
+				//storing all captcha characters in array
+				let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+									'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+									'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+									't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+				
+
+				function getCaptcha(){
+					for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
+						let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
+						captcha.innerText += ` ${randomCharacter}`; //passing 6 random characters inside captcha innerText
+				   	}
+				}
+
+				getCaptcha(); //calling getCaptcha when the page open
+
+				//calling getCaptcha & removeContent on the reload btn click
+				reloadBtn.addEventListener("click", ()=>{
+					removeContent();
+					getCaptcha();
+				});
+
+				checkBtn.addEventListener("click", e =>{
+
 					e.preventDefault(); //preventing button from it's default behaviour
 					statusTxt.style.display = "block";
+
 					//adding space after each character of user entered values because I've added spaces while generating captcha
 					let inputVal = inputField.value.split('').join(' ');
+					
 					if(inputVal == captcha.innerText){ //if captcha matched
 						statusTxt.style.color = "#4db2ec";
 						statusTxt.innerText = "Nice! You don't appear to be a robot.";
 						setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
-						removeContent();
-						getCaptcha();
+							removeContent();
+							getCaptcha();
 						}, 2000);
+
 					}else{
 						statusTxt.style.color = "#ff0000";
 						statusTxt.innerText = "Captcha not matched. Please try again!";
 					}
-					});
-					function removeContent(){
+
+				});
+
+				function removeContent(){
 					inputField.value = "";
 					captcha.innerText = "";
 					statusTxt.style.display = "none";
-					}
-				</script>
+				}
+
+			</script>
 	
 		</div>
 		

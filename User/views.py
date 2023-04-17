@@ -223,38 +223,43 @@ def check(request):
 	return render(request,"ListUsers.html",{'comb_list':comb_list})
 
 def userConvList(request):
-	all_users=database.child('users').shallow().get().val()
-	list_users=[]
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
 
-	for i in all_users:                                              
-		list_users.append(i)
+	all_user_conv=database.child('conversion').shallow().get().val()
+	list_conv=[]
+
+	for i in all_user_conv:                                              
+		list_conv.append(i)
 	
-	print(list_users)
-	#list_users.sort(reverse=True) when time stamp based sorting
+	print(list_conv)
 
-	names=[]
-	for i in list_users:
-		name=database.child('users').child(i).child('name').get().val()
-		names.append(name)
+	conv_list=[]
+	for i in list_conv:
+		conv=database.child('conversion').child(i).child('user_id').get().val()
+		if conv == a: conv_list.append(i)
 
-	print(names)
+	filenames=[]
+	for i in conv_list:   
+		filename=database.child('conversion').child(i).child('file_name').get().val()                                           
+		filenames.append(filename)
 
-	centres=[]
-	for i in list_users:
-		centre=database.child('users').child(i).child('centre').get().val()
-		centres.append(centre)
+	times=[]
+	for i in all_user_conv:  
+		time=database.child('conversion').child(i).child('date_time').get().val()                                            
+		times.append(time)
 
-	print(centres)
-
-	departments=[]
-	for i in list_users:
-		department=database.child('users').child(i).child('department').get().val()
-		departments.append(department)
-
-	print(departments)
+	date=[]
+	for i in times:
+		i=float(i)
+		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+		date.append(dat)
 	
-	comb_list=zip(list_users,names,centres,departments)	
-		    
+	comb_list=zip(times,conv_list,filenames,date)	
+	
 	return render(request,"UserConvList.html",{'comb_list':comb_list})
 
 def userCompList(request):
@@ -265,6 +270,7 @@ def userCompList(request):
 	a=a['localId']
 
 	all_user_comp=database.child('compression').shallow().get().val()
+	print(all_user_comp)
 	list_comp=[]
 
 	for i in all_user_comp:                                              

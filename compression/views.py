@@ -32,10 +32,6 @@ config = {
   'measurementId': "G-2XZEBYKFC6"
 }
 
-# cred=credentials.Certificate('serviceAccountKey.json')
-# firebase_admin.initialize_app(cred, {
-#     'storageBucket': "compression-tool-6af95.appspot.com"
-# })
 
 
 # # Initialising database, auth, firebase and storage   
