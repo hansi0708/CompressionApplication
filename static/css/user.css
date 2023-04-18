@@ -52,7 +52,7 @@ header{
 .rightNav{
   float: right;
   width: 50%;
-  color: #2691d9;
+  color: #fc075f;
   margin-right: 2%;
   margin-top: 2%;
   font-family: 'poppins', sans-serif;
@@ -115,7 +115,7 @@ header{
   width: 77vw;
   height: 20vh;
   text-decoration: underline;
-  text-decoration-thickness: 12px;
+  /* text-decoration-thickness: 12px; */
 }
 
 .user-container .content .header-card p{
@@ -157,12 +157,13 @@ header{
 
 .user-container .content .container .btn{
   position: relative;
-  background: white;
-  color: #2691d9;
+  background: #fc075f;
+  color: #f1f1f1;
   margin-bottom: 2%;
-  margin-top: 2%;
+  margin-top: 5%;
+  margin-left: 37px;
   font-weight: 700;
-
+  height : 27px;
   align-items: center;
 }
 
@@ -186,7 +187,8 @@ header{
   display: flex;
   align-items: center;
   justify-content: space-around;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: #fc075f;
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 
 .user-container .content .chart {
@@ -196,7 +198,8 @@ header{
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: #fc075f;
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
   margin: 10px 10px 10px 10px;
 }
 
@@ -269,11 +272,11 @@ header{
 
 .user-container .content .cards .button-container {
     height: 50px;
-    background: #2691d9;
+    background: #fc075f;
     font-size: 18px;
-    color: #e9f4fb;
+    color: #f1f1f1;;
     font-weight: 700;
-    width: 350px;
+    width: 300px;
     display: flex;
     align-items: center;
     justify-content: space-around;

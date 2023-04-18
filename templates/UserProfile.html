@@ -8,31 +8,25 @@
 <div class="content">
 
     <div class="header-card">
-		<h1>USER PROFILE</h1>
-	</div>
+        <h1>USER PROFILE</h1>
+    </div>
     
     <div class="cards">         
   
             <div class="helper">
                 <label> Name:</label><br>
-                <label> Centre:</label><br>
-                <label> Staff:</label><br>
                 <label> Designation:</label><br>
                 <label> Department:</label><br>
                 <label> Employement Type:</label><br>
-                <label> Level:</label><br>
                 <label> Email:</label><br>
             </div>
 
             <div class="helper">
-                <label>n{{name}}</label><br>
-                <label>c{{centre}}</label><br>
-                <label>s{{MiddleName}}</label><br>
-                <label>d{{designation}}</label><br>  
-                <label>d{{department}}</label><br>
-                <label>et{{FirstName}}</label><br>
-                <label>l{{LastName}}</label><br>
-                <label>e{{email}}</label><br>
+                <label>{{Salutation}} {{FirstName}} {{MiddleName}} {{LastName}}</label><br>
+                <label>{{designation}}</label><br>  
+                <label>{{department}}</label><br>
+                <label>{{employment_type}}</label><br>
+                <label>{{email}}</label><br>
             </div>
 
     </div>
@@ -51,4 +45,4 @@
 
 </div>
     
-{% endblock %} 
+{% endblock %}

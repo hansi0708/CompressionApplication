@@ -180,7 +180,7 @@ def compressImage(request):
             default_storage.delete(uFile.file.path)
             default_storage.delete(new_filename)
 
-            return HttpResponseRedirect('/home/userCompList/')  
+            return HttpResponseRedirect('/userCompList/')  
              
     else:  
         uploadFile = FileForm()
