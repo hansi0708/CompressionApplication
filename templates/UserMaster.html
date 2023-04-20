@@ -7,7 +7,7 @@
   <head>
 
     <link rel="stylesheet" type="text/css" href="{% static '/css/user.css' %}">
-    <script src="https://kit.fontawesome.com/919388b1b0.js" crossorigin="anonymous"></script>
+    
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
@@ -29,7 +29,7 @@
         </div>
 
         <div class="rightNav">
-          <p>Logout</p>
+          <p onclick="location.href = '/logout/'">Logout</p>
         </div>
 
       </header>
@@ -41,13 +41,11 @@
       <div class="side-menu">
         
         <ul>
-         
-          <li><a href="/home/" style="text-decoration:none" "color:white"><i class="fa-solid fa-house-user"></i><span style="color:white"> Home</span></a></li>
-          <li><a href = "/profile/" style="text-decoration:none"><i class="fa-sharp fa-solid fa-chart-line"></i><span style="color:white"> Dashboard </span></a> </li>
-          <li><a href = "/userProfile/" style="text-decoration:none"><i class="fa-solid fa-user"></i> <span style="color:white">Profile</span></a></li>
-
-          <li><a href = "/userConvList/" style="text-decoration:none"><i class="fa-solid fa-code-compare"></i><span style="color:white"> Converted Files</span></a></li>
-          <li><a href = "/userCompList/" style="text-decoration:none"><i class="fa-solid fa-layer-group"></i><span style="color:white"> Compressed Files </span></a> </li>
+          <li><img onclick="location.href = '/home/'" src={% static "UsernameIcon.png" %} height="30" width="30" alt="">&nbsp; Home</li>
+          <li><img onclick="location.href = '/profile/'" src={% static "DashboardIcon.png" %} height="30" width="30" alt="">&nbsp; Dashboard</li>
+          <li><img onclick="location.href = '/userProfile/'" src={% static "ProfileIcon.png" %} height="30" width="30" alt="">&nbsp; Profile</li>
+          <li><img onclick="location.href = '/userConvList/'" src={% static "ConversionIcon.png" %} height="30" width="30" alt="">&nbsp; Converted Files</li>
+          <li><img onclick="location.href = '/userCompList/'" src={% static "CompressionIcon.png" %} height="30" width="30" alt="">&nbsp; Compressed Files</li>
         </ul>
       
       </div>

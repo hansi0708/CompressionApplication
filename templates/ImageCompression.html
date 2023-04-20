@@ -1,6 +1,12 @@
 {% extends 'UserMaster.html' %}  
 {% block mymessage %}
 
+{% if message %}
+<script>
+    alert('{{ message }}');
+</script>
+{% endif %}
+
 <div class="content">
 
     <div class="header-card">
