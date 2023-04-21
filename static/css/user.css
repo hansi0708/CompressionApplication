@@ -86,7 +86,7 @@ header{
 }
 
 .side-menu li:hover {
-  background: white;
+  background-color: #fc075f;
   color: #fc075f;
 }
 
@@ -283,7 +283,16 @@ header{
     border: 1px solid;
     border-radius: 25px;
 }
-
+.user-container .content .cards .emailreset{
+  width: 100%;
+  height: 35%;
+  outline: #fc075f;
+  padding-left: 20px;
+  font-size: 15px;
+  border-radius: 5px;
+  border: 1px solid #bfbfbf;
+  margin-top: -9px;
+}
 
 /* LIST */
 
@@ -359,3 +368,4 @@ header{
     border-radius: 15px;
     background-color: #2691d9;
 }
+

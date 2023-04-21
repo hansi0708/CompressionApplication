@@ -15,6 +15,8 @@
 
 	<script type="text/javascript">
 		
+				
+		
 	</script>
   
 	<body>
@@ -26,6 +28,7 @@
 			<h1>Log In</h1>
 			
 			<form action="/postsignIn/" method="post">
+				<div id='captcha'></div>
 				{% csrf_token %}
 		
 				<!-- Email: -->
@@ -39,22 +42,23 @@
 					<input type="password" id="Password" name="password" placeholder="Password" required>
 					<span></span>          
 				</div>
-			<div class="wrapper"> 
+				<div class="wrapper"> 
                 
 					<div class="captcha-area">
 					  <div class="captcha-img">
 						<img src= {% static "captchaImage.png" %} alt="Captch Background">
-						<span class="captcha"></span> 
-					 </div> 
+						<span class="captcha"></span>
+					</div>
 					<button class="reload-btn"><i class="fa-solid fa-arrows-rotate"></i></button> 
 				  </div> 
-				  
-				  <div action="#" class="input-area"> 
+				  {% comment %} <form action="#" class="input-area"> {% endcomment %}
+					<div action="#" class="input-area"> 
 					<input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
-					<button class="check-btn" onclick = "checkButton()">Check</button>
+					<button class="check-btn" >Check</button>
 					</div>
-				  
-					<div class="status-text"></div> 
+					
+				  {% comment %} </form> {% endcomment %}
+				  <div class="status-text"></div>
 			</div> 
 
 							
@@ -97,35 +101,35 @@
 				getCaptcha();
 				});
 	
-				function checkButton(){
+				{% comment %} function chkbtn() { {% endcomment %}
 				checkBtn.addEventListener("click", e =>{
 					console.log("--->",checkBtn.value);
 				e.preventDefault(); //preventing button from it's default behaviour
 				statusTxt.style.display = "block";
 				//adding space after each character of user entered values because I've added spaces while generating captcha
 				let inputVal = inputField.value.split('').join(' ');
+
 				if(inputVal == captcha.innerText){ //if captcha matched
-					statusTxt.style.color = "#4db2ec";
-					statusTxt.innerText = "Nice! You don't appear to be a robot.";
+					alert("Captcha Matched!");
 					setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
 					removeContent();
 					getCaptcha();
 					}, 9000);
 				}else{
-					statusTxt.style.color = "#ff0000";
-					statusTxt.innerText = "Captcha not matched. Please try again!";
+					alert("Invalid Captcha");
 				}
 				});
-			}
-	
+			
+			{% comment %} } {% endcomment %}
 				function removeContent(){
 				inputField.value = "";
 				captcha.innerText = "";
 				statusTxt.style.display = "none";
 				}
 									
-		   </script>
-					
+		   
+					</script>
+			
 		</div>
 
 	</body>
