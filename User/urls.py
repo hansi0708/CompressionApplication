@@ -4,20 +4,38 @@ from . import views
 
 urlpatterns = [
 
-    path('home/', views.home, name="home"),
-    path('signUp/', views.signUp, name="signup"),
     path('', views.signIn),
     path('postsignIn/', views.postsignIn),
-    path('logout/', views.logout, name="log"),
+
+    path('signUp/', views.signUp, name="signup"),
     path('postsignUp/', views.postsignUp),
-    path('profile/', views.profile),
-    path('userProfile/',views.userProfile),
-    path('usersList/',views.check),
-    path('userConvList/',views.userConvList),
-    path('userCompList/',views.userCompList),
-    path('details/',views.details),
-    path('orgDownload/',views.oDow),
-    path('compDownload/',views.cDow),
+
+    path('home/', views.home, name="home"),
+    
+    path('logout/', views.logout, name="log"),
+
+    path('updateProfile/',views.updateProfile),
+
     path('forgot/', views.forgot),
+
+    path('resetPassword/',views.resetPassword),
+    path('postReset/',views.postReset),
+    
+    path('dashboard/', views.dashboard),
+    path('userProfile/',views.userProfile),
+
+    #Comp url
+    path('userCompList/',views.userCompList),
+    path('comp_details/',views.comp_details),
+    path('orgDownload/',views.orgCompDow),
+    path('compDownload/',views.compDow),
+
+    #Conv url
+    path('userConvList/',views.userConvList),
+    path('conv_details/',views.conv_details),
+    path('orDownload/',views.orgConvDow),
+    path('convDownload/',views.convDow),
+
+    path('usersList/',views.check),
 
     ]

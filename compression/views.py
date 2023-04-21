@@ -19,6 +19,7 @@ import time
 from datetime import datetime, timezone
 import pytz
 from django.core.files.storage import default_storage
+import uuid
 
 #FIREBASE CONFIG
 config = {
@@ -72,13 +73,8 @@ def file_compress(inp_file_names, out_zip_file):
 
 # IMAGE COMPRESSION
 def imageCompression(request):
-    idToken=request.session['uid']
-    print(idToken)
-    if idToken== None:
-        return render(request,"Login.html")
-    else:
-        uploadFile = FileForm()
-        return render(request,"ImageCompression.html",{'form':uploadFile})
+    uploadFile = FileForm()
+    return render(request,"ImageCompression.html",{'form':uploadFile})
      
 def compressImage(request):
             
@@ -141,46 +137,53 @@ def compressImage(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            #Print the saving percentage
-            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+            if saving_diff <= 0:
+                message  = "This file cannot be compressed any further."
+                return render(request, "ImageCompression.html", {'form':uploadFile,"msg":message})
             
-            idToken=request.session['uid']
-            a=authe.get_account_info(idToken)
-            a=a['users']
-            a=a[0]
-            a=a['localId']
+            else:
 
-            #Storing files in firebase storage
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+                #Print the saving percentage
+                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+                
+                idToken=request.session['uid']
+                a=authe.get_account_info(idToken)
+                a=a['users']
+                a=a[0]
+                a=a['localId']
 
-            tz =pytz.timezone('Asia/Kolkata')
-            time_now=datetime.now(timezone.utc).astimezone(tz)
-            millis=int(time.mktime(time_now.timetuple()))
+                comp_id = uuid.uuid4()
+                #Storing files in firebase storage
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
-            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+                tz =pytz.timezone('Asia/Kolkata')
+                time_now=datetime.now(timezone.utc).astimezone(tz)
+                millis=int(time.mktime(time_now.timetuple()))
+
+                org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
+                new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
             
-            data={
-                'user_id':a,
-                'date_time':millis,
-                'file_name':file_name,
-                'new_file_name':new_file_name,
-                'file':org_url,
-			    'file_type':file_type,
-			    'file_size':file_size,
-			    'new_file':new_url,
-			    'new_file_size':new_file_size
-		    }
-            
-            #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').child(uFile.id).set(data)  
+                data={
+                    'user_id':a,
+                    'date_time':millis,
+                    'file_name':file_name,
+                    'new_file_name':new_file_name,
+                    'file':org_url,
+                    'file_type':file_type,
+                    'file_size':file_size,
+                    'new_file':new_url,
+                    'new_file_size':new_file_size
+                }
+                
+                #Storing data in compression table in Firebase Realtime Database
+                database.child('compression').child(comp_id).set(data)  
 
-            #Deleting from local storage
-            default_storage.delete(uFile.file.path)
-            default_storage.delete(new_filename)
+                #Deleting from local storage
+                default_storage.delete(uFile.file.path)
+                default_storage.delete(new_filename)
 
-            return HttpResponseRedirect('/userCompList/')  
+                return HttpResponseRedirect('/userCompList/')  
              
     else:  
         uploadFile = FileForm()
@@ -190,12 +193,8 @@ def compressImage(request):
 
 # PPT COMPRESSION
 def compressPPT(request):
-    # idToken=request.session['uid']
-    # if idToken!= None:
-    #     return render(request,"Login.html")
-    # else:
-        uploadFile = FileForm()
-        return render(request,"CompressPPT.html",{'form':uploadFile})
+    uploadFile = FileForm()
+    return render(request,"CompressPPT.html",{'form':uploadFile})
 	 
 def pptCompression(request):
 
@@ -241,46 +240,52 @@ def pptCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            #Print the saving percentage
-            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
-
-            idToken=request.session['uid']
-            a=authe.get_account_info(idToken)
-            a=a['users']
-            a=a[0]
-            a=a['localId']
+            if saving_diff <= 0:
+                message  = "This file cannot be compressed any further."
+                return render(request, "CompressPPT.html", {'form':uploadFile,"msg":message})
             
-            #Storing original file in firebase storage
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+            else:
+                #Print the saving percentage
+                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
 
-            tz =pytz.timezone('Asia/Kolkata')
-            time_now=datetime.now(timezone.utc).astimezone(tz)
-            millis=int(time.mktime(time_now.timetuple()))
+                idToken=request.session['uid']
+                a=authe.get_account_info(idToken)
+                a=a['users']
+                a=a[0]
+                a=a['localId']
+                
+                comp_id = uuid.uuid4()
+                #Storing original file in firebase storage
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
-            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+                tz =pytz.timezone('Asia/Kolkata')
+                time_now=datetime.now(timezone.utc).astimezone(tz)
+                millis=int(time.mktime(time_now.timetuple()))
+
+                org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
+                new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
             
-            data={
-                'user_id':a,
-                'date_time':millis,
-                'file_name':file_name,
-                'new_file_name':new_file_name,
-                'file':org_url,
-			    'file_type':file_type,
-			    'file_size':file_size,
-			    'new_file':new_url,
-			    'new_file_size':new_file_size
-		    }
+                data={
+                    'user_id':a,
+                    'date_time':millis,
+                    'file_name':file_name,
+                    'new_file_name':new_file_name,
+                    'file':org_url,
+                    'file_type':file_type,
+                    'file_size':file_size,
+                    'new_file':new_url,
+                    'new_file_size':new_file_size
+                }
 
-            #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').child(uFile.id).set(data)
+                #Storing data in compression table in Firebase Realtime Database
+                database.child('compression').child(comp_id).set(data)
 
-            #Deleting from local storage
-            default_storage.delete(uFile.file.path)
-            default_storage.delete(new_filename)
-            
-            return HttpResponseRedirect('/home/userCompList/') 
+                #Deleting from local storage
+                default_storage.delete(uFile.file.path)
+                default_storage.delete(new_filename)
+                
+                return HttpResponseRedirect('/home/userCompList/') 
     
     else:  
         uploadFile = FileForm()  
@@ -290,12 +295,8 @@ def pptCompression(request):
 
 # WORD COMPRESSION           
 def compressWord(request):
-    # idToken=request.session['uid']
-    # if idToken!= None:
-    #     return render(request,"Login.html")
-    # else:
-        uploadFile = FileForm()
-        return render(request,"CompressWord.html",{'form':uploadFile})
+    uploadFile = FileForm()
+    return render(request,"CompressWord.html",{'form':uploadFile})
            
 def wordCompression(request):
 
@@ -350,46 +351,53 @@ def wordCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            #Print the saving percentage
-            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+            if saving_diff <= 0:
+                message  = "This file cannot be compressed any further."
+                return render(request, "CompressWord.html", {'form':uploadFile,"msg":message})
 
-            idToken=request.session['uid']
-            a=authe.get_account_info(idToken)
-            a=a['users']
-            a=a[0]
-            a=a['localId']
+            else:
+                #Print the saving percentage
+                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
 
-            #Storing original file in firebase storage
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+                idToken=request.session['uid']
+                a=authe.get_account_info(idToken)
+                a=a['users']
+                a=a[0]
+                a=a['localId']
 
-            tz =pytz.timezone('Asia/Kolkata')
-            time_now=datetime.now(timezone.utc).astimezone(tz)
-            millis=int(time.mktime(time_now.timetuple()))
+                comp_id = uuid.uuid4()
 
-            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
-            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
+                #Storing original file in firebase storage
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
+
+                tz =pytz.timezone('Asia/Kolkata')
+                time_now=datetime.now(timezone.utc).astimezone(tz)
+                millis=int(time.mktime(time_now.timetuple()))
+
+                org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
+                new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
             
-            data={
-                'user_id':a,
-                'date_time':millis,
-                'file_name':file_name,
-                'new_file_name':new_file_name,
-                'file':org_url,
-			    'file_type':file_type,
-			    'file_size':file_size,
-			    'new_file':new_url,
-			    'new_file_size':new_file_size
-		    }
+                data={
+                    'user_id':a,
+                    'date_time':millis,
+                    'file_name':file_name,
+                    'new_file_name':new_file_name,
+                    'file':org_url,
+                    'file_type':file_type,
+                    'file_size':file_size,
+                    'new_file':new_url,
+                    'new_file_size':new_file_size
+                }
 
-            #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').child(uFile.id).set(data)  
+                #Storing data in compression table in Firebase Realtime Database
+                database.child('compression').child(comp_id).set(data)  
 
-            #Deleting from local storage
-            default_storage.delete(uFile.file.path)
-            default_storage.delete(new_filename)
+                #Deleting from local storage
+                default_storage.delete(uFile.file.path)
+                default_storage.delete(new_filename)
 
-            return HttpResponseRedirect('/home/userCompList/') 
+                return HttpResponseRedirect('/userCompList/') 
         
     else:  
         uploadFile = FileForm()  
@@ -399,12 +407,8 @@ def wordCompression(request):
 
 # PDF COMPRESSION
 def CompressPDF(request):
-    # idToken=request.session['uid']
-    # if idToken!= None:
-    #     return render(request,"Login.html")
-    # else:
-        uploadFile = FileForm()
-        return render(request,"CompressPDF.html",{'form':uploadFile})
+    uploadFile = FileForm()
+    return render(request,"CompressPDF.html",{'form':uploadFile})
 
 def pdfCompression(request):
 
@@ -460,57 +464,58 @@ def pdfCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            #Print the saving percentage
-            print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+            if saving_diff <= 0:
+                message  = "This file cannot be compressed any further."
+                return render(request, "CompressPDF.html", {'form':uploadFile,"msg":message})
 
-            idToken=request.session['uid']
-            a=authe.get_account_info(idToken)
-            a=a['users']
-            a=a[0]
-            a=a['localId']
+            else:
+                #Print the saving percentage
+                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
 
-            #Storing original file in firebase storage
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).put(uFile.file.path)
-            storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).put(new_filename)
+                idToken=request.session['uid']
+                a=authe.get_account_info(idToken)
+                a=a['users']
+                a=a[0]
+                a=a['localId']
 
-            tz =pytz.timezone('Asia/Kolkata')
-            time_now=datetime.now(timezone.utc).astimezone(tz)
-            millis=int(time.mktime(time_now.timetuple()))
+                comp_id = uuid.uuid4()
 
-            org_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+file_name).get_url(idToken)
-            new_url=storage.child("/comp_files/"+a+"/"+str(uFile.id)+"/"+new_file_name).get_url(idToken)
-            
-            data={
-                'user_id':a,
-                'date_time':millis,
-                'file_name':file_name,
-                'new_file_name':new_file_name,
-                'file':org_url,
-			    'file_type':file_type,
-			    'file_size':file_size,
-			    'new_file':new_url,
-			    'new_file_size':new_file_size
-		    }
+                #Storing original file in firebase storage
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
+                storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-            #Storing data in compression table in Firebase Realtime Database
-            database.child('compression').child(uFile.id).set(data)
+                tz =pytz.timezone('Asia/Kolkata')
+                time_now=datetime.now(timezone.utc).astimezone(tz)
+                millis=int(time.mktime(time_now.timetuple()))
 
-            #Deleting from local storage
-            default_storage.delete(uFile.file.path)
-            default_storage.delete(new_filename)  
+                org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
+                new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
+                
+                data={
+                    'user_id':a,
+                    'date_time':millis,
+                    'file_name':file_name,
+                    'new_file_name':new_file_name,
+                    'file':org_url,
+                    'file_type':file_type,
+                    'file_size':file_size,
+                    'new_file':new_url,
+                    'new_file_size':new_file_size
+                }
 
-            return HttpResponseRedirect('/home/userCompList/') 
+                #Storing data in compression table in Firebase Realtime Database
+                database.child('compression').child(comp_id).set(data)
+
+                #Deleting from local storage
+                default_storage.delete(uFile.file.path)
+                default_storage.delete(new_filename)  
+
+                return HttpResponseRedirect('/userCompList/') 
         
     else:
         uploadFile = FileForm()  
     
     return render(request,"CompressPDF.html",{'form':uploadFile})
-
-
-
-def set_page_size(page_setup, width, height):
-    page_setup.page_width = width
-    page_setup.page_height = height
 
 def get_size_format(b, factor=1024, suffix="B"):
     for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:

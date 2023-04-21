@@ -1,22 +1,23 @@
-
+import datetime
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-import tabula 
+import pytz
 import os 
-import pdf2docx, docx2pdf
+# import pdf2docx, docx2pdf
 import PyPDF2
 from pdf2docx import Converter
-from tabula.io import read_pdf
-import tabula 
+# from tabula.io import read_pdf
+# import tabula 
 import pandas as pd
 from pdf2image import convert_from_path
-import img2pdf
+# import img2pdf
 from PIL import Image 
-import textwrap
+# import textwrap
 from fpdf import FPDF 
 import os
-from collections.abc import MutableMapping
+# from collections.abc import MutableMapping
 # Import mimetypes module
-import mimetypes
+# import mimetypes
 # import os module
 import os
 from PIL import Image
@@ -29,237 +30,800 @@ import pdftables_api
 import  jpype, asposecells  
 from pdf2jpg import pdf2jpg
 import aspose.words as aw
+import  jpype     
+# import  asposecells
+# jpype.startJVM() 
+# from asposecells.api import Workbook
+import pyrebase
+import firebase_admin
+from firebase_admin import credentials, storage
+import time
+from datetime import datetime, timezone
+from django.core.files.storage import default_storage
+import uuid
+
+#FIREBASE CONFIG
+config = {
+  'apiKey': "AIzaSyBbNBjeBbpTnaq2ikJ2Aut5UvW0KqhQ7dQ",
+  'authDomain': "compression-tool-6af95.firebaseapp.com",
+  'databaseURL': "https://compression-tool-6af95-default-rtdb.firebaseio.com",
+  'projectId': "compression-tool-6af95",
+  'storageBucket': "compression-tool-6af95.appspot.com",
+  'messagingSenderId': "295626631784",
+  'appId': "1:295626631784:web:ed35e114286e3d3b6069dd",
+  'measurementId': "G-2XZEBYKFC6"
+}
+
+
+
+# Initialising database, auth, firebase and storage   
+firebase=pyrebase.initialize_app(config)
+authe = firebase.auth()
+database=firebase.database()
+storage=firebase.storage()
+
+
 #TEXT TO PDF
 def textToPDF(request):
     
     uploadFile = FileForm()
     return render(request,"TextToPDF.html",{'form':uploadFile}) 
+
 def text2pdf(request):
+	
 	if request.method == 'POST':  
 		uploadFile = FileForm(request.POST, request.FILES) 
-		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
-			file_type = file_type.lower()
-			user_pr.save()
-			filename, ext = os.path.splitext(user_pr.file.path)
+
+		if uploadFile.is_valid(): 
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
 			new_filename = f"{filename}_text_to_pdf_converted.pdf"
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
+			file_type = file_type.lower()
+
+			#NEW FILE TYPE
+			new_file_type='pdf'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size))
+
+			#TEXT TO PDF CONVERSION
+			
 			# load TXT document
-			doc = aw.Document(user_pr.file.path)
+			doc = aw.Document(uFile.file.path)
 			# save TXT as PDF file
 			doc.save(new_filename, aw.SaveFormat.PDF)
+
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
 			
-			return HttpResponse("Text to PDF converted successfuly")
+			conv_id = uuid.uuid4()
+	
+			#Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
 	
 	else:  
 		uploadFile = FileForm()  
+
 	return render(request,"TextToPDF.html",{'form':uploadFile})		
+
+
 #PDF TO TEXT
 def PDFtoText(request):
     
     uploadFile = FileForm()
     return render(request,"PDFtoText.html",{'form':uploadFile}) 
+
 def pdf2text(request):
+
 	if request.method == 'POST':  
 		uploadFile = FileForm(request.POST, request.FILES) 
+
 		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
+			new_filename = f"{filename}_pdf_to_text_converted.txt"
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
-			user_pr.save()
+
+			#NEW FILE TYPE
+			new_file_type='txt'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size))
 			
-			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_pdf_to_text_converted"
-			PdfFileObject = open(user_pr.file.path, 'rb')
-			output_file = open(f"{new_filename}.txt", "w", encoding="utf-8")
+			#PDF TO TEXT CONVERSION
+			PdfFileObject = open(uFile.file.path, 'rb')
+			output_file = open(new_filename, "w", encoding="utf-8")
 			pdfReader = PyPDF2.PdfReader(PdfFileObject)
 			numOfPages = len(pdfReader.pages)
+
 			# print(f"No. of pages: {pdfReader.numPages}")
 			for i in range(numOfPages):
+
 				page = pdfReader.pages[i]
 				text = page.extract_text()
 				output_file.write(text)
+
 			output_file.close()    
 			PdfFileObject.close()
-			return HttpResponse("PDF to Text converted successfuly")
+
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
+			
+			conv_id = uuid.uuid4()
+			
+			#Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
 	
 	else:  
 		uploadFile = FileForm()  
+
 	return render(request,"PDFtoText.html",{'form':uploadFile})	
+
+
 #PDF TO EXCEL
 def PDFtoExcel(request):
+
 	uploadFile = FileForm()
 	return render(request,"PDFtoExcel.html",{'form':uploadFile}) 
+
 def pdf2excel(request):
+
 	if request.method == 'POST': 
 		uploadFile = FileForm(request.POST, request.FILES) 
-		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
+
+		if uploadFile.is_valid(): 
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
+			new_filename = f"{filename}_pdf_to_excel_converted.xls"
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
-			user_pr.save()
-			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_pdf_to_excel_converted"	
+
+			#NEW FILE TYPE
+			new_file_type='xls'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size))
+
+			#PDF TO EXCEL CONVERSION
 			c = pdftables_api.Client('am6ebz6z2eei')
-			c.xlsx(user_pr.file.path, new_filename)
+			c.xlsx(uFile.file.path, new_filename)
+
 			
-			# tabula.convert_into(user_pr.file.path, f"{new_filename}.csv", pages="all", output_format = "csv", stream = True)
-			return HttpResponse("PDF to Excel converted successfuly")
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
+
+			conv_id = uuid.uuid4()
+
+            #Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
 	
 	else:  
 		uploadFile = FileForm() 
-	return render(request,"PDFtoExcel.html",{'form':uploadFile})
+
+	return render(request,"PDFtoExcel.html",{'form':uploadFile})				
+
 
 #EXCEL TO PDF
 def ExcelToPDF(request):
+
 	uploadFile = FileForm()
 	return render(request,"ExcelToPDF.html",{'form':uploadFile}) 
 
 def excel2pdf(request):
+
 	if request.method == 'POST':  
 		uploadFile = FileForm(request.POST, request.FILES) 
-		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
-			file_type = file_type.lower()
-			user_pr.save()
-			
-			WB_PATH = open(user_pr.file.path, 'rb')   # Path to original excel file
-			filename, ext = os.path.splitext(user_pr.file.path)
+
+		if uploadFile.is_valid(): 
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
 			new_filename = f"{filename}_excel_to_pdf_converted.pdf"
-			import  jpype     
-			import  asposecells 
-			jpype.startJVM() 
-			from asposecells.api import Workbook
 
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
+			file_type = file_type.lower()
+
+			#NEW FILE TYPE
+			new_file_type='pdf'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size)) 
+
+			#EXCEL TO PDF CONVERSION
 			
-			workbook = Workbook(user_pr.file.path)
+			# Path to original excel file
+			WB_PATH = open(uFile.file.path, 'rb')   
+			# workbook = Workbook(uFile.file.path)
+			# workbook.save(new_filename)
+			
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
 
-			workbook.save(new_filename)
-			# jpype.shutdownJVM()
-			return HttpResponse("Excel to PDF converted successfuly") 
+			conv_id = uuid.uuid4()
+
+            #Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/') 
 		
 	else:  
 		uploadFile = FileForm()  
-	return render(request,"ExcelToPDF.html",{'form':uploadFile})
+
+	return render(request,"ExcelToPDF.html",{'form':uploadFile})				
+		
 
 #PDF TO WORD
 def PDFtoWord(request):
+
 	uploadFile = FileForm()
 	return render(request,"PDFtoWord.html",{'form':uploadFile}) 
+
 def pdf2word(request):
+
 	if request.method == 'POST':  
 		uploadFile = FileForm(request.POST, request.FILES) 
-		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
+
+		if uploadFile.is_valid(): 
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
+			new_filename = f"{filename}_pdf_to_word_converted.docx"
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
-			user_pr.save()
 
-			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_pdf_to_word_converted.doc"	
+			#NEW FILE TYPE
+			new_file_type='docx'
 
-			new_filename = f"{filename}_pdf_to_word_converted.docx"	
-			cv = Converter(user_pr.file.path)
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size)) 
+
+			#PDF TO WORD CONVERSION
+			cv = Converter(uFile.file.path)
 			cv.convert(new_filename, start = 0, end = None)
-			return HttpResponse("PDF to Word converted successfuly")   # pdf2docx.parse(user_pr.file, f"{new_filename}.docx", start=0, end=None)
-	
-		else:  
-			uploadFile = FileForm()  
-		return render(request,"PDFtoWord.html",{'form':uploadFile})
-	
+
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
+
+			conv_id = uuid.uuid4()
+
+            #Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
+		
+	else:  
+		uploadFile = FileForm()  
+
+	return render(request,"PDFtoWord.html",{'form':uploadFile})		
+
+
 #WORD TO PDF
 def WordToPDF(request):
+
 	uploadFile = FileForm()
 	return render(request,"WordToPDF.html",{'form':uploadFile}) 
+
 def word2pdf(request):
+
 	if request.method == 'POST':  
 		uploadFile = FileForm(request.POST, request.FILES) 
-		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
-			file_type = file_type.lower()
-			user_pr.save()
-			open_file = open(user_pr.file.path, 'r',encoding='utf-8')# docx2pdf.convert(open_file)
-			
-			filename, ext = os.path.splitext(user_pr.file.path)
+
+		if uploadFile.is_valid():
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
 			new_filename = f"{filename}_word_to_pdf_converted.pdf"
-			
-			doc = aw.Document(user_pr.file.path)
-            # Save as PDF
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
+			file_type = file_type.lower()
+
+			#NEW FILE TYPE
+			new_file_type='pdf'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size))  
+
+			#WORD TO PDF CONVERSION
+			doc = aw.Document(uFile.file.path)
 			doc.save(new_filename)
-			return HttpResponse("Word to PDF converted successfuly")
+
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
+
+			conv_id = uuid.uuid4()
+
+            #Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
 	
 	else:  
 		uploadFile = FileForm()  
+
 	return render(request,"WordToPDF.html",{'form':uploadFile})
 			
 			
 #JPG TO PDF
 def JPGtoPDF(request):
+
 	uploadFile = FileForm()
 	return render(request,"JPGtoPDF.html",{'form':uploadFile}) 
+
 def jpg2pdf(request):
+
 	if request.method == 'POST': 
 		uploadFile = FileForm(request.POST, request.FILES) 
+
 		if uploadFile.is_valid():  
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
+
+            #NEW FILENAME
+			new_filename = f"{filename}_jpg_to_pdf_converted.pdf"
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
-			user_pr.save()
-			image = Image.open(user_pr.file.path)  # opening image\
-			pdf_bytes = img2pdf.convert(image.filename)   # converting into chunks using img2pdf
+
+			#NEW FILE TYPE
+			new_file_type='pdf'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size))
+
+			#JPG TO PDF CONVERSION
+			pdf  = FPDF()
+			pdf.set_auto_page_break(0)
+
+			img_list = [x for x in os.listdir('uFile.file.path')]
+
+			for img in img_list:
+				pdf.add_page()
+				image = uFile.file.path + img
+				pdf.image(image,w=200,h=260) 
+
+			pdf.output(new_filename)
 			
-			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_jpg_to_pdf_converted"
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
 
-			with open(f"{new_filename}.pdf", "wb") as file:      #write file 
-				file.write(pdf_bytes)
+			conv_id = uuid.uuid4()
 
-				
-			image.close()    # closing image file
-			user_pr.file.close()     # closing pdf file
-			return HttpResponse("Successfully made pdf file")    # output
+            #Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
 
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
+	
+	else:  
+		uploadFile = FileForm()  
+
+	return render(request,"JPGtoPDF.html",{'form':uploadFile})
+
+
+#PDF TO JPG
 def PDFtoJPG(request):
+
 	uploadFile = FileForm()
 	return render(request,"PDFtoJPG.html",{'form':uploadFile}) 
+
 def pdf2jpg(request):
 
 	if request.method == 'POST':
-
 		uploadFile = FileForm(request.POST, request.FILES) 
 
-		if uploadFile.is_valid():  
+		if uploadFile.is_valid(): 
+			uFile = uploadFile.save(commit=False)
+			uFile.file = request.FILES['file']
+	
+			#FILENAME
+			filename, ext = os.path.splitext(uFile.file.path)
 
-			user_pr = uploadFile.save(commit=False)
-			user_pr.file = request.FILES['file']
-			file_type = user_pr.file.url.split('.')[-1]
+            #NEW FILENAME
+			new_filename = f"{filename}_pdf_to_jpg_converted.jpg"
+
+			#FILE TYPE
+			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
-			user_pr.save()
 
-			filename, ext = os.path.splitext(user_pr.file.path)
-			new_filename = f"{filename}_pdf_to_jpg_converted"
+			#NEW FILE TYPE
+			new_file_type='jpg'
+
+			#Saving original file locally
+			uFile.save()
+
+            #Filename to store in firebase
+			file_name= uFile.file.url.split('/')[-1]
+			new_file_name= new_filename.split('/')[-1] 
+
+            #Get the original file size in bytes
+			file_size = os.path.getsize(uFile.file.path)
+
+            #Print size 
+			print("[*] Size :", get_size_format(file_size)) 
+
+			#PDF TO JPG CONVERSION
 			poppler_path = r"C:\Users\nutan\Downloads\Release-23.01.0-0 (1)\poppler-23.01.0\Library\bin"
-			images = convert_from_path(user_pr.file.path,poppler_path=poppler_path)
-			# output = "outfile.jpg"
+			images = convert_from_path(uFile.file.path,poppler_path=poppler_path)
+			
 			for image in range(len(images)):
-				# fname = 'image'+str(i)+'.JPG'
 				images[image].save('page '+str(image)+'.jpg','JPEG')
-				
-			return HttpResponse("PDF to JPG converted successfuly")
+
+			idToken=request.session['uid']
+			a=authe.get_account_info(idToken)
+			a=a['users']
+			a=a[0]
+			a=a['localId']
+
+			conv_id = uuid.uuid4()
+
+            #Storing original file in firebase storage
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
+			tz =pytz.timezone('Asia/Kolkata')
+			time_now=datetime.now(timezone.utc).astimezone(tz)
+			millis=int(time.mktime(time_now.timetuple()))
+			
+			org_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).get_url(idToken)
+			new_url=storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).get_url(idToken)
+			
+			data={
+                'user_id':a,
+                'date_time':millis,
+                'file_name':file_name,
+                'new_file_name':new_file_name,
+                'file':org_url,
+			    'file_type':file_type,
+			    'file_size':file_size,
+			    'new_file':new_url,
+			    'new_file_type':new_file_type
+		    }
+
+            #Storing data in conversion table in Firebase Realtime Database
+			database.child('conversion').child(conv_id).set(data)
+
+            #Deleting from local storage
+			default_storage.delete(uFile.file.path)
+			default_storage.delete(new_filename)  
+			
+			return HttpResponseRedirect('/userConvList/')
 	
 	else:  
 		uploadFile = FileForm()  
 
 	return render(request,"PDFtoJPG.html",{'form':uploadFile})				
 		
-
-
+def get_size_format(b, factor=1024, suffix="B"):
+    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
+        if b < factor:
+            return f"{b:.2f}{unit}{suffix}"
+        b /= factor
+    return f"{b:.2f}Y{suffix}"
