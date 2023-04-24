@@ -170,7 +170,7 @@ header{
 /* DASHBOARD */
 
 .user-container .content .dash-cards {
-  /* width: 77vw; */
+  width: 77vw; 
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -187,8 +187,8 @@ header{
   display: flex;
   align-items: center;
   justify-content: space-around;
-  box-shadow: #fc075f;
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+  /* box-shadow: #fc075f; */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
 }
 
 .user-container .content .chart {
@@ -198,8 +198,8 @@ header{
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  box-shadow: #fc075f;
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+  /* box-shadow: #fc075f; */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
   margin: 10px 10px 10px 10px;
 }
 
@@ -283,16 +283,7 @@ header{
     border: 1px solid;
     border-radius: 25px;
 }
-.user-container .content .cards .emailreset{
-  width: 100%;
-  height: 35%;
-  outline: #fc075f;
-  padding-left: 20px;
-  font-size: 15px;
-  border-radius: 5px;
-  border: 1px solid #bfbfbf;
-  margin-top: -9px;
-}
+
 
 /* LIST */
 
