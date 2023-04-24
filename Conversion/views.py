@@ -2,41 +2,17 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import pytz
-import os 
-# import pdf2docx, docx2pdf
 import PyPDF2
 from pdf2docx import Converter
-# from tabula.io import read_pdf
-# import tabula 
-import pandas as pd
 from pdf2image import convert_from_path
-# import img2pdf
-from PIL import Image 
-# import textwrap
 from fpdf import FPDF 
 import os
-# from collections.abc import MutableMapping
-# Import mimetypes module
-# import mimetypes
-# import os module
-import os
-from PIL import Image
-# Import HttpResponse module
-from django.http.response import HttpResponse
 from django.shortcuts import render
 from .forms import FileForm
-from .models import File_Form
 import pdftables_api
-import  jpype, asposecells  
-from pdf2jpg import pdf2jpg
 import aspose.words as aw
-import  jpype     
-# import  asposecells
-# jpype.startJVM() 
-# from asposecells.api import Workbook
 import pyrebase
-import firebase_admin
-from firebase_admin import credentials, storage
+from firebase_admin import  storage
 import time
 from datetime import datetime, timezone
 from django.core.files.storage import default_storage
@@ -53,7 +29,6 @@ config = {
   'appId': "1:295626631784:web:ed35e114286e3d3b6069dd",
   'measurementId': "G-2XZEBYKFC6"
 }
-
 
 
 # Initialising database, auth, firebase and storage   
@@ -820,7 +795,8 @@ def pdf2jpg(request):
 		uploadFile = FileForm()  
 
 	return render(request,"PDFtoJPG.html",{'form':uploadFile})				
-		
+
+#GET FILE SIZE FORMAT 		
 def get_size_format(b, factor=1024, suffix="B"):
     for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
         if b < factor:

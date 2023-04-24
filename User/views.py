@@ -1,12 +1,7 @@
 import os
 from django.shortcuts import render
-from firebase_admin import auth
 import pyrebase
-
-import time
-from datetime import datetime, timezone
-import pytz
-
+from datetime import datetime
 from django.http.response import HttpResponse
 import pyrebase
 import firebase_admin
@@ -24,10 +19,10 @@ config = {
   'measurementId': "G-2XZEBYKFC6"
 }
 
-cred=credentials.Certificate('serviceAccountKey.json')
-firebase_admin.initialize_app(cred, {
-    'storageBucket': "compression-tool-6af95.appspot.com"
-})
+# cred=credentials.Certificate('serviceAccountKey.json')
+# firebase_admin.initialize_app(cred, {
+#     'storageBucket': "compression-tool-6af95.appspot.com"
+# })
 
 
 # Initialising database, auth, firebase and storage   
@@ -35,6 +30,7 @@ firebase=pyrebase.initialize_app(config)
 authe = firebase.auth()
 database=firebase.database()
 storage=firebase.storage()
+
 
 #HOME
 def home(request):
@@ -109,7 +105,6 @@ def postsignUp(request):
 	department=request.POST.get('department')
 	employment_type=request.POST.get('employment_type')
 	MiddleName=request.POST.get('MiddleName')
-	MiddleName=request.POST.get('MiddleName')
 
 	try:
 		
@@ -161,10 +156,10 @@ def postReset(request):
 	try:
 		authe.send_password_reset_email(email)
 		message  = "A email to reset password is successfully sent"
-		return render(request, "ResetPassword.html", {"msg":message})
+		return render(request, "ResetPassword.html", {"message":message})
 	except:
 		message  = "Something went wrong, Please check the email you provided is registered or not"
-		return render(request, "ResetPassword.html", {"msg":message})
+		return render(request, "ResetPassword.html", {"message":message})
 
 
 #DASHBOARD
@@ -457,39 +452,4 @@ def get_size_format(b, factor=1024, suffix="B"):
             return f"{b:.2f}{unit}{suffix}"
         b /= factor
     return f"{b:.2f}Y{suffix}"
-
-
-def check(request):
-	all_users=database.child('users').shallow().get().val()
-	list_users=[]
-
-	for i in all_users:                                              
-		list_users.append(i)
-	
-	print(list_users)
-	#list_users.sort(reverse=True) when time stamp based sorting
-
-	names=[]
-	for i in list_users:
-		name=database.child('users').child(i).child('name').get().val()
-		names.append(name)
-
-	print(names)
-
-	FirstNames=[]
-	for i in list_users:
-		FirstName=database.child('users').child(i).child('FirstName').get().val()
-		FirstNames.append(FirstName)
-
-
-	departments=[]
-	for i in list_users:
-		department=database.child('users').child(i).child('department').get().val()
-		departments.append(department)
-
-	print(departments)
-	
-	comb_list=zip(list_users,names,FirstName,departments)	
-		    
-	return render(request,"ListUsers.html",{'comb_list':comb_list})
 

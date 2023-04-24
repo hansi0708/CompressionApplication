@@ -115,7 +115,6 @@ header{
   width: 77vw;
   height: 20vh;
   text-decoration: underline;
-  /* text-decoration-thickness: 12px; */
 }
 
 .user-container .content .header-card p{
@@ -160,7 +159,7 @@ header{
   background: #fc075f;
   color: #f1f1f1;
   margin-bottom: 2%;
-  margin-top: 5%;
+  margin-top: 2%;
   margin-left: 37px;
   font-weight: 700;
   height : 27px;
@@ -187,8 +186,7 @@ header{
   display: flex;
   align-items: center;
   justify-content: space-around;
-  box-shadow: #fc075f;
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
 }
 
 .user-container .content .chart {
@@ -198,8 +196,7 @@ header{
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  box-shadow: #fc075f;
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
   margin: 10px 10px 10px 10px;
 }
 
@@ -341,21 +338,4 @@ header{
   font-weight: 700;
   border: 1px solid;
   border-radius: 25px;
-}
-
-  
-
-
-
-
-
-
-.user-container h1 {
-    margin: 0%;
-    padding: 40px;
-}
-.user-container .btn {
-    width: 30%;
-    border-radius: 15px;
-    background-color: #2691d9;
 }
