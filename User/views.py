@@ -137,7 +137,65 @@ def postsignUp(request):
 
 #UPDATE PROFILE
 def updateProfile(request):
-	return render(request,"UpdateProfile.html")
+	
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	salutation = database.child('users').child(a).child('Salutation').get().val()
+	MiddleName = database.child('users').child(a).child('MiddleName').get().val()
+	department = database.child('users').child(a).child('department').get().val()
+	designation = database.child('users').child(a).child('designation').get().val()
+	email = database.child('users').child(a).child('email').get().val()
+	employment_type = database.child('users').child(a).child('employment_type').get().val()
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
+
+	context = {
+        'Salutation':salutation,
+	    'MiddleName':MiddleName,
+	    'department':department,
+	    'designation':designation,
+	    'email':email,
+	    'employment_type':employment_type,
+	    'FirstName':FirstName,
+	    'LastName':LastName 
+    }
+
+	return render(request,"UpdateProfile.html",context)
+
+def postUpdate(request):
+	email = request.POST.get('email')
+	name = request.POST.get('Salutation')
+	FirstName=request.POST.get('FirstName')
+	LastName=request.POST.get('LastName')
+	designation=request.POST.get('designation')
+	department=request.POST.get('department')
+	employment_type=request.POST.get('employment_type')
+	MiddleName=request.POST.get('MiddleName')
+
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	data={
+			'email':email,
+			'Salutation' : name,
+			'FirstName':FirstName,
+			'LastName':LastName,
+			'MiddleName':MiddleName,
+			'designation':designation,
+			'department':department,
+			'employment_type':employment_type
+		}
+	
+	database.child('users').child(a).update(data)
+
+	return render(request,"UserProfile.html",data)
 
 
 #RESET PASSWORD
@@ -153,6 +211,7 @@ def resetPassword(request):
 
 def postReset(request):
 	email = request.POST.get('email')
+	print(email)
 	try:
 		authe.send_password_reset_email(email)
 		message  = "A email to reset password is successfully sent"
