@@ -1,199 +1,48 @@
-<!DOCTYPE html>
+{% extends 'AdminMaster.html' %}
+{% load static %}
 
-<html xmlns="http://www.w3.org/1999/html">
+{% block mymessage %}
 
-    <head>
+<title>PROFILE</title>
 
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="page.css">
-        <title>WELCOME</title>
+<div class="content">
 
-        <style>
-            .flex {
-                border: white;
-                display: flex;
-                flex-direction: row;
-            }
-            
-            .flex1 {
-                display: flex;
-                justify-content: space-between;
-                /* width: 80%; */
-            }
-            html, body {
-                            width: 100%;
-                            height: 100%;
-                            margin: 0;
-                            padding: 0;
-            
-                        }
-            
-            .profile {
-                text-align: center;
-                margin-top: 0%;
-                background-color: #99CCFF;
-                box-shadow: 5px 5px 20px black;
-            }
-            
-            .menu {
-                font-size: 20px;
-                color: white;
-                background-color: indianred;
-                flex-basis: 22%;
-            }
-            
-            .menu1 {
-                flex-basis: 90%;
-            }
-            
-            .helper {
-                font-size: 20px;
-            }
-            
-            .helper2 {
-                font-size: 20px;
-            }
-            
-            .helper1 {
-                font-size: 20px;
-            }
-            
-            label {
-                text-align: left;
-                clear: both;
-                float: left;
-                margin-right: 55px;
-                margin-top: 75px;
-            }
-            
-            input {
-                text-align: left;
-                float: right;
-                margin-left: 55px;
-                margin-top: 20px;
-            }
-            
-            #button-container {
-                width: 100%;
-                display: block;
-                position: relative;
-                text-align: center;
-                height: auto;
-                background-color: #99CCFF;
-            
-            }
-            
-            #button {
-                cursor: pointer;
-                max-width: 180%;
-                max-height: 100%;
-                width: 15%;
-                height: 50px;
-                font-size: 100%;
-                text-align: center;
-            }
-             </style>       
+    <div class="header-card">
+		<h1>ADMIN PROFILE</h1>
+	</div>
     
-    </head>
-    
-    <body>
-
-        <div class="flex">
-
-            <nav class="menu">
-
-                <ul style="list-style: none;">
-
-                    <li>
-                        <h3>Profile</h3>
-                    </li>
-
-                    <li>
-                        <h3>Users</h3>
-                    </li>
-
-                    <li>
-                        <h3>Department</h3>
-                    </li>
-
-                    <li>
-                        <h3>Designation</h3>
-                    </li>
-
-                    <li>
-                        <h3>File Operation</h3>
-                    </li>
-
-                    <li>
-                        <h3>Permission</h3>
-                    </li>
-
-                </ul>
-            </nav>
-
-            <div class="menu1">
-
-                <!-- <div class="profile"></div> -->
-
-                <h1 class="profile">ADMIN </h1>
-
-                <div class="flex1">
-
-                    <main>
-
-                        <div class="helper">
-
-                            <label>Name:</label>
-                            <label>Center:</label>
-                            <label>Staff:</label>
-                            <label>Designation:</label>
-                            <label>Department:</label>
-
-                        </div>
-
-                    </main>
-
-                    <div class="helper2">
-
-                        <label>Name</label>
-                        <label>Center</label>
-                        <label>Staff</label>
-                        <label>Designation</label>
-                        <label>Department</label>
-
-                    </div>
-
-                    <div class="helper1">
-
-                        <label>Employement Type:</label>
-                        <label>Level:</label>
-                        <label>Email:</label>
-
-                    </div>
-
-                    <div class="helper1">
-
-                        <label>Employement Type</label>
-                        <label>Level</label>
-                        <label>Email</label>
-
-                    </div>
-
-                </div>
-
-                <br>
-
-                <div id="button-container">
-                    <button id="button">Reset Password</button>
-                </div>
-
+    <div class="cards">         
+  
+            <div class="helper">
+                <label> Name:</label><br>
+                <label> Designation:</label><br>
+                <label> Department:</label><br>
+                <label> Employement Type:</label><br>
+                <label> Email:</label><br>
             </div>
 
-        </div>
-        
-    </body>
+            <div class="helper">
+                <label>{{Salutation}} {{FirstName}} {{MiddleName}} {{LastName}}</label><br>
+                <label>{{designation}}</label><br>  
+                <label>{{department}}</label><br>
+                <label>{{employment_type}}</label><br>
+                <label>{{email}}</label><br>
+            </div>
 
-</html>
+    </div>
+        
+    <div class="cards">
+
+        <div >
+            <button class="button-container" onClick="location.href = '/admin/adResetPassword/'" id="button">Reset Password</button>
+        </div>
+
+        <div >
+            <button class="button-container" onClick="location.href = '/updateProfile/'" id="button">Update Profile</button>
+        </div>
+
+    </div>
+
+</div>
+    
+{% endblock %} 

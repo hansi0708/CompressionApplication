@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path
 from . import views
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path('logout/', views.logout, name="log"),
 
     path('updateProfile/',views.updateProfile),
+    path('postUpdate/',views.postUpdate),
 
     path('forgot/', views.forgot),
 
@@ -35,7 +36,5 @@ urlpatterns = [
     path('conv_details/',views.conv_details),
     path('orDownload/',views.orgConvDow),
     path('convDownload/',views.convDow),
-
-    path('usersList/',views.check),
 
     ]

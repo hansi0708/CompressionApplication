@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+  
+  <head>
+
+    <link rel="stylesheet" type="text/css" href="{% static '/css/user.css' %}">
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-database.js"></script>
+  
+  </head>
+
+  <body>
+  
+    <div>
+
+      <header>
+
+        <div class="navLeft">
+          <p id="username">HELLO, {{FirstName}} {{LastName}} !</p>
+        </div>
+
+        <div class="rightNav">
+          <p onclick="location.href = '/logout/'">Logout</p>
+        </div>
+
+      </header>
+
+    </div>
+
+    <div class="container">
+      
+      <div class="side-menu">
+        
+        <ul>
+          <li><img onclick="location.href = '/admin/listUsers/'" src={% static "UsernameIcon.png" %} height="30" width="30" alt="">&nbsp; Users</li>
+          <li><img onclick="location.href = '/admin/adDashboard/'" src={% static "DashboardIcon.png" %} height="30" width="30" alt="">&nbsp; Dashboard</li>
+          <li><img onclick="location.href = '/admin/adProfile/'" src={% static "ProfileIcon.png" %} height="30" width="30" alt="">&nbsp; Profile</li>
+          <li><img onclick="location.href = '/admin/adConvList/'" src={% static "ConversionIcon.png" %} height="30" width="30" alt="">&nbsp; Converted Files</li>
+          <li><img onclick="location.href = '/admin/adCompList/'" src={% static "CompressionIcon.png" %} height="30" width="30" alt="">&nbsp; Compressed Files</li>
+          <li><img onclick="location.href = '/home/'" src={% static "UsernameIcon.png" %} height="30" width="30" alt="">&nbsp; Designations</li>
+          <li><img onclick="location.href = '/home/'" src={% static "UsernameIcon.png" %} height="30" width="30" alt="">&nbsp; Departments</li>
+        </ul>
+      
+      </div>
+
+      <div class="admin-container">
+        
+        {% block mymessage %}
+        {% endblock %} 
+
+      </div>
+
+    </div>
+    
+  </body>
+
+</html>

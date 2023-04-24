@@ -1,4 +1,4 @@
-{% extends 'UserMaster.html' %}
+{% extends 'AdminMaster.html' %}
 {% load static %}
 
 {% block mymessage %}
@@ -17,11 +17,11 @@
   function drawChart() {
     
     var data = google.visualization.arrayToDataTable([
-      ['Year', 'Files Converted', 'Files Compressed'],
-      ['2014', 100, 400],
-      ['2015', 17, 460],
-      ['2016', 160, 112],
-      ['2017', 103, 540]
+      ['Year', 'Files Converted', 'Files Compressed', 'Files Shared'],
+      ['2014', 100, 400, 200],
+      ['2015', 17, 460, 250],
+      ['2016', 160, 112, 300],
+      ['2017', 103, 540, 350]
     ]);
     var options = {
       chart: {
@@ -72,7 +72,7 @@
 
     </div>
 
-    {% comment %} <div class="card">
+    <div class="card">
       
       <div class="box">
         <h1>5</h1>
@@ -83,7 +83,7 @@
         <img src={% static "Share.PNG" %} width="60" height="60" alt="">
       </div>
     
-    </div> {% endcomment %}
+    </div>
 
   </div>
 

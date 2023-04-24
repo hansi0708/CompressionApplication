@@ -7,39 +7,45 @@
 
 <div class="content">
 
-    <div class="header-card">
-		<h1>USER PROFILE</h1>
-	</div>
+  <div class="header-card">
+    <h1>USER PROFILE</h1>
+  </div>
 
-    <div class="cards">  
+  <div class="cards"> 
+    
+    <form action="/postUpdate/" method="POST">
+      {% csrf_token %}
+    
       <div class="helper" style="margin-bottom:20px">
-              <label for="Salutation">Salutation:</label><br>
-              <label for="FirstName">First Name:</label><br>
-              <label for="MiddleName">Middle Name:</label><br>
-              <label for="LastName">Last Name:</label><br>
-              <label for="email">Email:</label><br>
-              <label for="employment_type">Employement Type:</label><br>
-              <label for="Department">Department:</label><br>
-              <label for="designation">Designation:</label><br>
+        <label for="Salutation">Salutation:</label><br>
+        <label for="FirstName">First Name:</label><br>
+        <label for="MiddleName">Middle Name:</label><br>
+        <label for="LastName">Last Name:</label><br>
+        <label for="email">Email:</label><br>
+        <label for="employment_type">Employement Type:</label><br>
+        <label for="Department">Department:</label><br>
+        <label for="designation">Designation:</label><br>
       </div>
 
       <div class="helper">
-            <input type="text" name=""> <br><br>
-            <input type="FirstName" id="Username" name="FirstName" ><br><br>
-            <input type="MiddleName" id="MiddleName" name="MiddleName"><br><br>
-            <input type="LastName" id="LastName" name="LastName"><br><br>
-            <input type="email" id="email" name="email"><br><br>
-            <input type="text" id="employment_type" name="employment_type"><br><br>
-            <input type="department" id="Department" name="department"><br><br>
-            <input  type="designation" id="designation" name="designation"><br><br>
-      </div>        
-    </div>
+        <input type="text" name="" value="{{Salutation}}" readonly> <br><br>
+        <input type="FirstName" id="Username" name="FirstName" value="{{FirstName}}" readonly><br><br>
+        <input type="MiddleName" id="MiddleName" name="MiddleName" value="{{MiddleName}}" readonly><br><br>
+        <input type="LastName" id="LastName" name="LastName" value="{{LastName}}" readonly><br><br>
+        <input type="email" id="email" name="email" value="{{email}}" ><br><br>
+        <input type="text" id="employment_type" name="employment_type" value="{{employment_type}}"><br><br>
+        <input type="department" id="Department" name="department" value="{{department}}"><br><br>
+        <input type="designation" id="designation" name="designation" value="{{designation}}"><br><br>
+      </div> 
 
+      <div class="button-container" >
+        <button class="button-container" type="submit" id="button">Update </button>
+      </div>
+      
+    </form>
 
-<div class ="cards">
-    <div class="button-container" >
-       <button class="button-container" onClick="location.href = '/updateProfile/'" id="button">Update </button>
-    </div>
-</div> 
+  </div>
+
     
+</div>
 {% endblock %} 
