@@ -325,7 +325,7 @@ def orgCompDow(request):
     
     file_name=database.child('compression').child(comp_id).child('file_name').get().val()
     org_url=database.child('compression').child(comp_id).child('file').get().val()
-    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
+    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~\\Downloads\\'+file_name))
     return HttpResponse("File downloaded successfuly")
 
 def compDow(request):
@@ -337,9 +337,10 @@ def compDow(request):
     a=a['localId']
     new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
     new_url=database.child('compression').child(comp_id).child('new_file').get().val()
-    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
+    # storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
+    storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~\\Downloads\\' +new_file_name))
     
-    return HttpResponse("File downloaded successfuly") 
+    return HttpResponse("File downloaded successfully") 
 
 
 #CONVERSION DATA
@@ -424,7 +425,7 @@ def orgConvDow(request):
     
     file_name=database.child('conversion').child(conv_id).child('file_name').get().val()
     org_url=database.child('conversion').child(conv_id).child('file').get().val()
-    storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
+    storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).download(org_url,os.path.expanduser('~\\Downloads\\'+file_name))
     return HttpResponse("File downloaded successfuly")
 
 def convDow(request):
@@ -436,7 +437,7 @@ def convDow(request):
     a=a['localId']
     new_file_name=database.child('conversion').child(conv_id).child('new_file_name').get().val()
     new_url=database.child('conversion').child(conv_id).child('new_file').get().val()
-    storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
+    storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~\\Downloads\\'+new_file_name))
     
     return HttpResponse("File downloaded successfuly") 
 

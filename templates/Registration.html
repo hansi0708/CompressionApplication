@@ -67,7 +67,7 @@
 
                     <!-- Password: -->
                     <div class="txt_field" for = 'password'>
-                        <input id="password"  type="password"  name="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                        <input id="password"  type="password"  name="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required >
                         <span></span>
                     </div>
                 
@@ -102,7 +102,8 @@
                      
                    <!-- Confirm Password: -->
                     <div class="txt_field">
-                        <input type="password" id="confirm_password" oninvalid="InvalidMsgPass(this);" oninput = "InvalidMsgPass(this);" name="pass-repeat" placeholder="Confirm Password"  required>
+                        <input type="password" id="confirm_password"  name="pass-repeat" placeholder="Confirm Password" required > 
+                        {% comment %} /*onkeyup = "ValidatePassword()"> {% endcomment %}
                         <span></span>
                     </div>
 
@@ -129,14 +130,13 @@
               {% comment %} <form action="#" class="input-area"> {% endcomment %}
                 <div action="#" class="input-area"> 
                 <input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
-                <button class="check-btn" onclick = "checkButton()">Check</button>
+                <button class="check-btn" >Check</button>
                 </div>
               {% comment %} </form> {% endcomment %}
               <div class="status-text"></div>
         </div> 
             
-        <input type="submit" value="Register Now" onclick = "checkButton()"><br></br>
-    
+         <input type="submit" value="Register Now" ><br></br>    
             <div class="signUp_Link">
                 Already a member?
                 <a href="/postsignIn/">Log In</a>
@@ -219,7 +219,7 @@
                           length.classList.add("invalid");
                         }
                       }
-
+                  
 
             let captcha = document.querySelector(".captcha"),
             reloadBtn = document.querySelector(".reload-btn"),
@@ -245,7 +245,7 @@
             getCaptcha();
             });
 
-            function checkButton(){
+            {% comment %} function checkButton(){ {% endcomment %}
             checkBtn.addEventListener("click", e =>{
                 console.log("--->",checkBtn.value);
             e.preventDefault(); //preventing button from it's default behaviour
@@ -253,18 +253,20 @@
             //adding space after each character of user entered values because I've added spaces while generating captcha
             let inputVal = inputField.value.split('').join(' ');
             if(inputVal == captcha.innerText){ //if captcha matched
-                statusTxt.style.color = "#4db2ec";
-                statusTxt.innerText = "Nice! You don't appear to be a robot.";
+                     alert("Captcha Matched");
+                /*{% comment %} statusTxt.style.color = "#4db2ec";
+                statusTxt.innerText = "Nice! You don't appear to be a robot."; {% endcomment %}*/
                 setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
                 removeContent();
                 getCaptcha();
                 }, 9000);
             }else{
-                statusTxt.style.color = "#ff0000";
-                statusTxt.innerText = "Captcha not matched. Please try again!";
+              alert("Invalid Captcha");
+                /*statusTxt.style.color = "#ff0000";
+                statusTxt.innerText = "Captcha not matched. Please try again!";*/
             }
             });
-        }
+        {% comment %} } {% endcomment %}
 
             function removeContent(){
             inputField.value = "";

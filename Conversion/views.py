@@ -166,7 +166,7 @@ def pdf2text(request):
             #Filename to store in firebase
 			file_name= uFile.file.url.split('/')[-1]
 			new_file_name= new_filename.split('/')[-1] 
-
+			print(new_file_name)
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
 
