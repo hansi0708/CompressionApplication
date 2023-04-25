@@ -1,5 +1,6 @@
 #Import os module
 import os
+import platform
 from PIL import Image
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -63,8 +64,12 @@ def compressImage(request):
             uFile.save()
 
             #Filename to store in firebase
-            file_name= uFile.file.url.split('/')[-1]
-            new_file_name= new_filename.split('/')[-1]
+            if platform.system() == "Windows":
+                file_name= uFile.file.url.split('\\')[-1]
+                new_file_name= new_filename.split('\\')[-1] 
+            elif platform.system() == "Linux" :
+                file_name= uFile.file.url.split('/')[-1]
+                new_file_name= new_filename.split('/')[-1]
 
             #Image compression code
             quality=90
@@ -183,8 +188,12 @@ def pptCompression(request):
             uFile.save()
 
             #Filename to store in firebase
-            file_name= uFile.file.url.split('/')[-1]
-            new_file_name= new_filename.split('/')[-1]
+            if platform.system() == "Windows":
+                file_name= uFile.file.url.split('\\')[-1]
+                new_file_name= new_filename.split('\\')[-1] 
+            elif platform.system() == "Linux" :
+                file_name= uFile.file.url.split('/')[-1]
+                new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
             file_size = os.path.getsize(uFile.file.path)
@@ -285,8 +294,12 @@ def wordCompression(request):
             uFile.save()
 
             #Filename to store in firebase
-            file_name= uFile.file.url.split('/')[-1]
-            new_file_name= new_filename.split('/')[-1] 
+            if platform.system() == "Windows":
+                file_name= uFile.file.url.split('\\')[-1]
+                new_file_name= new_filename.split('\\')[-1] 
+            elif platform.system() == "Linux" :
+                file_name= uFile.file.url.split('/')[-1]
+                new_file_name= new_filename.split('/')[-1] 
 
             #Get the original file size in bytes
             file_size = os.path.getsize(uFile.file.path)
@@ -397,8 +410,12 @@ def pdfCompression(request):
             uFile.save()
 
             #Filename to store in firebase
-            file_name= uFile.file.url.split('/')[-1]
-            new_file_name= new_filename.split('/')[-1] 
+            if platform.system() == "Windows":
+                file_name= uFile.file.url.split('\\')[-1]
+                new_file_name= new_filename.split('\\')[-1] 
+            elif platform.system() == "Linux" :
+                file_name= uFile.file.url.split('/')[-1]
+                new_file_name= new_filename.split('/')[-1] 
 
             #Get the original file size in bytes
             file_size = os.path.getsize(uFile.file.path)

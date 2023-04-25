@@ -1,4 +1,5 @@
 import datetime
+import platform
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import pytz
@@ -70,8 +71,12 @@ def text2pdf(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -164,9 +169,13 @@ def pdf2text(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
-			print(new_file_name)
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
+
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
 
@@ -267,8 +276,12 @@ def pdf2excel(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -359,8 +372,12 @@ def excel2pdf(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -453,8 +470,12 @@ def pdf2word(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -544,8 +565,12 @@ def word2pdf(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1] 
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -635,8 +660,12 @@ def jpg2pdf(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -735,8 +764,12 @@ def pdf2jpg(request):
 			uFile.save()
 
             #Filename to store in firebase
-			file_name= uFile.file.url.split('/')[-1]
-			new_file_name= new_filename.split('/')[-1] 
+			if platform.system() == "Windows":
+				file_name= uFile.file.url.split('\\')[-1]
+				new_file_name= new_filename.split('\\')[-1] 
+			elif platform.system() == "Linux" :
+				file_name= uFile.file.url.split('/')[-1]
+				new_file_name= new_filename.split('/')[-1]
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
