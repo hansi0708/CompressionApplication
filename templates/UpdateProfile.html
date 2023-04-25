@@ -8,14 +8,15 @@
 <div class="content">
 
   <div class="header-card">
-    <h1>USER PROFILE</h1>
+    <h1>UPDATE PROFILE</h1>
   </div>
 
-  <div class="cards"> 
+  {% comment %} <div class="cards">  {% endcomment %}
     
     <form action="/postUpdate/" method="POST">
       {% csrf_token %}
-    
+      <div class="cards"> 
+        
       <div class="helper" style="margin-bottom:20px">
         <label for="Salutation">Salutation:</label><br>
         <label for="FirstName">First Name:</label><br>
@@ -27,25 +28,30 @@
         <label for="designation">Designation:</label><br>
       </div>
 
-      <div class="helper">
-        <input type="text" name="" value="{{Salutation}}" readonly> <br><br>
-        <input type="FirstName" id="Username" name="FirstName" value="{{FirstName}}" readonly><br><br>
-        <input type="MiddleName" id="MiddleName" name="MiddleName" value="{{MiddleName}}" readonly><br><br>
-        <input type="LastName" id="LastName" name="LastName" value="{{LastName}}" readonly><br><br>
-        <input type="email" id="email" name="email" value="{{email}}" ><br><br>
-        <input type="text" id="employment_type" name="employment_type" value="{{employment_type}}"><br><br>
-        <input type="department" id="Department" name="department" value="{{department}}"><br><br>
-        <input type="designation" id="designation" name="designation" value="{{designation}}"><br><br>
+      <div class="helper" >
+        <input type="text" name="" value="{{Salutation}}" maxlength="50" size="30" style="font-size:12pt;" readonly> <br><br>
+        <input type="FirstName" id="Username" name="FirstName" value="{{FirstName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
+        <input type="MiddleName" id="MiddleName" name="MiddleName" value="{{MiddleName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
+        <input type="LastName" id="LastName" name="LastName" value="{{LastName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
+        <input type="email" id="email" name="email" value="{{email}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
+        <input type="text" id="employment_type" name="employment_type" value="{{employment_type}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
+        <input type="department" id="Department" name="department" value="{{department}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
+        <input type="designation" id="designation" name="designation" value="{{designation}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
       </div> 
 
+  </div>  
+  <div class="cards"> 
+    <div class="button-container" >
+      <button class="button-container" type="submit" id="button">Update </button>
+    </div>
+  </div>
+    </form>
+
+    {% comment %} <div class="cards"> 
       <div class="button-container" >
         <button class="button-container" type="submit" id="button">Update </button>
       </div>
-      
-    </form>
+    </div> {% endcomment %}
 
-  </div>
-
-    
 </div>
 {% endblock %} 
