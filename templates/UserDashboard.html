@@ -9,15 +9,16 @@
   
 <title>Dashboard</title>
 
-<script type="text/javascript">
+<div class = "chart" >
+ <script type="text/javascript">
   
   google.charts.load('current', {'packages':['bar']});
-  google.charts.setOnLoadCallback(drawChart);
+  google.charts.setOnLoadCallback(drawChart); 
   
   function drawChart() {
     
     var data = google.visualization.arrayToDataTable([
-      ['Year', 'Files Converted', 'Files Compressed'],
+      ['Date', 'Files Converted', 'Files Compressed'],
       ['2014', 100, 400],
       ['2015', 17, 460],
       ['2016', 160, 112],
@@ -26,7 +27,7 @@
     var options = {
       chart: {
         title: 'User Performance',
-        subtitle: ' Files converted, compressed, Shared ',
+        subtitle: ' File Converted, File Compressed ',
       },
       bars: 'vertical' // Required for Material Bar Charts.
     };
@@ -34,10 +35,10 @@
     var chart = new google.charts.Bar(document.getElementById('barchart_material'));
     chart.draw(data, google.charts.Bar.convertOptions(options));
   
-  }
+  } 
 
-</script>  
-
+   </script>   
+</div>
 <div class="content">
 
   <div class="header-card">

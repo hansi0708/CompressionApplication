@@ -170,6 +170,8 @@ header{
 
 .user-container .content .dash-cards {
   width: 77vw; 
+  padding-left: 70px;
+  padding-right: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -182,6 +184,7 @@ header{
   width: 300px;
   height: 150px;
   background: white;
+  padding-left: 20px;
   margin: 20px 10px;
   display: flex;
   align-items: center;
@@ -194,6 +197,9 @@ header{
 .user-container .content .chart {
   width: 77vw;
   padding: 20px 15px 15px 20px;
+  /* padding: 20px 35px; */
+  padding-left: 150px;
+  padding-right: 100px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -278,7 +284,7 @@ header{
     color: #f1f1f1;;
     font-weight: 700;
     width: 300px;
-    display: flex;
+    display: flex; 
     align-items: center;
     justify-content: space-around;
     border: 1px solid;
