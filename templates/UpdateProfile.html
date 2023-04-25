@@ -8,15 +8,19 @@
 <div class="content">
 
   <div class="header-card">
+    
     <h1>UPDATE PROFILE</h1>
+  
   </div>
 
   {% comment %} <div class="cards">  {% endcomment %}
     
-    <form action="/postUpdate/" method="POST">
-      {% csrf_token %}
-      <div class="cards"> 
-        
+  <form action="/postUpdate/" method="POST">
+    
+    {% csrf_token %}
+
+    <div class="cards"> 
+      
       <div class="helper" style="margin-bottom:20px">
         <label for="Salutation">Salutation:</label><br>
         <label for="FirstName">First Name:</label><br>
@@ -29,7 +33,7 @@
       </div>
 
       <div class="helper" >
-        <input type="text" name="" value="{{Salutation}}" maxlength="50" size="30" style="font-size:12pt;" readonly> <br><br>
+        <input type="text" name="Salutation" value="{{Salutation}}" maxlength="50" size="30" style="font-size:12pt;" readonly> <br><br>
         <input type="FirstName" id="Username" name="FirstName" value="{{FirstName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
         <input type="MiddleName" id="MiddleName" name="MiddleName" value="{{MiddleName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
         <input type="LastName" id="LastName" name="LastName" value="{{LastName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
@@ -39,19 +43,22 @@
         <input type="designation" id="designation" name="designation" value="{{designation}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
       </div> 
 
-  </div>  
-  <div class="cards"> 
-    <div class="button-container" >
-      <button class="button-container" type="submit" id="button">Update </button>
-    </div>
-  </div>
-    </form>
+    </div>  
 
-    {% comment %} <div class="cards"> 
+    <div class="cards"> 
       <div class="button-container" >
         <button class="button-container" type="submit" id="button">Update </button>
       </div>
-    </div> {% endcomment %}
+    </div>
+
+  </form>
+
+  {% comment %} <div class="cards"> 
+    <div class="button-container" >
+      <button class="button-container" type="submit" id="button">Update </button>
+    </div>
+  </div> {% endcomment %}
 
 </div>
+
 {% endblock %} 
