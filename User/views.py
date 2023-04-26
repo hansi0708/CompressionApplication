@@ -507,8 +507,25 @@ def convDow(request):
 
 #FORGOT PASSWORD
 def forgot(request):
-    return render(request, "ForgotPass.html")
+    # idToken=request.session['uid']
+    # a=authe.get_account_info(idToken)
+    # a=a['users']
+    # a=a[0]
+    # a=a['localId']
+    # email = database.child('users').child(a).child('email').get().val()
+    return render(request,"ForgotPass.html")
 
+def postForgot(request):
+	email = request.POST.get('email')
+	print(email)
+	try:
+		authe.send_password_reset_email(email)
+		message  = "A email to recover password is successfully sent"
+		return render(request, "ForgotPass.html", {"message":message})
+	except:
+		message  = "Something went wrong, Please check the email you provided is registered or not"
+		return render(request, "ForgotPass.html", {"message":message})
+	
 
 #GET FILE SIZE
 def get_size_format(b, factor=1024, suffix="B"):

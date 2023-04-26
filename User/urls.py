@@ -18,6 +18,7 @@ urlpatterns = [
     path('postUpdate/',views.postUpdate),
 
     path('forgot/', views.forgot),
+    path('postForgot/',views.postForgot),
 
     path('resetPassword/',views.resetPassword),
     path('postReset/',views.postReset),
