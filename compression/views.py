@@ -65,7 +65,7 @@ def compressImage(request):
 
             #Filename to store in firebase
             if platform.system() == "Windows":
-                file_name= uFile.file.url.split('\\')[-1]
+                file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
@@ -189,7 +189,7 @@ def pptCompression(request):
 
             #Filename to store in firebase
             if platform.system() == "Windows":
-                file_name= uFile.file.url.split('\\')[-1]
+                file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
