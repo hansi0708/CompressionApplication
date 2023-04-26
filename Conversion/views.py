@@ -72,7 +72,7 @@ def text2pdf(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
@@ -170,7 +170,7 @@ def pdf2text(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
@@ -277,7 +277,7 @@ def pdf2excel(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
@@ -373,7 +373,7 @@ def excel2pdf(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
@@ -471,11 +471,13 @@ def pdf2word(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('/')[-1]
+			print(file_name)
+			print(new_file_name)
 
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
@@ -486,7 +488,7 @@ def pdf2word(request):
 			#PDF TO WORD CONVERSION
 			cv = Converter(uFile.file.path)
 			cv.convert(new_filename, start = 0, end = None)
-
+			cv.close()
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)
 			a=a['users']
@@ -550,10 +552,11 @@ def word2pdf(request):
 	
 			#FILENAME
 			filename, ext = os.path.splitext(uFile.file.path)
-
+			print(filename)    
             #NEW FILENAME
-			new_filename = f"{filename}_word_to_pdf_converted.pdf"
-
+			new_filename = f"{filename}_word_to_pdf_converted.pdf" 
+			print(new_filename)
+  
 			#FILE TYPE
 			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
@@ -566,12 +569,13 @@ def word2pdf(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('/')[-1] 
-
+			print(file_name)
+			print(new_file_name)
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
 
@@ -581,7 +585,7 @@ def word2pdf(request):
 			#WORD TO PDF CONVERSION
 			doc = aw.Document(uFile.file.path)
 			doc.save(new_filename)
-
+			
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)
 			a=a['users']
@@ -615,7 +619,7 @@ def word2pdf(request):
 
             #Storing data in conversion table in Firebase Realtime Database
 			database.child('conversion').child(conv_id).set(data)
-
+			# doc.close()
             #Deleting from local storage
 			default_storage.delete(uFile.file.path)
 			default_storage.delete(new_filename)  
@@ -661,7 +665,7 @@ def jpg2pdf(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
@@ -678,6 +682,7 @@ def jpg2pdf(request):
 			pdf.set_auto_page_break(0)
 
 			img_list = [x for x in os.listdir('uFile.file.path')]
+			print(uFile.file.path)
 
 			for img in img_list:
 				pdf.add_page()
@@ -751,8 +756,8 @@ def pdf2jpg(request):
 			filename, ext = os.path.splitext(uFile.file.path)
 
             #NEW FILENAME
-			new_filename = f"{filename}_pdf_to_jpg_converted.jpg"
-
+			new_filename = f"{filename}.jpg"
+			print(new_filename)
 			#FILE TYPE
 			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
@@ -765,12 +770,13 @@ def pdf2jpg(request):
 
             #Filename to store in firebase
 			if platform.system() == "Windows":
-				file_name= uFile.file.url.split('\\')[-1]
+				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('\\')[-1] 
 			elif platform.system() == "Linux" :
 				file_name= uFile.file.url.split('/')[-1]
 				new_file_name= new_filename.split('/')[-1]
-
+			print(file_name)
+			print(new_file_name)
             #Get the original file size in bytes
 			file_size = os.path.getsize(uFile.file.path)
 
