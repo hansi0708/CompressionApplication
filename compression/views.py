@@ -85,6 +85,7 @@ def compressImage(request):
 
             #Print size before compression/resizing
             print("[*] Size before compression:", get_size_format(file_size))
+
             
             try:
                 #Save the image with the corresponding quality and optimize set to True
@@ -106,7 +107,9 @@ def compressImage(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            if saving_diff <= 0:
+            print(saving_diff)
+
+            if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "ImageCompression.html", {'form':uploadFile,"msg":message})
             
@@ -213,7 +216,7 @@ def pptCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            if saving_diff <= 0:
+            if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "CompressPPT.html", {'form':uploadFile,"msg":message})
             
@@ -258,7 +261,7 @@ def pptCompression(request):
                 default_storage.delete(uFile.file.path)
                 default_storage.delete(new_filename)
                 
-                return HttpResponseRedirect('/home/userCompList/') 
+                return HttpResponseRedirect('/userCompList/') 
     
     else:  
         uploadFile = FileForm()  
@@ -328,7 +331,9 @@ def wordCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            if saving_diff <= 0:
+            print(saving_diff)
+
+            if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "CompressWord.html", {'form':uploadFile,"msg":message})
 
@@ -445,7 +450,7 @@ def pdfCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            if saving_diff <= 0:
+            if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "CompressPDF.html", {'form':uploadFile,"msg":message})
 

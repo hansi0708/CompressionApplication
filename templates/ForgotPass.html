@@ -24,23 +24,16 @@
             <font size="2.9"> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter your registered email for sending the message.</font>
 		
 
-			<form action="/user/postsignIn/" method="post">
+			<form action="/postForgot/" method="post">
 				{% csrf_token %}
 		
-
 				<!-- Email: -->
 				<div class="txt_field">
 					<input type="email" id="Email" name="email" placeholder="Email" required>
 					<span></span>    	            
 				</div>
 
-				
-							
-				{% comment %} <div class="pass">Forgot Password?</div> {% endcomment %}
-
-				<input type="submit" value="Continue"><br><br>
-				
-			
+				<input type="submit" value="Continue"><br><br>			
 				
 				<br>
 
