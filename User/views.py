@@ -258,10 +258,6 @@ def dashboard(request):
 	for i in list_conv:
 		conv=database.child('conversion').child(i).child('user_id').get().val()
 		if conv == a: conv_list.append(i)
-		
-	
-
-	
 	
 	times=[]
 	for i in all_user_comp:  
