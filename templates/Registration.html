@@ -45,6 +45,9 @@
                             <option>Ms.</option>
                             <option>Mr.</option>
                             <option>Mrs.</option>
+                            <option>Dr.</option>
+                            <option>Prf.</option>
+                            
                             
                         </select>  
                      
@@ -332,7 +335,7 @@
             removeContent();
             getCaptcha();
             });
-              function chkbutton() { 
+             
             checkBtn.addEventListener("click", e =>{
               console.log("--->",checkBtn.value);
             e.preventDefault(); //preventing button from it's default behaviour
@@ -353,7 +356,7 @@
               statusTxt.innerText = "Captcha not matched. Please try again!";*/
             }
             });
-            } 
+             
 
             function removeContent(){
             inputField.value = "";

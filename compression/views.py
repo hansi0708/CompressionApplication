@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 import pytz
 from django.core.files.storage import default_storage
 import uuid
+import zipfile
 
 #FIREBASE CONFIG
 config = {
@@ -196,8 +197,8 @@ def pptCompression(request):
                 new_file_name= new_filename.split('\\')[-1] 
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
-                new_file_name= new_filename.split('/')[-1]
-
+                new_file_name= new_filename.split('/')[-1] 
+       
             #Get the original file size in bytes
             file_size = os.path.getsize(uFile.file.path)
 
@@ -205,7 +206,9 @@ def pptCompression(request):
             print("[*] Size before compression:", get_size_format(file_size))
 
             #PPT compression code
-            CompressPptx(uFile.file.path,new_filename).run()
+            # CompressPptx(uFile.file.path,new_filename).run()
+            with zipfile.ZipFile(new_filename, 'w') as jungle_zip:
+                jungle_zip.write(uFile.file.path, compress_type=zipfile.ZIP_DEFLATED)
 
             #Get the new file size in bytes
             new_file_size = os.path.getsize(new_filename)
@@ -298,7 +301,7 @@ def wordCompression(request):
 
             #Filename to store in firebase
             if platform.system() == "Windows":
-                file_name= uFile.file.url.split('\\')[-1]
+                file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
@@ -416,7 +419,7 @@ def pdfCompression(request):
 
             #Filename to store in firebase
             if platform.system() == "Windows":
-                file_name= uFile.file.url.split('\\')[-1]
+                file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]

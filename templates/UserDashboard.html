@@ -10,34 +10,27 @@
 <title>Dashboard</title>
 
 <div class = "chart" >
- <script type="text/javascript">
-  
-  google.charts.load('current', {'packages':['bar']});
-  google.charts.setOnLoadCallback(drawChart); 
-  
-  function drawChart() {
-    
-    var data = google.visualization.arrayToDataTable([
-      ['Date', 'Files Converted', 'Files Compressed'],
-      ['2014', 100, 400],
-      ['2015', 17, 460],
-      ['2016', 160, 112],
-      ['2017', 103, 540]
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['File Compressed', 'File Converted'],
+        ["File Compressed", {{count_comp}}],
+        ['File Converted', {{count_conv}}],
+        
     ]);
-    var options = {
-      chart: {
+
+      var options = {
         title: 'User Performance',
-        subtitle: ' File Converted, File Compressed ',
-      },
-      bars: 'vertical' // Required for Material Bar Charts.
-    };
+        pieHole: 0.4,
+      };
 
-    var chart = new google.charts.Bar(document.getElementById('barchart_material'));
-    chart.draw(data, google.charts.Bar.convertOptions(options));
-  
-  } 
-
-   </script>   
+      var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+      chart.draw(data, options);
+    }
+  </script>
 </div>
 <div class="content">
 
@@ -71,25 +64,9 @@
         <img src={% static "ConversionIcon.png" %} width="60" height="60" alt="">
       </div>
 
-    </div>
-
-    {% comment %} <div class="card">
-      
-      <div class="box">
-        <h1>5</h1>
-        <h3>Files shared</h3>
-      </div>
-
-      <div class="icon-case">
-        <img src={% static "Share.PNG" %} width="60" height="60" alt="">
-      </div>
-    
-    </div> {% endcomment %}
-
   </div>
 
-  <div class="chart" id="barchart_material" style=" height: 500px;">
-  </div>
+  <div class="chart" id="donutchart" style=" height:500px;"> </div>
   
 </div>
 
