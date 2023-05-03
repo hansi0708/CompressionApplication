@@ -14,7 +14,7 @@
         
         <div class="container">
 
-            <form class="form" method="post" action="/PDFtoJPG/excel2pdf/" enctype="multipart/form-data">  
+            <form class="dropzone" method="post" action="/PDFtoJPG/excel2pdf/" enctype="multipart/form-data">  
                 {% csrf_token %}  
                 {{ form.as_p }} 
                 <div style="display: flex,align-items: center;">

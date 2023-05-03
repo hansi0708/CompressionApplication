@@ -14,7 +14,7 @@
         
         <div class="container">
 
-            <form class="form" method="post" action="/imageCompression/pdfCompression/" enctype="multipart/form-data">  
+            <form method="post" action="/imageCompression/pdfCompression/" enctype="multipart/form-data" class="dropzone">  
                 {% csrf_token %}  
                 {{ form.as_p }} 
                 <div style="display: flex,align-items: center;">

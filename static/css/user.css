@@ -139,17 +139,18 @@ header{
   flex-direction: row;
 }
 
-.user-container .content .container .form {
+.user-container .content .container .form .dropzone {
+  height: 60vh;
+  width: 77vw;
   display: flex;
   justify-content: space-between;
-  width: max-content;
   font-size: 18px;
   font-weight: 700;
   color: white;
   flex-direction: column;
 }
 
-.user-container .content .container .form p input{
+.user-container .content .container .dropzone p input{
   font-size: 18px;
   font-weight: 700;
 }
