@@ -6,12 +6,18 @@
 <head>
     <meta charset="UTF-8">
     <title>SIGN UP</title>
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+
     <script src="https://kit.fontawesome.com/919388b1b0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static '/css/signup.css' %}">
   
 </head>
 <body >
+  <style>
+    #form label{float:left; width:140px;}
+    #error_msg{color:red; font-weight:bold;}
+ </style>
   {% comment %} <div class="image" >
     <img src="/static/Register.PNG"/>
   </div> {% endcomment %}
@@ -39,6 +45,9 @@
                             <option>Ms.</option>
                             <option>Mr.</option>
                             <option>Mrs.</option>
+                            <option>Dr.</option>
+                            <option>Prf.</option>
+                            
                             
                         </select>  
                      
@@ -65,7 +74,7 @@
 
                     <!-- Password: -->
                     <div class="txt_field" for = 'password'>
-                        <input id="password"  type="password"  name="password" placeholder="Password"  onchange="onChange()" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required >
+                        <input id="password"  type="password"  name="password" placeholder="Password"   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required >
                         <span></span>
                     </div>
                 
@@ -100,7 +109,7 @@
                      
                    <!-- Confirm Password: -->
                     <div class="txt_field">
-                        <input type="password" id="confirm_password"  name="pass-repeat" placeholder="Confirm Password"  onchange="onchange()"  required /> 
+                        <input type="password" id="confirm_password"  name="pass-repeat" placeholder="Confirm Password"    required /> 
                         {% comment %} /*onkeyup = "ValidatePassword()"> {% endcomment %}
                         <span id="message"></span>
                     </div>
@@ -134,7 +143,7 @@
               <div class="status-text"></div>
         </div> 
             
-         <input type="submit" value="Register Now" ><br></br>    
+         <input type="submit" value="Register Now"><br></br>    
             <div class="signUp_Link">
                 Already a member?
                 <a href="/postsignIn/">Log In</a>
@@ -233,67 +242,127 @@
           }
         }
 
-        function onChange() {
+        {% comment %} function check_pass() {
+          if (document.getElementById('password').value ==
+                  document.getElementById('pass-repeat').value) {
+              document.getElementById('submit').disabled = false;
+          } else {
+              document.getElementById('submit').disabled = true;
+          }
+      } {% endcomment %}
+
+        {% comment %} function onChange() {
           const password = document.querySelector('input[name=password]');
           const confirm = document.querySelector('input[name=pass-repeat]');
-          if (confirm.value === password.value) {
-            confirm.setCustomValidity('Password Matched');
+          if (confirm.value != password.value) {
+            confirm.setCustomValidity('Password do not Match');
           } else {
-            confirm.setCustomValidity('Passwords do not match');
+            confirm.setCustomValidity('Passwords Matched');
           }
-        }
 
-let captcha = document.querySelector(".captcha"),
-reloadBtn = document.querySelector(".reload-btn"),
-inputField = document.querySelector(".input-area input"),
-checkBtn = document.querySelector(".check-btn"),
-statusTxt = document.querySelector(".status-text");
-//storing all captcha characters in array
-let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-                  'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
-                  'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-                  't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-function getCaptcha(){
-for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
-  let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
-  captcha.innerText += ` ${randomCharacter}`; //passing 6 random characters inside captcha innerText
-}
-}
+        } {% endcomment %}
 
-getCaptcha(); //calling getCaptcha when the page open
-//calling getCaptcha & removeContent on the reload btn click
-reloadBtn.addEventListener("click", ()=>{
-removeContent();
-getCaptcha();
-});
-   function chkbutton() { 
-checkBtn.addEventListener("click", e =>{
-  console.log("--->",checkBtn.value);
-e.preventDefault(); //preventing button from it's default behaviour
-statusTxt.style.display = "block";
-//adding space after each character of user entered values because I've added spaces while generating captcha
-let inputVal = inputField.value.split('').join(' ');
-if(inputVal == captcha.innerText){ //if captcha matched
-       alert("Captcha Matched");
-  /*{% comment %} statusTxt.style.color = "#4db2ec";
-  statusTxt.innerText = "Nice! You don't appear to be a robot."; {% endcomment %}*/
-  setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
-  removeContent();
-  getCaptcha();
-  }, 9000);
-}else{
-alert("Invalid Captcha");
-  /*statusTxt.style.color = "#ff0000";
-  statusTxt.innerText = "Captcha not matched. Please try again!";*/
-}
-});
-} 
+       
+      
+       
+          $(document).ready(function(){
+              var $submitBtn = $("#form input[type='submit']");
+              var $passwordBox = $("#password");
+              var $confirmBox = $("#confirm_password");
+              var $errorMsg =  $('<span id="error_msg">Passwords do not match.</span>');
+      
+              // This is incase the user hits refresh - some browsers will maintain the disabled state of the button.
+              $submitBtn.removeAttr("disabled");
+      
+              function checkMatchingPasswords(){
+                  if($confirmBox.val() != "" && $passwordBox.val != ""){
+                      if( $confirmBox.val() != $passwordBox.val() ){
+                          $submitBtn.attr("disabled", "disabled");
+                          $errorMsg.insertAfter($confirmBox);
+                      }
+                  }
+              }
+      
+              function resetPasswordError(){
+                  $submitBtn.removeAttr("disabled");
+                  var $errorCont = $("#error_msg");
+                  if($errorCont.length > 0){
+                      $errorCont.remove();
+                  }  
+              }
+      
+      
+              $("#pass-repeat, #password")
+                   .on("keydown", function(e){
+                      /* only check when the tab or enter keys are pressed
+                       * to prevent the method from being called needlessly  */
+                      if(e.keyCode == 13 || e.keyCode == 9) {
+                          checkMatchingPasswords();
+                      }
+                   })
+                   .on("blur", function(){                    
+                      // also check when the element looses focus (clicks somewhere else)
+                      checkMatchingPasswords();
+                  })
+                  .on("focus", function(){
+                      // reset the error message when they go to make a change
+                      resetPasswordError();
+                  })
+      
+          });
+        
 
-function removeContent(){
-inputField.value = "";
-captcha.innerText = "";
-statusTxt.style.display = "none";
-}
+            let captcha = document.querySelector(".captcha"),
+            reloadBtn = document.querySelector(".reload-btn"),
+            inputField = document.querySelector(".input-area input"),
+            checkBtn = document.querySelector(".check-btn"),
+            statusTxt = document.querySelector(".status-text");
+            //storing all captcha characters in array
+            let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+                              'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+                              'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+                              't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            function getCaptcha(){
+            for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
+              let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
+              captcha.innerText += ` ${randomCharacter}`; //passing 6 random characters inside captcha innerText
+            }
+            }
+
+            getCaptcha(); //calling getCaptcha when the page open
+            //calling getCaptcha & removeContent on the reload btn click
+            reloadBtn.addEventListener("click", ()=>{
+            removeContent();
+            getCaptcha();
+            });
+             
+            checkBtn.addEventListener("click", e =>{
+              console.log("--->",checkBtn.value);
+            e.preventDefault(); //preventing button from it's default behaviour
+            statusTxt.style.display = "block";
+            //adding space after each character of user entered values because I've added spaces while generating captcha
+            let inputVal = inputField.value.split('').join(' ');
+            if(inputVal == captcha.innerText){ //if captcha matched
+                  alert("Captcha Matched");
+              /*{% comment %} statusTxt.style.color = "#4db2ec";
+              statusTxt.innerText = "Nice! You don't appear to be a robot."; {% endcomment %}*/
+              setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
+              removeContent();
+              getCaptcha();
+              }, 9000);
+            }else{
+            alert("Invalid Captcha");
+              /*statusTxt.style.color = "#ff0000";
+              statusTxt.innerText = "Captcha not matched. Please try again!";*/
+            }
+            });
+             
+
+            function removeContent(){
+            inputField.value = "";
+            captcha.innerText = "";
+            statusTxt.style.display = "none";
+            }
                   
 </script>    
            

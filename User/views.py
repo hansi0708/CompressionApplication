@@ -224,6 +224,7 @@ def postReset(request):
 
 #DASHBOARD
 def dashboard(request):
+	comp_id=request.GET.get('z')
 
 	idToken=request.session['uid']
 	a=authe.get_account_info(idToken)
@@ -257,7 +258,23 @@ def dashboard(request):
 	for i in list_conv:
 		conv=database.child('conversion').child(i).child('user_id').get().val()
 		if conv == a: conv_list.append(i)
+		
+	
 
+	
+	
+	times=[]
+	for i in all_user_comp:  
+		time=database.child('compression').child(i).child('date_time').get().val()                                            
+		times.append(time)
+
+	date=[]
+	for i in times:
+		i=float(i)
+		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+		date.append(dat)
+		
+  
 	context = {
 		  'FirstName':FirstName,
 		  'LastName':LastName,
@@ -266,6 +283,7 @@ def dashboard(request):
     }
 
 	return render(request,"UserDashboard.html",context)
+
 
 
 #PROFILE
@@ -387,8 +405,12 @@ def orgCompDow(request):
     org_url=database.child('compression').child(comp_id).child('file').get().val()
     if platform.system() == "Windows": storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~\\Downloads\\' +file_name)) 
     elif platform.system() == "Linux" : storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
-
-    return HttpResponse("File downloaded successfuly")
+    
+	
+    # html = "<html><body>.File downloaded successfully</body></html>"
+    
+    return HttpResponse(".")
+    
 
 def compDow(request):
     comp_id=request.GET.get('z')

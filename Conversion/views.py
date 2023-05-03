@@ -11,13 +11,22 @@ import os
 from django.shortcuts import render
 from .forms import FileForm
 import pdftables_api
+import img2pdf
+
+
+import  jpype     
+import  asposecells   
+from PIL import Image
 import aspose.words as aw
+
 import pyrebase
 from firebase_admin import  storage
 import time
 from datetime import datetime, timezone
 from django.core.files.storage import default_storage
 import uuid
+
+from win32com import client
 
 #FIREBASE CONFIG
 config = {
@@ -263,14 +272,14 @@ def pdf2excel(request):
 			filename, ext = os.path.splitext(uFile.file.path)
 
             #NEW FILENAME
-			new_filename = f"{filename}_pdf_to_excel_converted.xls"
+			new_filename = f"{filename}_pdf_to_excel_converted.xlsx"
 
 			#FILE TYPE
 			file_type = uFile.file.url.split('.')[-1]
 			file_type = file_type.lower()
 
 			#NEW FILE TYPE
-			new_file_type='xls'
+			new_file_type='xlsx'
 
 			#Saving original file locally
 			uFile.save()
@@ -304,7 +313,10 @@ def pdf2excel(request):
 
             #Storing original file in firebase storage
 			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).put(uFile.file.path)
+			print(new_file_name)
+
 			storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).put(new_filename)
+			
 			
 			tz =pytz.timezone('Asia/Kolkata')
 			time_now=datetime.now(timezone.utc).astimezone(tz)
@@ -388,10 +400,38 @@ def excel2pdf(request):
 			#EXCEL TO PDF CONVERSION
 			
 			# Path to original excel file
-			WB_PATH = open(uFile.file.path, 'rb')   
-			# workbook = Workbook(uFile.file.path)
-			# workbook.save(new_filename)
+			# Open Microsoft Excel
+            # Open Microsoft Excel
+			# excel = client.Dispatch("Excel.Application")
 			
+			# # Read Excel File
+			# sheets = excel.Workbooks.Open('uFile.file.path')
+			# work_sheets = sheets.Worksheets[0]
+			
+			# # Convert into PDF File
+			# work_sheets.ExportAsFixedFormat(0, 'new_filename')
+
+  
+			jpype.startJVM() 
+			from asposecells.api import Workbook
+			# WB_PATH = open(uFile.file.path, 'rb')   
+			w = Workbook(uFile.file.path)
+			# w.save(new_filename)
+
+		
+			# jpype.shutdownJVM()
+			# w.close()
+
+			# Load Excel file
+			# workbook = Workbook("Book1.xlsx")
+
+			# # Create and set PDF options
+			# pdfOptions = PdfSaveOptions()
+			# pdfOptions.setCompliance(PdfCompliance.PDF_A_1_B)
+			
+			# Convert Excel to PDF
+			w.save("xlsx-to-pdf.pdf", pdfOptions)
+
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)
 			a=a['users']
@@ -678,19 +718,22 @@ def jpg2pdf(request):
 			print("[*] Size :", get_size_format(file_size))
 
 			#JPG TO PDF CONVERSION
-			pdf  = FPDF()
-			pdf.set_auto_page_break(0)
-
-			img_list = [x for x in os.listdir('uFile.file.path')]
-			print(uFile.file.path)
-
-			for img in img_list:
-				pdf.add_page()
-				image = uFile.file.path + img
-				pdf.image(image,w=200,h=260) 
-
-			pdf.output(new_filename)
+			image = Image.open(uFile.file.path)  # opening image\
+			pdf_bytes = img2pdf.convert(image.filename)   # converting into chunks using img2pdf
 			
+			# filename, ext = os.path.splitext(uFile.file.path)
+			# new_filename = f"{filename}_jpg_to_pdf_converted"
+
+			with open(new_filename, "wb") as file:      #write file 
+				# file.write(pdf_bytes)
+				file.write(pdf_bytes)
+
+			image.close()    # closing image file
+			uFile.file.close()     # closing pdf file
+			print("Successfully made pdf file")    # output
+			
+			
+
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)
 			a=a['users']
@@ -788,7 +831,7 @@ def pdf2jpg(request):
 			images = convert_from_path(uFile.file.path,poppler_path=poppler_path)
 			
 			for image in range(len(images)):
-				images[image].save('page '+str(image)+'.jpg','JPEG')
+				images[image].save(new_filename,'JPEG')
 
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)

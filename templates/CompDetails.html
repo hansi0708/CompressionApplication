@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block mymessage %}
+<script>
+    function myclick(){
+        alert("File Downloaded successfully")
+    }
+</script>
 
 <title>FILE DETAILS</title>
 		
@@ -10,7 +15,7 @@
     <div class="header-card">
 		<h1>FILES DETAILS</h1>
 	</div>
-
+     
     <div class="cards">         
   
         <div class="helper">
@@ -34,7 +39,7 @@
     <div class="cards">
 
         <div >
-            <button class="button-container" onclick="location.href = '/orgDownload/?z={{comp_id}}'"id="button">DOWNLOAD ORIGINAL FILE</button>
+            <button class="button-container" onclick= "location.href = '/orgDownload/?z={{comp_id}}'"  id="button">DOWNLOAD ORIGINAL FILE</button>
         </div>
 
         <div >
@@ -44,5 +49,6 @@
     </div>
 
 </div>
+
 
 {% endblock %}

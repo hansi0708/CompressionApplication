@@ -254,6 +254,29 @@ header{
 
 
 /* PROFILE */
+.user-container .center{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  
+  background: white;
+  border-radius: 10px;
+  box-shadow: 10px 10px 15px rgba(0,0,0,0.05);
+}
+
+
+.user-container .center h1{
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid silver;
+}
+
+.user-container .center form{
+  padding: 0 40px;
+  box-sizing: border-box;
+}
 
 .user-container .content .cards {
   width: 77vw;
@@ -275,6 +298,7 @@ header{
   font-size: 18px;
   font-weight: 700;
   color: #2691d9;
+  margin-left:20px;
 }
 
 
@@ -284,12 +308,13 @@ header{
     font-size: 18px;
     color: #f1f1f1;;
     font-weight: 700;
-    width: 300px;
+    width: 200px;
     display: flex; 
     align-items: center;
     justify-content: space-around;
     border: 1px solid;
     border-radius: 25px;
+    
 }
 
 
@@ -350,3 +375,22 @@ header{
   border: 1px solid;
   border-radius: 25px;
 }
+
+
+/* Update profile */
+.column {
+  float: left;
+  width: 50%;
+  flex: 50%;
+  margin: 0 10px;
+}
+.row{
+  display: flex;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+} 
+
+
