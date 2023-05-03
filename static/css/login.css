@@ -97,7 +97,6 @@ form .txt_field{
 .pass{
   margin: -5px 0 20px 5px;
   color: #fc075f;
-  cursor: pointer;
 }
 
 .pass:hover{

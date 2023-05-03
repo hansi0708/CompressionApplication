@@ -23,7 +23,7 @@
 
 			<h1>Log In</h1>
 			
-			<form action="/postsignIn/" method="post">
+			<form id="login-form" action="/postsignIn/" method="post">
 				
 				<div id='captcha'></div>
 				
@@ -62,14 +62,14 @@
 					</div>
 					
 					<div class="status-text"></div>
-			
+		
 				</div> 
 				<br><br>	
 				<div class="pass">
 					<a href="/forgot/">Forgot Password?</a>
 				</div>
 
-				<input type="submit" value="LogIn" ><br></br>
+				<input id="login-submit" class="check-btn" type="submit" value="LogIn" ><br></br>
 			
 				<div class="signUp_Link">
 					Not a member?
@@ -107,6 +107,8 @@
 					removeContent();
 					getCaptcha();
 				});
+
+
 				
 				checkBtn.addEventListener("click", e =>{
 					console.log("--->",checkBtn.value);
@@ -125,6 +127,18 @@
 						alert("Invalid Captcha");
 					}
 				});
+
+				var testRun = document.getElementById("login-submit");
+				testRun.addEventListener('submit', function(event) {
+					statusTxt.style.display = "block";
+					//adding space after each character of user entered values because I've added spaces while generating captcha
+					let inputVal = inputField.value.split('').join(' ');
+
+					if(inputVal != captcha.innerText){ //if captcha didn't matched
+						alert("Invalid Captcha");
+						return false;
+					}
+					});
 						
 				function removeContent(){
 					inputField.value = "";
