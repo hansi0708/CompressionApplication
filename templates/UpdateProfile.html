@@ -7,10 +7,11 @@
   <title>PROFILE</title>
 
   <div class="content">
+    <div class="contain123" >
 
     <div class="header-card">
       
-      <h1>UPDATE PROFILE</h1>
+      <h1 style="margin-right:350px;color:black;">UPDATE PROFILE</h1>
     
     </div>
 
@@ -25,10 +26,10 @@
       <div class="helper" style="margin-bottom:10px;">
         <div style="display:flex; margin-top:20px;">
             <div>
-                      <label for="Salutation">Salutation:</label> <br>
+                      {% comment %} <label for="Salutation">Salutation:</label> <br>
                       <label for="FirstName">First Name:</label><br>
                       <label for="MiddleName">Middle Name:</label><br>
-                      <label for="LastName">Last Name:</label><br>
+                      <label for="LastName">Last Name:</label><br> {% endcomment %}
                       <label for="email">Email:</label><br>
                       <label for="employment_type">Employement Type:</label><br>
                       <label for="Department">Department:</label><br>
@@ -37,21 +38,22 @@
 
             
           <div class="helper" style="margin-left:30px; margin-bottom:10px">
-                <input type="text" name="Salutation" value="{{Salutation}}" maxlength="50" size="30" style="font-size:12pt;" readonly> <br><br> 
-                <input type="FirstName" id="Username" name="FirstName" value="{{FirstName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
-                <input type="MiddleName" id="MiddleName" name="MiddleName" value="{{MiddleName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
-                <input type="LastName" id="LastName" name="LastName" value="{{LastName}}" maxlength="50" size="30"  style="font-size:12pt;" readonly><br><br>
-                <input type="email" id="email" name="email" value="{{email}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
-                <input type="text" id="employment_type" name="employment_type" value="{{employment_type}}" maxlength="50" size="30" style="font-size:12pt;"><br><br>
-                <input type="department" id="Department" name="department" value="{{department}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
-                <input type="designation" id="designation" name="designation" value="{{designation}}" maxlength="50" size="30"  style="font-size:12pt;"><br><br>
+                {% comment %} <input type="text" name="Salutation" value="{{Salutation}}" maxlength="50" size="30" style="font-size:12pt; border-radius:4px" readonly> <br><br> 
+                <input type="FirstName" id="Username" name="FirstName" value="{{FirstName}}" maxlength="50" size="30"  style="font-size:12pt; border-radius:4px" readonly><br><br>
+                <input type="MiddleName" id="MiddleName" name="MiddleName" value="{{MiddleName}}" maxlength="50" size="30"  style="font-size:12pt; border-radius:4px" readonly><br><br>
+                <input type="LastName" id="LastName" name="LastName" value="{{LastName}}" maxlength="50" size="30"  style="font-size:12pt; border-radius:4px" readonly><br><br> {% endcomment %}
+                <input type="email" id="email" name="email" value="{{email}}" maxlength="50" size="30"  style="font-size:12pt; border-radius:4px"><br><br>
+                <input type="text" id="employment_type" name="employment_type" value="{{employment_type}}" maxlength="50" size="30" style="font-size:12pt; border-radius:4px"><br><br>
+                <input type="department" id="Department" name="department" value="{{department}}" maxlength="50" size="30"  style="font-size:12pt; border-radius:4px"><br><br>
+                <input type="designation" id="designation" name="designation" value="{{designation}}" maxlength="50" size="30"  style="font-size:12pt; border-radius:4px"><br><br>
           </div>  
       
        </div>
       </div>
     <div class="cards"> 
-      <div class="button-container" >
-        <button class="button-container" type="submit" id="button">Update </button>
+      <div >
+        <button  class="button-container" style=" width:130px; height:35px;margin-left:170px; font-size:10pt;"id="button">Update Profile</button>
+        {% comment %} <button type="submit" id="button" style="margin-left:120px;">Update </button> {% endcomment %}
       </div>
     </div>
 
@@ -59,7 +61,7 @@
 </div>
 
  
-
+</div>
 </div>
 </html>
 

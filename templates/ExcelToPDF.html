@@ -5,8 +5,8 @@
 <div class="content">
 
     <div class="header-card">
-		<h1>EXCEL to PDF</h1>
-        <p style="font-size:1.5em">Make Excel spreadsheets easy to read by converting them to pdf</p>
+		<h1 style="color:BLACK;margin-left:25px;">EXCEL to PDF Converter</h1>
+        <p style="font-size:1.2em;color:#454545; margin-left:85px; margin-top:20px;">Make Excel spreadsheets easy to read by converting them to pdf</p>
         <br>
 	</div>
 
@@ -18,7 +18,8 @@
                 {% csrf_token %}  
                 {{ form.as_p }} 
                 <div style="display: flex,align-items: center;">
-                <button type="submit" class="save btn btn-default">Save</button>  
+                    <h3 style = "margin-top:10px"> &nbsp;  &nbsp;  &nbsp; &nbsp; or drop file here</h3>
+                <button type="submit" class="save btn btn-default" style="width:80px;">Save</button>  
                 </div>
             </form>
 

@@ -5,8 +5,8 @@
 <div class="content">
 
     <div class="header-card">
-		<h1>PDF COMPRESSION</h1>
-        <p style="font-size:1.5em"> Reduce the file size while optimizing for maximal PDF quality</p>
+		<h1 style="color:BLACK;margin-left:25px;">Compress PDF files</h1>
+        <p style="font-size:1.2em;color:#454545; margin-left:85px; margin-top:20px;"> Reduce file size while optimizing for maximal PDF quality.</p>
         <br>
 	</div>
 
@@ -18,7 +18,8 @@
                 {% csrf_token %}  
                 {{ form.as_p }} 
                 <div style="display: flex,align-items: center;">
-                <button type="submit" class="save btn btn-default">Save</button>  
+                    <h3 style = "margin-top:10px"> &nbsp;  &nbsp;  &nbsp; &nbsp; or drop file here</h3>
+                <button type="submit" class="save btn btn-default" style="width:90px; border-radius:5px; border:none">Save</button>  
                 </div>
             </form>
 

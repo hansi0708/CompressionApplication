@@ -27,7 +27,7 @@ from django.core.files.storage import default_storage
 import uuid
 
 from win32com import client
-
+import subprocess
 #FIREBASE CONFIG
 config = {
   'apiKey': "AIzaSyBbNBjeBbpTnaq2ikJ2Aut5UvW0KqhQ7dQ",
@@ -526,9 +526,11 @@ def pdf2word(request):
 			print("[*] Size :", get_size_format(file_size)) 
 
 			#PDF TO WORD CONVERSION
+			
 			cv = Converter(uFile.file.path)
 			cv.convert(new_filename, start = 0, end = None)
 			cv.close()
+			
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)
 			a=a['users']

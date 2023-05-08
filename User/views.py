@@ -247,6 +247,11 @@ def dashboard(request):
 	for i in list_comp:
 		comp=database.child('compression').child(i).child('user_id').get().val()
 		if comp == a: comp_list.append(i)
+		
+	filenames=[]
+	for i in comp_list:   
+		filename=database.child('compression').child(i).child('file_name').get().val()                                           
+		filenames.append(filename)
 
 	all_user_conv=database.child('conversion').shallow().get().val()
 	
@@ -258,6 +263,8 @@ def dashboard(request):
 	for i in list_conv:
 		conv=database.child('conversion').child(i).child('user_id').get().val()
 		if conv == a: conv_list.append(i)
+
+
 	
 	times=[]
 	for i in all_user_comp:  
@@ -269,8 +276,13 @@ def dashboard(request):
 		i=float(i)
 		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
 		date.append(dat)
-		
-  
+
+	# months=[]
+	# for i in date:
+	# 	# i=int(i)
+	# 	month=datetime.strftime('%m-%Y')
+	# 	months.append(month)
+
 	context = {
 		  'FirstName':FirstName,
 		  'LastName':LastName,

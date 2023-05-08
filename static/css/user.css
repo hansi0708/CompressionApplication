@@ -94,7 +94,7 @@ header{
   width: 77vw;
   position: relative;
   min-height: 90vh;
-  background: white ;
+  background:white ;
 }
 
 .user-container .content {
@@ -103,6 +103,17 @@ header{
   height: 100%;
 }
 
+.user-container .content .contain123{
+  background-color: #1e90ff;
+  width: 52%;
+  height: 70%;
+  /* margin:auto; */
+  margin-left:190px;
+  border-style:groove;
+  border-radius: 20px;
+  display:block;
+  
+}
 .user-container .content .header-card{
   color: #2691d9;
   background: white;
@@ -112,9 +123,10 @@ header{
   flex-direction: column;
   font-family: 'poppins', sans-serif;
   font-weight: 700;
-  width: 77vw;
+  width: 69vw;
   height: 20vh;
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  border-radius: 20px;
 }
 
 .user-container .content .header-card p{
@@ -127,16 +139,20 @@ header{
 /* OPERATIONS */
 
 .user-container .content .container{
-  height: 60vh;
-  width: 77vw;
+  height: 44vh;
+  width: 56vw;
   position: relative;
   background: #2691d9;
   color: white;
   margin: 2% 2% 2% 2%;
+  margin-top: 60px;
+  margin-left: 90px;
+  margin-right: 10px;
   display: flex;
   align-items: center;
   justify-content: space-around;
   flex-direction: row;
+  border-radius: 40px;
 }
 
 .user-container .content .container .form .dropzone {
@@ -151,7 +167,7 @@ header{
 }
 
 .user-container .content .container .dropzone p input{
-  font-size: 18px;
+  font-size: 25px;
   font-weight: 700;
 }
 
@@ -160,11 +176,13 @@ header{
   background: #fc075f;
   color: #f1f1f1;
   margin-bottom: 2%;
-  margin-top: 2%;
+  margin-top:5%;
   margin-left: 37px;
   font-weight: 700;
-  height : 27px;
+  height : 33px;
+  width:108px;
   align-items: center;
+  border-radius:5px;
 }
 
 /* DASHBOARD */
@@ -284,11 +302,23 @@ header{
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  /* display: flex; */
+  font-family: 'poppins', sans-serif;
+  /* justify-content: space-around; */
+  flex-direction: row;
+}
+.user-container .content .cardsbtn {
+  width: 77vw;
+  margin-top: 2%;
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  /* display: flex; */
   font-family: 'poppins', sans-serif;
   justify-content: space-around;
   flex-direction: row;
 }
+
 
 .user-container .content .cards .helper label {
   display: flex;
@@ -297,8 +327,8 @@ header{
   height: 20px;
   font-size: 18px;
   font-weight: 700;
-  color: #2691d9;
-  margin-left:20px;
+  color: white;
+  margin-left:50px;
 }
 
 
@@ -313,7 +343,7 @@ header{
     align-items: center;
     justify-content: space-around;
     border: 1px solid;
-    border-radius: 25px;
+    border-radius: 12px;
     
 }
 
@@ -362,10 +392,10 @@ header{
 }
 
 .user-container .content .list-cards .card1 .card2 .view {
-  width: 250px;
+  width: 94px;
   height: 50px;
   color: white;
-  background: #2691d9;
+  background: #fc075f;
   margin: 10px 10px;
   display: flex;
   align-items: center;

@@ -7,62 +7,27 @@
 <meta http-equiv="X-UA-Compatible" content="IE-edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-<title>Dashboard</title>
-
-<div class="content">
-
-  <div class="header-card">
-		<h1>DASHBOARD</h1>
-	</div>
-  
-  <div class="dash-cards">
-    
-    <div class="card" id="comp_list">
-      
-      <div class="box" >
-        <h1>{{count_comp}}</h1>
-        <h3>File Compressed</h3>
-      </div>
-
-      <div class="icon-case">
-        <img src={% static "CompressionIcon.png" %} width="60" height="60" alt="">
-      </div>
-    
-    </div>
-    
-    <div class="card" id="conv_list">
-      
-      <div class="box">
-        <h1>{{count_conv}}</h1>
-        <h3>File Converted</h3>
-      </div>
-
-      <div class="icon-case">
-        <img src={% static "ConversionIcon.png" %} width="60" height="60" alt="">
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="chart" id="barchart_material" style=" height: 500px;">
-  </div>
-  
-
-<div class = "chart" >
+ <title>Dashboard</title>
+ <div class = "chart" >
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
+
+    google.charts.load("current", {packages:['bar']});
+    google.charts.setOnLoadCallback(drawfiles);
+
     google.charts.load("current", {packages:["corechart"]});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
       var data = google.visualization.arrayToDataTable([
         ['File Compressed', 'File Converted'],
-        ["File Compressed", {{count_comp}}],
         ['File Converted', {{count_conv}}],
+        ["File Compressed", {{count_comp}}],
+        
         
     ]);
 
       var options = {
+        
         title: 'User Performance',
         pieHole: 0.4,
       };
@@ -70,12 +35,48 @@
       var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
       chart.draw(data, options);
     }
+
+    
+
+    function drawfiles() {
+      var data = new google.visualization.arrayToDataTable([
+        ['Month', 'File Compressed', 'File Converted'],
+        ['January', 0,0],
+        ['feburary', 0,0],
+        ['March',0,0],
+        ['April',0,0],
+        ["May", {{count_comp}},{{count_conv}}]
+
+        /*["Queen's pawn (d4)", 31],
+        ["Knight to King 3 (Nf3)", 12],
+        ["Queen's bishop pawn (c4)", 10],
+        ['Other', 3]*/
+      ]);
+
+      var options = {
+        title: 'User Performance',
+        width: 400,
+        legend: { position: 'none' },
+        chart: { title: 'User Performance',
+                 subtitle: 'File Compressed, File Converted' },
+        bars: 'vertical', // Required for Material Bar Charts.
+        axes: {
+          x: {
+            0: { side: 'down', label: 'Months'} // Top x-axis.
+          }
+        },
+        bar: { groupWidth: "50%" }
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+      chart.draw(data, options);
+    };
   </script>
 </div>
 <div class="content">
 
   <div class="header-card">
-		<h1>DASHBOARD</h1>
+		<h1 style="color:black;">DASHBOARD</h1>
 	</div>
   
   <div class="dash-cards">
@@ -83,20 +84,24 @@
     <div class="card">
       
       <div class="box">
-        <h1>{{count_comp}}</h1>
-        <h3>File Compressed</h3>
+        
+          <div class="view" onclick="location.href = '/userCompList/?z={{comp_list}}'">
+              <h1 >{{count_comp}}</h1>
+              <h3>File Compressed</h3>
+          </div>
       </div>
 
       <div class="icon-case">
-        <img src={% static "CompressionIcon.png" %} width="60" height="60" alt="">
+         <img src={% static "CompressionIcon.png" %} width="60" height="60" alt="">
       </div>
     
     </div>
     
     <div class="card">
       
-      <div class="box">
-        <h1>{{count_conv}}</h1>
+      
+      <div class="box" onclick="location.href = '/userConvList/?z={{conv_list}}'">
+        <h1 >{{count_conv}}</h1>
         <h3>File Converted</h3>
       </div>
 
@@ -104,10 +109,14 @@
         <img src={% static "ConversionIcon.png" %} width="60" height="60" alt="">
       </div>
 
+      
   </div>
 
-  <div class="chart" id="donutchart" style=" height:500px;"> </div>
-  
+   {% comment %} // v style="display:flex;"> {% endcomment %}
+    <div class="chart" id="donutchart"  style=" height:500px;"> </div> 
+    <div class="chart" id="top_x_div" style="height: 500px; "></div>
+  {% comment %} </div> {% endcomment %} 
+
 </div>
 
 {% endblock %}

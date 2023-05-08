@@ -10,9 +10,9 @@
 <div class="content">
 
     <div class="header-card">
-		<h1>IMAGE COMPRESSION</h1>
-        <p style="font-size:1.5em">Reduce the file size of your images with online image compression. Compress
-            image files quickly without software installation.</p>
+		<h1 style="color:BLACK;">COMPRESS IMAGE </h1>
+        <p style="font-size:1.2em; color:#454545; margin-left:85px; margin-top:20px">Compress JPG or PNG with the best quality and compression.<br>
+            &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; Reduce the filesize of your images at once.</p>
         <br>
 	</div>
 
@@ -24,7 +24,8 @@
                 {% csrf_token %}  
                 {{ form.as_p }} 
                 <div style="display: flex,align-items: center;">
-                <button type="submit" class="save btn btn-default">Save</button>  
+                    <h3 style = "margin-top:10px"> &nbsp;  &nbsp;  &nbsp; &nbsp; or drop file here</h3>
+                <button type="submit" class="save btn btn-default" style="width:90px; border-radius:5px; border:none">Save</button>  
                 </div>
             </form>
 
