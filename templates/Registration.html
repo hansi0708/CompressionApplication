@@ -3,205 +3,206 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
+  <head>
+    
     <meta charset="UTF-8">
     <title>SIGN UP</title>
     <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-
     <script src="https://kit.fontawesome.com/919388b1b0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static '/css/signup.css' %}">
-  
-</head>
-<body >
-  <style>
-    #form label{float:left; width:140px;}
-    #error_msg{color:red; font-weight:bold;}
- </style>
-  {% comment %} <div class="image" >
-    <img src="/static/Register.PNG"/>
-  </div> {% endcomment %}
+
+  </head>
+
+  <body>
+    
+    <style>
+      #form label{float:left; width:140px;}
+      #error_msg{color:red; font-weight:bold;}
+    </style>
 
     <div class="center">
 
-        <h1>Registration</h1>
+      <h1>Registration</h1>
+
+      <form action="/postsignUp/" method="post" >
+          
+        <div id='captcha'></div>
         
-       
-        
-        <form action="/postsignUp/" method="post" >
-            <div id='captcha'></div>
-            {% csrf_token %} 
+        {% csrf_token %} 
 
-            <div class="row">
+        <div class="row">
 
-                <div class="column">
+          <div class="column">
                     
-                    <!--Name: -->
-                    <div class="txt_field">
-                        
-                            
-                         <select type="text" class = "drop_down" style = "width: 130px; height: 39px" value="Salutation" name="Salutation"  required>
-                            <option value="" disabled selected hidden>Salutation</option>
-                            <option>Ms.</option>
-                            <option>Mr.</option>
-                            <option>Mrs.</option>
-                            <option>Dr.</option>
-                            <option>Prf.</option>
-                            
-                            
-                        </select>  
+            <!--Name: -->
+            <div class="txt_field">
+              
+              <select type="text" class = "drop_down" style = "width: 130px; height: 39px" value="Salutation" name="Salutation"  required>
+                <option value="" disabled selected hidden>Salutation</option>
+                <option>Ms.</option>
+                <option>Mr.</option>
+                <option>Mrs.</option>
+                <option>Dr.</option>
+                <option>Prf.</option>  
+              </select>  
                      
-                    </div>
-
-                    <!--MiddleName: -->
-                    <div class="txt_field">
-                        <input type="MiddleName" id="MiddleName" name="MiddleName" placeholder="Middle Name" required>
-                        <span></span>   
-                    </div>
-
-
-                     <!-- Email: -->
-                    <div class="txt_field">
-                        <input id="Email" oninvalid="InvalidMsg(this);" oninput = "InvalidMsg(this);"  type="email"  name="email" placeholder="Email Id" required = "required"/>
-                        <span></span>
-                    </div>
-
-                    <!--Employment Type: -->
-                    <div class="txt_field">
-                        <input type="employment_type" id="Employment Type" name="employment_type" placeholder="Employment Type" required>
-                        <span></span>
-                    </div>
-
-                    <!-- Password: -->
-                    <div class="txt_field" for = 'password'>
-                        <input id="password"  type="password"  name="password" placeholder="Password"   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required >
-                        <span></span>
-                    </div>
-                
-                </div>
-                
-                <div class="column">
-                    
-                    <!-- First Name: -->
-                    <div class="txt_field">
-                        <input type="FirstName" id="Username" name="FirstName" placeholder="First Name" required oninvalid = "this.setCustomValidity('Please enter username')" onchange = "this.setCustomValidity('')" >
-                        <span></span>
-                    </div>
-
-                    <!--Last Name: -->
-                    <div class="txt_field">
-                        <input type="LastName" id="LastName" name="LastName" placeholder="Last Name" required>
-                        <span></span>
-                    </div>
-
-                    <!--Designation: -->
-                    <div class="txt_field">
-                        <input type="designation" id="designation" name="designation" placeholder="Designation" required>
-                        <span></span>
-                    </div>
-
-                    <!--Department: -->
-                    <div class="txt_field">
-                        <input type="department" id="Department" name="department" placeholder="Department" required>
-                        <span></span>
-                    </div>
-
-                     
-                   <!-- Confirm Password: -->
-                    <div class="txt_field">
-                        <input type="password" id="confirm_password"  name="pass-repeat" placeholder="Confirm Password"    required /> 
-                        {% comment %} /*onkeyup = "ValidatePassword()"> {% endcomment %}
-                        <span id="message"></span>
-                    </div>
-
-                </div>
             </div>
+
+            <!--MiddleName: -->
+            <div class="txt_field">
+                <input type="MiddleName" id="MiddleName" name="MiddleName" placeholder="Middle Name" required>
+                <span></span>   
+            </div>
+
+
+              <!-- Email: -->
+            <div class="txt_field">
+                <input id="Email" oninvalid="InvalidMsg(this);" oninput = "InvalidMsg(this);"  type="email"  name="email" placeholder="Email Id" required = "required"/>
+                <span></span>
+            </div>
+
+            <!--Employment Type: -->
+            <div class="txt_field">
+                <input type="employment_type" id="Employment Type" name="employment_type" placeholder="Employment Type" required>
+                <span></span>
+            </div>
+
+            <!-- Password: -->
+            <div class="txt_field" for = 'password'>
+                <input id="password"  type="password"  name="password" placeholder="Password"   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required >
+                <span></span>
+            </div>
+                
+          </div>
+                
+          <div class="column">
+                    
+            <!-- First Name: -->
+            <div class="txt_field">
+                <input type="FirstName" id="Username" name="FirstName" placeholder="First Name" required oninvalid = "this.setCustomValidity('Please enter username')" onchange = "this.setCustomValidity('')" >
+                <span></span>
+            </div>
+
+            <!--Last Name: -->
+            <div class="txt_field">
+                <input type="LastName" id="LastName" name="LastName" placeholder="Last Name" required>
+                <span></span>
+            </div>
+
+            <!--Designation: -->
+            <div class="txt_field">
+                <input type="designation" id="designation" name="designation" placeholder="Designation" required>
+                <span></span>
+            </div>
+
+            <!--Department: -->
+            <div class="txt_field">
+                <input type="department" id="Department" name="department" placeholder="Department" required>
+                <span></span>
+            </div>
+  
+            <!-- Confirm Password: -->
+            <div class="txt_field">
+                <input type="password" id="confirm_password"  name="pass-repeat" placeholder="Confirm Password"    required /> 
+                {% comment %} /*onkeyup = "ValidatePassword()"> {% endcomment %}
+                <span id="message"></span>
+            </div>
+
+          </div>
+
+        </div>
             
-            <div id="message1">
-              <h3>Password must contain the following:</h3>
-              <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-              <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-              <p id="number" class="invalid">A <b>number</b></p>
-              <p id="length" class="invalid">Minimum <b>8 characters</b></p>
-            </div>
+        <div id="message1">
+          <h3>Password must contain the following:</h3>
+          <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+          <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+          <p id="number" class="invalid">A <b>number</b></p>
+          <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+        </div>
                 
         <div class="wrapper"> 
                 
-                <div class="captcha-area">
-                  <div class="captcha-img">
-                    <img src= {% static "captchaImage.png" %} alt="Captch Background">
-                    <span class="captcha"></span>
-                </div>
-                <button class="reload-btn"><i class="fa-solid fa-arrows-rotate"></i></button> 
-              </div> 
+          <div class="captcha-area">
+            
+            <div class="captcha-img">
+              <img src= {% static "captchaImage.png" %} alt="Captch Background">
+              <span class="captcha"></span>
+            </div>
+          
+            <button class="reload-btn"><i class="fa-solid fa-arrows-rotate"></i></button>
+
+          </div> 
               
-                <div action="#" class="input-area"> 
-                <input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
-                <button class="check-btn" >Check</button>
-                </div>
+          <div action="#" class="input-area" id="captcha-input"> 
+
+            <input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
+            {% comment %} <button class="check-btn" >Check</button> {% endcomment %}
+
+          </div>
               
-              <div class="status-text"></div>
+          <div class="status-text"></div>
+        
         </div> 
             
-         <input type="submit" value="Register Now"><br></br>    
-            <div class="signUp_Link">
-                Already a member?
-                <a href="/postsignIn/">Log In</a>
-            </div>
-            
-        </form>
-            
-    <br>
-        
-    <script>
-                    
-      function InvalidMsg(email) 
-      {
-      if (email.value === '') {
-          email.setCustomValidity('Required email address');
-      } else if (email.validity.typeMismatch){
-          email.setCustomValidity('please enter a valid email address');
-      } else {
-         email.setCustomValidity('');
-      }
-  
-      return true;
-      }
+        <input id="signup-submit" type="submit" value="Register Now"><br></br>   
 
-      {% comment %} function VerificationEmail() {
-        firebase.auth().currentUser.sendEmailVerification()
-            .then(() => {
-                // Email verification sent!
-                console.log('Email Verification sent! Check your mail box');
-                // ...
-            });
-     } {% endcomment %}
+        <div class="signUp_Link">
+          Already a member?
+          <a href="/">Log In</a>
+        </div>
+
+        <br>
+            
+      </form>        
+        
+      <script>
+                    
+        function InvalidMsg(email) 
+        {
+          if (email.value === '') {
+              email.setCustomValidity('Required email address');
+          } else if (email.validity.typeMismatch){
+              email.setCustomValidity('please enter a valid email address');
+          } else {
+            email.setCustomValidity('');
+          }
+          return true;
+        }
+
+        {% comment %} function VerificationEmail() {
+            firebase.auth().currentUser.sendEmailVerification()
+                .then(() => {
+                    // Email verification sent!
+                    console.log('Email Verification sent! Check your mail box');
+                    // ...
+                });
+         } {% endcomment %}
     
      
-     {% comment %} function Password_Match(){
-     if (password != pass-repeat) {
-      alert ("\nPassword did not match: Please try again...")
-      return false;
-     }
-} {% endcomment %}
+            {% comment %} function Password_Match(){
+            if (password != pass-repeat) {
+              alert ("\nPassword did not match: Please try again...")
+              return false;
+            }
+        } {% endcomment %}
+
         var myInput = document.getElementById("password");
         var letter = document.getElementById("letter");
         var capital = document.getElementById("capital");
         var number = document.getElementById("number");
         var length = document.getElementById("length");
         
-        // When the user clicks on the password field, show the message box
         myInput.onfocus = function() {
           document.getElementById("message1").style.display = "block";
         }
         
-        // When the user clicks outside of the password field, hide the message box
         myInput.onblur = function() {
           document.getElementById("message1").style.display = "none";
         }
         
-        // When the user starts to type something inside the password field
         myInput.onkeyup = function() {
+          
           // Validate lowercase letters
           var lowerCaseLetters = /[a-z]/g;
           if(myInput.value.match(lowerCaseLetters)) {  
@@ -240,103 +241,116 @@
             length.classList.remove("valid");
             length.classList.add("invalid");
           }
+
         }
 
         {% comment %} function check_pass() {
-          if (document.getElementById('password').value ==
-                  document.getElementById('pass-repeat').value) {
-              document.getElementById('submit').disabled = false;
-          } else {
-              document.getElementById('submit').disabled = true;
-          }
-      } {% endcomment %}
+            if (document.getElementById('password').value ==
+                    document.getElementById('pass-repeat').value) {
+                document.getElementById('submit').disabled = false;
+            } else {
+                document.getElementById('submit').disabled = true;
+            }
+          } {% endcomment %}
 
-        {% comment %} function onChange() {
-          const password = document.querySelector('input[name=password]');
-          const confirm = document.querySelector('input[name=pass-repeat]');
-          if (confirm.value != password.value) {
-            confirm.setCustomValidity('Password do not Match');
-          } else {
-            confirm.setCustomValidity('Passwords Matched');
-          }
+          {% comment %} function onChange() {
+            const password = document.querySelector('input[name=password]');
+            const confirm = document.querySelector('input[name=pass-repeat]');
+            if (confirm.value != password.value) {
+              confirm.setCustomValidity('Password do not Match');
+            } else {
+              confirm.setCustomValidity('Passwords Matched');
+            }
 
         } {% endcomment %}
 
-       
+        $(document).ready(function(){
+              
+          var $submitBtn = $("#form input[type='submit']");
+          var $passwordBox = $("#password");
+          var $confirmBox = $("#confirm_password");
+          var $errorMsg =  $('<span id="error_msg">Passwords do not match.</span>');
       
-       
-          $(document).ready(function(){
-              var $submitBtn = $("#form input[type='submit']");
-              var $passwordBox = $("#password");
-              var $confirmBox = $("#confirm_password");
-              var $errorMsg =  $('<span id="error_msg">Passwords do not match.</span>');
+          $submitBtn.removeAttr("disabled");
       
-              // This is incase the user hits refresh - some browsers will maintain the disabled state of the button.
-              $submitBtn.removeAttr("disabled");
-      
-              function checkMatchingPasswords(){
-                  if($confirmBox.val() != "" && $passwordBox.val != ""){
-                      if( $confirmBox.val() != $passwordBox.val() ){
-                          $submitBtn.attr("disabled", "disabled");
-                          $errorMsg.insertAfter($confirmBox);
-                      }
-                  }
+          function checkMatchingPasswords(){
+            if($confirmBox.val() != "" && $passwordBox.val != ""){
+              if( $confirmBox.val() != $passwordBox.val()){
+                $submitBtn.attr("disabled", "disabled");
+                $errorMsg.insertAfter($confirmBox);
               }
+            }
+          }
+  
+          function resetPasswordError(){
+            $submitBtn.removeAttr("disabled");
+            var $errorCont = $("#error_msg");
+            if($errorCont.length > 0){
+              $errorCont.remove();
+            }  
+          }     
       
-              function resetPasswordError(){
-                  $submitBtn.removeAttr("disabled");
-                  var $errorCont = $("#error_msg");
-                  if($errorCont.length > 0){
-                      $errorCont.remove();
-                  }  
-              }
+          $("#pass-repeat, #password")
+          .on("keydown", function(e){
+            /* only check when the tab or enter keys are pressed
+            * to prevent the method from being called needlessly  */
+            if(e.keyCode == 13 || e.keyCode == 9) {
+              checkMatchingPasswords();
+            }
+          })
+          .on("blur", function(){                    
+            // also check when the element looses focus (clicks somewhere else)
+            checkMatchingPasswords();
+          })
+          .on("focus", function(){
+            // reset the error message when they go to make a change
+            resetPasswordError();
+          })
       
-      
-              $("#pass-repeat, #password")
-                   .on("keydown", function(e){
-                      /* only check when the tab or enter keys are pressed
-                       * to prevent the method from being called needlessly  */
-                      if(e.keyCode == 13 || e.keyCode == 9) {
-                          checkMatchingPasswords();
-                      }
-                   })
-                   .on("blur", function(){                    
-                      // also check when the element looses focus (clicks somewhere else)
-                      checkMatchingPasswords();
-                  })
-                  .on("focus", function(){
-                      // reset the error message when they go to make a change
-                      resetPasswordError();
-                  })
-      
-          });
+        });
         
 
-            let captcha = document.querySelector(".captcha"),
-            reloadBtn = document.querySelector(".reload-btn"),
-            inputField = document.querySelector(".input-area input"),
-            checkBtn = document.querySelector(".check-btn"),
-            statusTxt = document.querySelector(".status-text");
-            //storing all captcha characters in array
-            let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-                              'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
-                              'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-                              't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            function getCaptcha(){
-            for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
-              let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
-              captcha.innerText += ` ${randomCharacter}`; //passing 6 random characters inside captcha innerText
-            }
-            }
+        let captcha = document.querySelector(".captcha");
+        let reloadBtn = document.querySelector(".reload-btn");
+        let inputField = document.querySelector(".input-area input");
+        {% comment %} checkBtn = document.querySelector(".check-btn"); {% endcomment %}
+        let statusTxt = document.querySelector(".status-text");
 
-            getCaptcha(); //calling getCaptcha when the page open
-            //calling getCaptcha & removeContent on the reload btn click
-            reloadBtn.addEventListener("click", ()=>{
-            removeContent();
-            getCaptcha();
-            });
-             
-            checkBtn.addEventListener("click", e =>{
+        //storing all captcha characters in array
+        let allCharacters = [
+          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+          'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+          'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+          't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+        ];
+        
+        function getCaptcha(){
+          for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
+            let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
+            captcha.innerText += ` ${randomCharacter}`; //passing 6 random characters inside captcha innerText
+          }
+        }
+
+        getCaptcha(); //calling getCaptcha when the page open
+        
+        //calling getCaptcha & removeContent on the reload btn click
+        reloadBtn.addEventListener("click", ()=>{
+          removeContent();
+          getCaptcha();
+        });
+
+        var testRun = document.getElementById("signup-submit");
+				testRun.addEventListener('click', function(event) {
+					statusTxt.style.display = "block";
+					let inputVal = inputField.value.split('').join(' ');
+
+					if(inputVal !== captcha.innerText){ 
+						alert("Invalid Captcha");
+						event.preventDefault();
+					}
+				});
+          
+        {% comment %} checkBtn.addEventListener("click", e =>{
               console.log("--->",checkBtn.value);
             e.preventDefault(); //preventing button from it's default behaviour
             statusTxt.style.display = "block";
@@ -346,7 +360,7 @@
                   alert("Captcha Matched");
               /*{% comment %} statusTxt.style.color = "#4db2ec";
               statusTxt.innerText = "Nice! You don't appear to be a robot."; {% endcomment %}*/
-              setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
+              {% comment %} setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
               removeContent();
               getCaptcha();
               }, 9000);
@@ -355,20 +369,19 @@
               /*statusTxt.style.color = "#ff0000";
               statusTxt.innerText = "Captcha not matched. Please try again!";*/
             }
-            });
+        }); {% endcomment %} 
              
 
-            function removeContent(){
-            inputField.value = "";
-            captcha.innerText = "";
-            statusTxt.style.display = "none";
-            }
-                  
-</script>    
-           
+        function removeContent(){
+          inputField.value = "";
+          captcha.innerText = "";
+          statusTxt.style.display = "none";
+        }
+      
+      </script>          
                 
     </div>
 
-</body>
+  </body>
 
 </html>

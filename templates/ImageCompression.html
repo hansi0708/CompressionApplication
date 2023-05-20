@@ -1,32 +1,38 @@
 {% extends 'UserMaster.html' %}  
 {% block mymessage %}
 
-{% if message %}
-<script>
-    alert('{{ message }}');
-</script>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+    {% endfor %}
 {% endif %}
 
 <div class="content">
 
     <div class="header-card">
-		<h1 style="color:BLACK;">COMPRESS IMAGE </h1>
-        <p style="font-size:1.2em; color:#454545; margin-left:85px; margin-top:20px">Compress JPG or PNG with the best quality and compression.<br>
-            &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; Reduce the filesize of your images at once.</p>
-        <br>
+		<h1>COMPRESS IMAGE </h1>
+        <p>Compress JPG or PNG with the best quality and compression. Reduce the filesize of your images at once.</p>
 	</div>
 
     <div class="cards">
         
-        <div class="container">
+        <div class="container2">
 
             <form class="dropzone" method="post" action="/imageCompression/compressImage/" enctype="multipart/form-data">  
+                
                 {% csrf_token %}  
                 {{ form.as_p }} 
-                <div style="display: flex,align-items: center;">
-                    <h3 style = "margin-top:10px"> &nbsp;  &nbsp;  &nbsp; &nbsp; or drop file here</h3>
-                <button type="submit" class="save btn btn-default" style="width:90px; border-radius:5px; border:none">Save</button>  
+                
+                <div>
+                    <h3>or drop file here</h3>
+                    <button type="submit" class="save btn btn-default" >Save</button>  
                 </div>
+
             </form>
 
         </div>

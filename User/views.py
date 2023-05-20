@@ -7,6 +7,7 @@ from django.http.response import HttpResponse
 import pyrebase
 import firebase_admin
 from firebase_admin import credentials, storage
+from django.contrib import messages
 
 #FIREBASE CONFIG
 config = {
@@ -207,19 +208,30 @@ def resetPassword(request):
 	a=a[0]
 	a=a['localId']
 	email = database.child('users').child(a).child('email').get().val()
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
 
-	return render(request,"ResetPassword.html",{'email':email})
+	return render(request,"ResetPassword.html",{'email':email,'FirstName':FirstName,'LastName':LastName})
 
 def postReset(request):
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
 	email = request.POST.get('email')
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
 	print(email)
+	
 	try:
 		authe.send_password_reset_email(email)
-		message  = "A email to reset password is successfully sent"
-		return render(request, "ResetPassword.html", {"message":message})
+		data = dict()
+		messages.success(request, "Success: An email to reset password is successfully sent ")
+		return render(request, "ResetPassword.html", {'message':data,'FirstName':FirstName,'LastName':LastName})
 	except:
-		message  = "Something went wrong, Please check the email you provided is registered or not"
-		return render(request, "ResetPassword.html", {"message":message})
+		messages.error(request, "Error: Something went wrong, Please check the email you provided is registered or not")
+		return render(request, "ResetPassword.html", {'message':data,'FirstName':FirstName,'LastName':LastName})
 
 
 #DASHBOARD
@@ -340,36 +352,36 @@ def userCompList(request):
 	all_user_comp=database.child('compression').shallow().get().val()
 	print(all_user_comp)
 	list_comp=[]
-
-	for i in all_user_comp:                                              
-		list_comp.append(i)
-	
-	print(list_comp)
-
 	comp_list=[]
-	for i in list_comp:
-		comp=database.child('compression').child(i).child('user_id').get().val()
-		if comp == a: comp_list.append(i)
-
-	print(comp_list)
-
 	filenames=[]
-	for i in comp_list:   
-		filename=database.child('compression').child(i).child('file_name').get().val()                                           
-		filenames.append(filename)
-
 	times=[]
-	for i in all_user_comp:  
-		time=database.child('compression').child(i).child('date_time').get().val()                                            
-		times.append(time)
-
 	date=[]
-	for i in times:
-		i=float(i)
-		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
-		date.append(dat)
-	
-	comb_list=zip(times,comp_list,filenames,date)	
+
+	if all_user_comp != None:
+
+		for i in all_user_comp:                                              
+			list_comp.append(i)
+		
+		for i in list_comp:
+			comp=database.child('compression').child(i).child('user_id').get().val()
+			if comp == a: comp_list.append(i)
+
+		for i in comp_list:   
+			filename=database.child('compression').child(i).child('file_name').get().val()                                           
+			filenames.append(filename)
+
+		for i in all_user_comp:  
+			time=database.child('compression').child(i).child('date_time').get().val()                                            
+			times.append(time)
+
+		for i in times:
+			dat=datetime.fromtimestamp(i)
+			date.append(dat)
+		
+		comb_list=zip(times,comp_list,filenames,date)
+
+	else:
+		comb_list=[]	
 	
 	return render(request,"UserCompList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName})
 
@@ -380,6 +392,9 @@ def comp_details(request):
 	a=a['users']
 	a=a[0]
 	a=a['localId']
+
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
 
 	filename=database.child('compression').child(comp_id).child('file_name').get().val()
 	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
@@ -396,7 +411,9 @@ def comp_details(request):
 	    'file_type':file_type,
 	    'file_size':get_size_format(file_size),
 	    'new_file_size':get_size_format(new_file_size),
-	    'dat':dat
+	    'dat':dat,
+		'FirstName':FirstName,
+		'LastName':LastName
     }
 
 	return render(request,"CompDetails.html",context)
@@ -408,17 +425,35 @@ def orgCompDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
+    FirstName = database.child('users').child(a).child('FirstName').get().val()
+    LastName = database.child('users').child(a).child('LastName').get().val()
     
     file_name=database.child('compression').child(comp_id).child('file_name').get().val()
     org_url=database.child('compression').child(comp_id).child('file').get().val()
+    
+    file_type=database.child('compression').child(comp_id).child('file_type').get().val()
+    file_size=database.child('compression').child(comp_id).child('file_size').get().val()
+    new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
+    time=database.child('compression').child(comp_id).child('date_time').get().val()
+    i=float(str(time))
+    dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+    
     if platform.system() == "Windows": storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~\\Downloads\\' +file_name)) 
     elif platform.system() == "Linux" : storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
-    
-	
-    # html = "<html><body>.File downloaded successfully</body></html>"
-    
-    return HttpResponse(".")
-    
+    data = dict()
+    messages.success(request, "Success: Original file downloaded successfully.")
+    context = {
+		'comp_id':comp_id,
+		'filename':file_name,
+		'file_type':file_type,
+		'file_size':get_size_format(file_size),
+		'new_file_size':get_size_format(new_file_size),
+		'dat':dat,
+		'message':data,
+		'FirstName':FirstName,
+		'LastName':LastName
+	}
+    return render(request,"CompDetails.html",context)   
 
 def compDow(request):
     comp_id=request.GET.get('z')
@@ -427,13 +462,35 @@ def compDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
+    FirstName = database.child('users').child(a).child('FirstName').get().val()
+    LastName = database.child('users').child(a).child('LastName').get().val()
     new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
     new_url=database.child('compression').child(comp_id).child('new_file').get().val()
+    file_name=database.child('compression').child(comp_id).child('file_name').get().val()
+    file_type=database.child('compression').child(comp_id).child('file_type').get().val()
+    file_size=database.child('compression').child(comp_id).child('file_size').get().val()
+    new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
+    time=database.child('compression').child(comp_id).child('date_time').get().val()
+    i=float(str(time))
+    dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
     
     if platform.system() == "Windows": storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~\\Downloads\\' +new_file_name)) 
     elif platform.system() == "Linux": storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
     
-    return HttpResponse("File downloaded successfully") 
+    data = dict()
+    messages.success(request, "Success: Compressed file downloaded successfully.")
+    context = {
+		'comp_id':comp_id,
+		'filename':file_name,
+		'file_type':file_type,
+		'file_size':get_size_format(file_size),
+		'new_file_size':get_size_format(new_file_size),
+		'dat':dat,
+		'message':data,
+		'FirstName':FirstName,
+		'LastName':LastName
+	}
+    return render(request,"CompDetails.html",context)
 
 
 #CONVERSION DATA
@@ -449,34 +506,36 @@ def userConvList(request):
 
 	all_user_conv=database.child('conversion').shallow().get().val()
 	list_conv=[]
-
-	for i in all_user_conv:                                              
-		list_conv.append(i)
-	
-	print(list_conv)
-
 	conv_list=[]
-	for i in list_conv:
-		conv=database.child('conversion').child(i).child('user_id').get().val()
-		if conv == a: conv_list.append(i)
-
 	filenames=[]
-	for i in conv_list:   
-		filename=database.child('conversion').child(i).child('file_name').get().val()                                           
-		filenames.append(filename)
-
 	times=[]
-	for i in all_user_conv:  
-		time=database.child('conversion').child(i).child('date_time').get().val()                                            
-		times.append(time)
-
 	date=[]
-	for i in times:
-		i=float(i)
-		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
-		date.append(dat)
-	
-	comb_list=zip(times,conv_list,filenames,date)	
+
+	if all_user_conv != None:
+
+		for i in all_user_conv:                                              
+			list_conv.append(i)
+		
+		for i in list_conv:
+			conv=database.child('conversion').child(i).child('user_id').get().val()
+			if conv == a: conv_list.append(i)
+		
+		for i in conv_list:   
+			filename=database.child('conversion').child(i).child('file_name').get().val()                                           
+			filenames.append(filename)
+		
+		for i in all_user_conv:  
+			time=database.child('conversion').child(i).child('date_time').get().val()                                            
+			times.append(time)
+		
+		for i in times:
+			dat=datetime.fromtimestamp(i)
+			date.append(dat)
+		
+		comb_list=zip(times,conv_list,filenames,date)	
+
+	else:
+		comb_list=[]
 	
 	return render(request,"UserConvList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName})
 
@@ -487,6 +546,8 @@ def conv_details(request):
 	a=a['users']
 	a=a[0]
 	a=a['localId']
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
 
 	filename=database.child('conversion').child(conv_id).child('file_name').get().val()
 	file_type=database.child('conversion').child(conv_id).child('file_type').get().val()
@@ -503,7 +564,9 @@ def conv_details(request):
 	    'file_type':file_type,
 	    'file_size':get_size_format(file_size),
 	    'new_file_type':new_file_type,
-	    'dat':dat
+	    'dat':dat,
+	    'FirstName':FirstName,
+		'LastName':LastName
     }
 
 	return render(request,"ConvDetails.html",context) 
@@ -515,12 +578,35 @@ def orgConvDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
+    FirstName = database.child('users').child(a).child('FirstName').get().val()
+    LastName = database.child('users').child(a).child('LastName').get().val()
     
     file_name=database.child('conversion').child(conv_id).child('file_name').get().val()
     org_url=database.child('conversion').child(conv_id).child('file').get().val()
+    file_type=database.child('conversion').child(conv_id).child('file_type').get().val()
+    file_size=database.child('conversion').child(conv_id).child('file_size').get().val()
+    new_file_type=database.child('conversion').child(conv_id).child('new_file_type').get().val()
+    time=database.child('conversion').child(conv_id).child('date_time').get().val()
+    i=float(str(time))
+    dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+    
+
     if platform.system() == "Windows": storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).download(org_url,os.path.expanduser('~\\Downloads\\'+file_name))
     elif platform.system() == "Linux": storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+file_name).download(org_url,os.path.expanduser('~/Downloads/'+file_name))
-    return HttpResponse("File downloaded successfuly")
+    data = dict()
+    messages.success(request, "Success: Original file downloaded successfully.")
+    context = {
+		'conv_id':conv_id,
+        'filename':file_name,
+	    'file_type':file_type,
+	    'file_size':get_size_format(file_size),
+	    'new_file_type':new_file_type,
+	    'dat':dat,
+	    'message':data,
+	    'FirstName':FirstName,
+		'LastName':LastName
+    }
+    return render(request,"ConvDetails.html",context)
 
 def convDow(request):
     conv_id=request.GET.get('z')
@@ -529,20 +615,37 @@ def convDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
+    
+    FirstName = database.child('users').child(a).child('FirstName').get().val()
+    LastName = database.child('users').child(a).child('LastName').get().val()
     new_file_name=database.child('conversion').child(conv_id).child('new_file_name').get().val()
     new_url=database.child('conversion').child(conv_id).child('new_file').get().val()
+    filename=database.child('conversion').child(conv_id).child('file_name').get().val()
+    file_type=database.child('conversion').child(conv_id).child('file_type').get().val()
+    file_size=database.child('conversion').child(conv_id).child('file_size').get().val()
+    new_file_type=database.child('conversion').child(conv_id).child('new_file_type').get().val()
+    time=database.child('conversion').child(conv_id).child('date_time').get().val()
+    i=float(str(time))
+    dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
     if platform.system() == "Windows": storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~\\Downloads\\'+new_file_name))
     elif platform.system() == "Linux": storage.child("/conv_files/"+a+"/"+str(conv_id)+"/"+new_file_name).download(new_url,os.path.expanduser('~/Downloads/'+new_file_name))
-    return HttpResponse("File downloaded successfuly") 
+    data = dict()
+    messages.success(request, "Success: Converted file downloaded successfully.")
+    context = {
+		'conv_id':conv_id,
+        'filename':filename,
+	    'file_type':file_type,
+	    'file_size':get_size_format(file_size),
+	    'new_file_type':new_file_type,
+	    'dat':dat,
+	    'message':data,
+	    'FirstName':FirstName,
+		'LastName':LastName
+    }
+    return render(request,"ConvDetails.html",context)
 
 #FORGOT PASSWORD
 def forgot(request):
-    # idToken=request.session['uid']
-    # a=authe.get_account_info(idToken)
-    # a=a['users']
-    # a=a[0]
-    # a=a['localId']
-    # email = database.child('users').child(a).child('email').get().val()
     return render(request,"ForgotPass.html")
 
 def postForgot(request):
@@ -565,3 +668,44 @@ def get_size_format(b, factor=1024, suffix="B"):
         b /= factor
     return f"{b:.2f}Y{suffix}"
 
+#COMP ARCHIVE
+def comp_arch(request):
+	comp_id=request.GET.get('z')
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	FirstName = database.child('users').child(a).child('FirstName').get().val()
+	LastName = database.child('users').child(a).child('LastName').get().val()
+
+	filename=database.child('compression').child(comp_id).child('file_name').get().val()
+	new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
+	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
+	file_size=database.child('compression').child(comp_id).child('file_size').get().val()
+	new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
+	time=database.child('compression').child(comp_id).child('date_time').get().val()
+	org_url=database.child('compression').child(comp_id).child('file').get().val()
+	new_url=database.child('compression').child(comp_id).child('new_file').get().val()
+
+	data={
+		'user_id':a,
+		'date_time':time,
+		'file_name':filename,
+		'new_file_name':new_file_name,
+		'file':org_url,
+		'file_type':file_type,
+		'file_size':file_size,
+		'new_file':new_url,
+		'new_file_size':new_file_size
+    }
+
+	database.child('compression').child(comp_id).remove()
+	print("deleted")
+
+	#Storing data in compression table in Firebase Realtime Database
+	database.child('archives').child('compression').child(comp_id).set(data)
+	print("stored")
+
+	return HttpResponse("File downloaded successfuly")

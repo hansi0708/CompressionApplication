@@ -11,31 +11,42 @@
 		<h1>COMPRESSED FILES LIST</h1>
 	</div>
 
-	<div class="list-cards">
+	{% if comb_list %}
 
-		<div class="card1">
-		
-			{% for time,comp_list,filename,dat in comb_list %}
+		<div class="list-card">
 
-			<div class="card2">
+			<div class="lcard1">
+			
+				{% for time,comp_list,filename,dat in comb_list %}
 
-				<div class="card3">{{filename}}
-				</div>  
+				<div class="lcard2">
 
-				<div class="card3">{{dat}} 
+					<div class="lcard3">{{filename}}
+					</div>  
+
+					<div class="lcard3">{{dat}} 
+					</div>
+
+					<button onclick="location.href = '/comp_details/?z={{comp_list}}'" class="list-button">View</button>
+					<button onclick="location.href = '/comp_arch/?z={{comp_list}}'" class="list-button">Archive</button>
+
 				</div>
 
-            	<button onclick="location.href = '/comp_details/?z={{comp_list}}'" class="view">View</button>
+				<br>
+
+				{% endfor %}
 
 			</div>
 
-			<br>
-
-			{% endfor %}
-
 		</div>
 
-	</div>
+	{% else %}
+
+		<div class="header-card">
+			<p>There are no compressed files</p>
+		</div> 
+
+	{% endif %}
 
 </div>
 

@@ -3,46 +3,61 @@
 
 {% block mymessage %}
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+    {% endfor %}
+{% endif %}
+
 <title>FILE DETAILS</title>
 		
-<div class="content">	
-    <div class="contain123" >
-    <div class="header-card">
-		<h1 style="margin-right:350px;color:black;">FILES DETAILS</h1>
-	</div>
+<div class="content">
 
-    <div class="cards">         
-  
-        <div class="helper">
-            <label> FILENAME:</label><br>
-            <label> FILE TYPE:</label><br>
-            <label> FILE SIZE:</label><br>
-            <label> NEW FILE TYPE:</label><br>
-            <label> TIME:</label><br>
+    <div class="container1">
+    
+        <div class="profile-header">
+            </h1>FILES DETAILS</h1>
+	    </div>
+
+        <div class="profile-card">         
+    
+            <div class="helper">
+                <label>FILENAME:</label><br>
+                <label>FILE TYPE:</label><br>
+                <label>FILE SIZE:</label><br>
+                <label>NEW FILE TYPE:</label><br>
+                <label>TIME:</label><br>
+            </div>
+
+            <div class="helper">
+                <label>{{filename}}</label><br>
+                <label>{{file_type}}</label><br>
+                <label>{{file_size}}</label><br>
+                <label>{{new_file_type}}</label><br>  
+                <label>{{dat}}</label><br>
+            </div>
+
         </div>
 
-        <div class="helper">
-            <label>{{filename}}</label><br>
-            <label>{{file_type}}</label><br>
-            <label>{{file_size}}</label><br>
-            <label>{{new_file_type}}</label><br>  
-            <label>{{dat}}</label><br>
+        <div class="profile-card">
+
+            <div>
+                <button class="button-container" onclick="location.href = '/orDownload/?z={{conv_id}}'"id="button">Download Original File</button>
+            </div>
+
+            <div>
+                <button class="button-container" onclick="location.href = '/convDownload/?z={{conv_id}}'" id="button">Download Converted File</button>
+            </div>
+
         </div>
 
     </div>
-
-    <div class="cards">
-
-        <div >
-            <button class="button-container"  style="width:130px; height:45px;margin-left:90px;font-size:10pt;" onclick="location.href = '/orDownload/?z={{conv_id}}'"id="button">DOWNLOAD ORIGINAL FILE</button>
-        </div>
-
-        <div >
-            <button class="button-container" style=" width:130px; height:45px;margin-left:30px; font-size:10pt;" onclick="location.href = '/convDownload/?z={{conv_id}}'" id="button">DOWNLOAD CONVERTED FILE</button>
-        </div>
-
-    </div>
-</div>
+    
 </div>
 
 {% endblock %}

@@ -5,22 +5,25 @@
 <div class="content">
 
     <div class="header-card">
-		<h1 style="color:BLACK;margin-left:25px;">COMPRESS PPT </h1>
-        <p style="font-size:1.2em;color:#454545; margin-left:85px; margin-top:20px;">Compress PPT files. Reduce the size of PPT, PPTx documents.</p>
+		<h1>COMPRESS PPT </h1>
+        <p>Compress PPT files. Reduce the size of PPT, PPTx documents.</p>
         <br>
 	</div>
 
     <div class="cards">
         
-        <div class="container">
+        <div class="container2">
 
-            <form class="dropzone" method="post" action="/imageCompression/pptCompression/" enctype="multipart/form-data">  
+            <form class="dropzone" method="post" action="/imageCompression/compressImage/" enctype="multipart/form-data">  
+                
                 {% csrf_token %}  
                 {{ form.as_p }} 
-                <div style="display: flex,align-items: center;">
-                    <h3 style = "margin-top:10px"> &nbsp;  &nbsp;  &nbsp; &nbsp; or drop file here</h3>
-                <button type="submit" class="save btn btn-default" style="width:90px; border-radius:5px; border:none">Save</button>  
+                
+                <div>
+                    <h3>or drop file here</h3>
+                    <button type="submit" class="save btn btn-default" >Save</button>  
                 </div>
+
             </form>
 
         </div>

@@ -2,29 +2,36 @@
 {% load static %}
 
 {% block mymessage %}
-<script>
-    function myclick(){
-        alert("File Downloaded successfully")
-    }
-</script>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+    {% endfor %}
+{% endif %}
 
 <title>FILE DETAILS</title>
 		
 <div class="content">
-    <div class="contain123">	
+    
+    <div class="container1">	
 
-    <div class="header-card">
-		<h1 style="margin-right:350px; color:black;">FILES DETAILS</h1>
+    <div class="profile-header">
+		<h1>FILES DETAILS</h1>
 	</div>
      
-    <div class="cards">         
+    <div class="profile-card">         
   
         <div class="helper">
-            <label> FILENAME:</label><br>
-            <label> FILE TYPE:</label><br>
-            <label> FILE SIZE:</label><br>
-            <label> NEW FILE SIZE:</label><br>
-            <label> TIME:</label><br>
+            <label>FILENAME:</label><br>
+            <label>FILE TYPE:</label><br>
+            <label>FILE SIZE:</label><br>
+            <label>NEW FILE SIZE:</label><br>
+            <label>TIME:</label><br>
         </div>
 
         <div class="helper">
@@ -37,19 +44,18 @@
 
     </div>
 
-    <div class="cards">
+    <div class="profile-card">
 
-        <div >
-            <button style="width:130px; height:45px;margin-left:90px;font-size:10pt;" class="button-container" onclick= "location.href = '/orgDownload/?z={{comp_id}}'"  id="button">DOWNLOAD ORIGINAL FILE</button>
+        <div>
+            <button class="button-container" onclick= "location.href = '/orgDownload/?z={{comp_id}}'"  id="button">Download Original File</button>
         </div>
 
-        <div >
-            <button style=" width:130px; height:45px;margin-left:30px; font-size:10pt;" class="button-container" onclick="location.href = '/compDownload/?z={{comp_id}}'" id="button">DOWNLOAD COMPRESSED FILE</button>
+        <div>
+            <button class="button-container" onclick="location.href = '/compDownload/?z={{comp_id}}'" id="button">Download Compressed File</button>
         </div>
 
     </div>
-</div>
-</div>
 
+</div>
 
 {% endblock %}

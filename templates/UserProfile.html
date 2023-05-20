@@ -3,60 +3,54 @@
 
 {% block mymessage %}
 
-
 <title>PROFILE</title>
 
-
-   <div class="content">
-       <div class="contain123" >
-     
-        <div class="header-card">
-            
-                <h1 style="margin-right:350px;color:black;">USER PROFILE</h1>
+<div class="content">
+    
+    <div class="container1" >
+        
+        <div class="profile-header">
+            <h1>USER PROFILE</h1>
         </div>
     
-    <div class="cards">         
-  
+        <div class="profile-card">         
+    
             <div class="helper">
-                <label> Name:</label><br>
-                
-                <label> Employment Type:</label><br>
-                
-                
-                <label> Department:</label><br>
-               
-                <label> Designation:</label><br>
-                
-                <label> Email:</label><br>
-               
+                    
+                <label>Name:</label><br>
+                <label>Employment Type:</label><br>
+                <label>Department:</label><br>
+                <label>Designation:</label><br>
+                <label>Email:</label><br>
+            
             </div>
 
             <div class="helper">
+
                 <label>{{Salutation}} {{FirstName}} {{MiddleName}} {{LastName}}</label><br>
                 <label>{{employment_type}}</label><br>
                 <label>{{department}}</label><br>
                 <label>{{designation}}</label><br> 
                 <label>{{email}}</label><br>
-               
+            
             </div> 
 
-    </div>
+        </div>
         
-    <div class="cards" >
+        <div class="profile-card" >
 
-        <div >
-            <button class="button-container"  style="width:130px; height:35px;margin-left:130px;font-size:10pt;" onClick="location.href = '/resetPassword/'" id="button">Reset Password</button>
-            {% comment %} <button class="button-container" style="width:200px" onClick="location.href = '/updateProfile/'" id="button">Update Profile</button> {% endcomment %}
-        </div>
+            <div>
+                <button class="button-container" onClick="location.href = '/resetPassword/'" id="button">Reset Password</button>
+            </div>
 
-        <div >
-            <button  class="button-container" style=" width:130px; height:35px;margin-left:30px; font-size:10pt;" onClick="location.href = '/updateProfile/'" id="button">Update Profile</button>
-        </div>
+            <div>
+                <button class="button-container" onClick="location.href = '/updateProfile/'" id="button">Update Profile</button>
+            </div>
 
+        </div> 
+    
     </div> 
-</div> 
 
 </div>
-
     
 {% endblock %} 

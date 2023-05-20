@@ -26,7 +26,7 @@ from datetime import datetime, timezone
 from django.core.files.storage import default_storage
 import uuid
 
-from win32com import client
+#from win32com import client
 import subprocess
 #FIREBASE CONFIG
 config = {
@@ -430,7 +430,7 @@ def excel2pdf(request):
 			# pdfOptions.setCompliance(PdfCompliance.PDF_A_1_B)
 			
 			# Convert Excel to PDF
-			w.save("xlsx-to-pdf.pdf", pdfOptions)
+			#w.save("xlsx-to-pdf.pdf", pdfOptions)
 
 			idToken=request.session['uid']
 			a=authe.get_account_info(idToken)

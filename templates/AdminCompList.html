@@ -1,0 +1,42 @@
+{% extends 'AdminMaster.html' %}
+{% load static %}
+
+{% block mymessage %}
+
+<title>COMPRESSED FILES</title>
+
+<div class="content">	
+
+	<div class="header-card">
+		<h1>COMPRESSED FILES LIST</h1>
+	</div>
+
+	<div class="list-cards">
+
+		<div class="card1">
+
+			{% for time,comp_list,filename,dat in comb_list %}
+
+			<div class="card2">
+
+				<div class="card3">{{filename}}
+				</div>  
+
+				<div class="card3">{{dat}} 
+				</div>
+
+            	{% comment %} <button onclick="location.href = '/admin/comp_details/?z={{comp_list}}'" class="view">View</button> {% endcomment %}
+
+			</div>
+
+			<br>
+
+			{% endfor %}
+
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %} 

@@ -5,6 +5,7 @@
 <html lang="en">
 
 	<head>
+
 		<meta charset="UTF-8">
 	    <title>LOGIN</title>
 		<script src="https://kit.fontawesome.com/919388b1b0.js" crossorigin="anonymous"></script>
@@ -54,44 +55,48 @@
 				
 					</div> 
 				
-					<div action="#" class="input-area"> 
+					<div action="#" class="input-area" id="captcha-input"> 
 					
 						<input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
-						<button class="check-btn" >Check</button>
 					
 					</div>
 					
 					<div class="status-text"></div>
 		
 				</div> 
-				<br><br>	
+
+				<br>
+				<br>
+
 				<div class="pass">
 					<a href="/forgot/">Forgot Password?</a>
 				</div>
 
-				<input id="login-submit" class="check-btn" type="submit" value="LogIn" ><br></br>
+				<input id="login-submit" type="submit" value="LogIn" ><br></br>
 			
 				<div class="signUp_Link">
 					Not a member?
 					<a href="/signUp/">Sign Up</a>
 				</div>
+
 				<br>
 
 			</form>
 
 			<script>
 				
-				let captcha = document.querySelector(".captcha"),
-				reloadBtn = document.querySelector(".reload-btn"),
-				inputField = document.querySelector(".input-area input"),
-				checkBtn = document.querySelector(".check-btn"),
-				statusTxt = document.querySelector(".status-text");
+				let captcha = document.querySelector(".captcha");
+				let reloadBtn = document.querySelector(".reload-btn");
+				let inputField = document.querySelector(".input-area input");
+				let statusTxt = document.querySelector(".status-text");
 				
 				//storing all captcha characters in array
-				let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-									'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
-									'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-									't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+				let allCharacters = [
+					'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+					'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+					'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+					't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+				];
 				
 				function getCaptcha(){
 					for (let i = 0; i < 6; i++) { //getting 6 random characters from the array
@@ -108,45 +113,23 @@
 					getCaptcha();
 				});
 
-
-				
-				checkBtn.addEventListener("click", e =>{
-					console.log("--->",checkBtn.value);
-					e.preventDefault(); //preventing button from it's default behaviour
+				var testRun = document.getElementById("login-submit");
+				testRun.addEventListener('click', function(event) {
 					statusTxt.style.display = "block";
-					//adding space after each character of user entered values because I've added spaces while generating captcha
 					let inputVal = inputField.value.split('').join(' ');
 
-					if(inputVal == captcha.innerText){ //if captcha matched
-						alert("Captcha Matched!");
-						setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
-							removeContent();
-							getCaptcha();
-						}, 9000);
-					}else{
+					if(inputVal !== captcha.innerText){ 
 						alert("Invalid Captcha");
+						event.preventDefault();
 					}
 				});
-
-				var testRun = document.getElementById("login-submit");
-				testRun.addEventListener('submit', function(event) {
-					statusTxt.style.display = "block";
-					//adding space after each character of user entered values because I've added spaces while generating captcha
-					let inputVal = inputField.value.split('').join(' ');
-
-					if(inputVal != captcha.innerText){ //if captcha didn't matched
-						alert("Invalid Captcha");
-						return false;
-					}
-					});
 						
 				function removeContent(){
 					inputField.value = "";
 					captcha.innerText = "";
 					statusTxt.style.display = "none";
 				}
-									
-		   
+			   
 			</script>
 			
 		</div>

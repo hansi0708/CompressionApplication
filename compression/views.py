@@ -16,6 +16,7 @@ import pytz
 from django.core.files.storage import default_storage
 import uuid
 import zipfile
+from django.contrib import messages
 
 #FIREBASE CONFIG
 config = {
@@ -111,6 +112,8 @@ def compressImage(request):
             print(saving_diff)
 
             if saving_diff >= 0:
+                data = dict()
+                messages.error(request, "Error: This file cannot be compressed any further.")
                 message  = "This file cannot be compressed any further."
                 return render(request, "ImageCompression.html", {'form':uploadFile,"msg":message})
             
@@ -130,9 +133,9 @@ def compressImage(request):
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-                tz =pytz.timezone('Asia/Kolkata')
-                time_now=datetime.now(timezone.utc).astimezone(tz)
-                millis=int(time.mktime(time_now.timetuple()))
+                now = datetime.now()
+                millis=int(datetime.timestamp(now))
+                print(millis)
 
                 org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
                 new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
@@ -148,6 +151,7 @@ def compressImage(request):
                     'new_file':new_url,
                     'new_file_size':new_file_size
                 }
+
                 
                 #Storing data in compression table in Firebase Realtime Database
                 database.child('compression').child(comp_id).set(data)  

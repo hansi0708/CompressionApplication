@@ -38,4 +38,6 @@ urlpatterns = [
     path('orDownload/',views.orgConvDow),
     path('convDownload/',views.convDow),
 
+    path('comp_arch/',views.comp_arch),
+
     ]
