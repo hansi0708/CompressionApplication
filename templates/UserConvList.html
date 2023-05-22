@@ -13,18 +13,18 @@
 
 	{% if comb_list %}
 
-		<div class="list-cards">
+		<div class="list-card">
 
-			<div class="card1">
+			<div class="lcard1">
 			
 				{% for time,conv_list,filename,dat in comb_list %}
 
-				<div class="card2">
+				<div class="lcard2">
 
-					<div class="card3">{{filename}}
+					<div class="lcard3">{{filename}}
 					</div>  
 
-					<div class="card3">{{dat}} 
+					<div class="lcard3">{{dat}} 
 					</div>
 
 					<button onclick="location.href = '/conv_details/?z={{conv_list}}'" class="view">View</button>

@@ -18,6 +18,7 @@ import uuid
 import zipfile
 from django.contrib import messages
 
+
 #FIREBASE CONFIG
 config = {
   'apiKey': "AIzaSyBbNBjeBbpTnaq2ikJ2Aut5UvW0KqhQ7dQ",
@@ -509,6 +510,7 @@ def pdfCompression(request):
         uploadFile = FileForm()  
     
     return render(request,"CompressPDF.html",{'form':uploadFile})
+
 
 def get_size_format(b, factor=1024, suffix="B"):
     for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:

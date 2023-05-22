@@ -313,7 +313,7 @@
         let captcha = document.querySelector(".captcha");
         let reloadBtn = document.querySelector(".reload-btn");
         let inputField = document.querySelector(".input-area input");
-        {% comment %} checkBtn = document.querySelector(".check-btn"); {% endcomment %}
+        let checkBtn = document.querySelector(".check-btn");
         let statusTxt = document.querySelector(".status-text");
 
         //storing all captcha characters in array
@@ -350,7 +350,7 @@
 					}
 				});
           
-        {% comment %} checkBtn.addEventListener("click", e =>{
+        checkBtn.addEventListener("click", e =>{
               console.log("--->",checkBtn.value);
             e.preventDefault(); //preventing button from it's default behaviour
             statusTxt.style.display = "block";
@@ -358,9 +358,9 @@
             let inputVal = inputField.value.split('').join(' ');
             if(inputVal == captcha.innerText){ //if captcha matched
                   alert("Captcha Matched");
-              /*{% comment %} statusTxt.style.color = "#4db2ec";
-              statusTxt.innerText = "Nice! You don't appear to be a robot."; {% endcomment %}*/
-              {% comment %} setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
+              /*{% comment %} statusTxt.style.color = "#4db2ec"; {% endcomment %}
+              statusTxt.innerText = "Nice! You don't appear to be a robot."; 
+              setTimeout(()=>{ //calling removeContent & getCaptcha after 2 seconds
               removeContent();
               getCaptcha();
               }, 9000);
@@ -369,7 +369,7 @@
               /*statusTxt.style.color = "#ff0000";
               statusTxt.innerText = "Captcha not matched. Please try again!";*/
             }
-        }); {% endcomment %} 
+        });
              
 
         function removeContent(){

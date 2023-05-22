@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+    </head>	 
+  
+	<body>
+
+		<div class="center">	
+			
+			<a>HELLO</a>
+			<br><br><br>
+			
+			{% for comp_list,filename,time in comb_list %}
+			{{filename}} &nbsp; {{time}} &nbsp;
+            <button>View</button>
+			<br>
+			{% endfor %}
+
+		</div>
+
+	</body>
+
+</html>

@@ -294,7 +294,6 @@ input[type="submit"]:hover{
   transform: rotate(15deg);
 }
 .wrapper .input-area{
-  height: 100px;
   width: 80%;
   position: relative;
 }

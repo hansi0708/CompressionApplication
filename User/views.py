@@ -236,7 +236,7 @@ def postReset(request):
 
 #DASHBOARD
 def dashboard(request):
-	comp_id=request.GET.get('z')
+	# comp_id=request.GET.get('z')
 
 	idToken=request.session['uid']
 	a=authe.get_account_info(idToken)
@@ -246,48 +246,55 @@ def dashboard(request):
 
 	FirstName = database.child('users').child(a).child('FirstName').get().val()
 	LastName = database.child('users').child(a).child('LastName').get().val()
-
-	all_user_comp=database.child('compression').shallow().get().val()
 	
 	list_comp=[]
-	for i in all_user_comp:                                              
-		list_comp.append(i)
-	
-	print(list_comp)
-
+	list_conv=[]
 	comp_list=[]
-	for i in list_comp:
-		comp=database.child('compression').child(i).child('user_id').get().val()
-		if comp == a: comp_list.append(i)
-		
 	filenames=[]
-	for i in comp_list:   
-		filename=database.child('compression').child(i).child('file_name').get().val()                                           
-		filenames.append(filename)
+	conv_list=[]
+	times=[]
+	date=[]
+	count_comp=0
+	count_conv=0
+
+	all_user_comp=database.child('compression').shallow().get().val()
+
+	if all_user_comp != None:
+
+		for i in all_user_comp:                                              
+			list_comp.append(i)
+
+		for i in list_comp:
+			comp=database.child('compression').child(i).child('user_id').get().val()
+			if comp == a: comp_list.append(i)			
+		
+		# for i in comp_list:   
+		# 	filename=database.child('compression').child(i).child('file_name').get().val()                                           
+		# 	filenames.append(filename)
+
+		count_comp=len(comp_list)
 
 	all_user_conv=database.child('conversion').shallow().get().val()
-	
-	list_conv=[]
-	for i in all_user_conv:                                              
-		list_conv.append(i)
-	
-	conv_list=[]
-	for i in list_conv:
-		conv=database.child('conversion').child(i).child('user_id').get().val()
-		if conv == a: conv_list.append(i)
 
-
+	if all_user_conv != None:
 	
-	times=[]
-	for i in all_user_comp:  
-		time=database.child('compression').child(i).child('date_time').get().val()                                            
-		times.append(time)
-
-	date=[]
-	for i in times:
-		i=float(i)
-		dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
-		date.append(dat)
+		for i in all_user_conv:                                              
+			list_conv.append(i)
+			
+		for i in list_conv:
+			conv=database.child('conversion').child(i).child('user_id').get().val()
+			if conv == a: conv_list.append(i)
+		
+		count_conv=len(conv_list)
+		
+		# for i in conv_list:  
+		# 	time=database.child('conversion').child(i).child('date_time').get().val()                                            
+		# 	times.append(time)
+		
+		# for i in times:
+		# 	i=float(i)
+		# 	dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
+		# 	date.append(dat)
 
 	# months=[]
 	# for i in date:
@@ -295,15 +302,16 @@ def dashboard(request):
 	# 	month=datetime.strftime('%m-%Y')
 	# 	months.append(month)
 
+	
+	
 	context = {
 		  'FirstName':FirstName,
 		  'LastName':LastName,
-	      'count_comp':len(comp_list),
-	      'count_conv':len(conv_list)
+	      'count_comp':count_comp,
+	      'count_conv':count_conv
     }
 
 	return render(request,"UserDashboard.html",context)
-
 
 
 #PROFILE
@@ -366,19 +374,24 @@ def userCompList(request):
 			comp=database.child('compression').child(i).child('user_id').get().val()
 			if comp == a: comp_list.append(i)
 
-		for i in comp_list:   
-			filename=database.child('compression').child(i).child('file_name').get().val()                                           
-			filenames.append(filename)
+		if comp_list !=None:
 
-		for i in all_user_comp:  
-			time=database.child('compression').child(i).child('date_time').get().val()                                            
-			times.append(time)
+			for i in comp_list:   
+				filename=database.child('compression').child(i).child('file_name').get().val()                                           
+				filenames.append(filename)
 
-		for i in times:
-			dat=datetime.fromtimestamp(i)
-			date.append(dat)
+			for i in all_user_comp:  
+				time=database.child('compression').child(i).child('date_time').get().val()                                            
+				times.append(time)
+
+			for i in times:
+				dat=datetime.fromtimestamp(i)
+				date.append(dat)
 		
-		comb_list=zip(times,comp_list,filenames,date)
+			comb_list=zip(times,comp_list,filenames,date)
+
+		else:
+			comb_list=[]
 
 	else:
 		comb_list=[]	
@@ -520,22 +533,27 @@ def userConvList(request):
 			conv=database.child('conversion').child(i).child('user_id').get().val()
 			if conv == a: conv_list.append(i)
 		
-		for i in conv_list:   
-			filename=database.child('conversion').child(i).child('file_name').get().val()                                           
-			filenames.append(filename)
-		
-		for i in all_user_conv:  
-			time=database.child('conversion').child(i).child('date_time').get().val()                                            
-			times.append(time)
-		
-		for i in times:
-			dat=datetime.fromtimestamp(i)
-			date.append(dat)
-		
-		comb_list=zip(times,conv_list,filenames,date)	
+		if conv_list !=None:
+			
+			for i in conv_list:   
+				filename=database.child('conversion').child(i).child('file_name').get().val()                                           
+				filenames.append(filename)
+			
+			for i in all_user_conv:  
+				time=database.child('conversion').child(i).child('date_time').get().val()                                            
+				times.append(time)
+			
+			for i in times:
+				dat=datetime.fromtimestamp(i)
+				date.append(dat)
+			
+			comb_list=zip(times,conv_list,filenames,date)	
+
+		else:
+			comb_list=[]
 
 	else:
-		comb_list=[]
+		comb_list=[]		
 	
 	return render(request,"UserConvList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName})
 
