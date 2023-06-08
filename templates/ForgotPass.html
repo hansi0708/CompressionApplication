@@ -19,10 +19,9 @@
 	<body>
 
 		<div class="center">
-			
 
 			<h1>Forgot Password?</h1>
-            <font size="2.9"> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter your registered email for sending the message.</font>
+            <p>Enter your registered email for sending the message.</p>
 		
             <form action="/postForgot/" method="post">
 			
@@ -49,21 +48,19 @@
 					<div action="#" class="input-area"> 
 					
 						<input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required>
-						<button class="check-btn" >Check</button>
-					
+
 					</div>
 					
 					<div class="status-text"></div>
 		
-				</div> 
-				<br><br>	
+				</div> 	
 
 				<input type="submit" value="Continue" onclick="alert('Mail is sent!')"><br><br>		
-					
 				
 				<br>
 
 			</form>
+
 			<script>
 				
 				let captcha = document.querySelector(".captcha");

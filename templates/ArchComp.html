@@ -1,0 +1,35 @@
+{% if comb_list %}
+
+		<div class="list-card">
+
+			<div class="lcard1">
+			
+				{% for time,comp_list,filename,dat in comb_list %}
+
+				<div class="lcard2">
+
+					<div class="lcard3">{{filename}}
+					</div>  
+
+					<div class="lcard3">{{dat}} days left 
+					</div>
+
+					<button onclick="location.href = '/del_arc_cmp/?z={{comp_list}}'" class="list-button">Delete</button>
+
+				</div>
+
+				<br>
+
+				{% endfor %}
+
+			</div>
+
+		</div>
+
+	{% else %}
+
+		<div class="header-card">
+			<p>There are no compressed files that are archived</p>
+		</div> 
+
+	{% endif %}

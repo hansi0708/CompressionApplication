@@ -39,5 +39,13 @@ urlpatterns = [
     path('convDownload/',views.convDow),
 
     path('comp_arch/',views.comp_arch),
+    path('conv_arch/',views.conv_arch),
+    path('archive/',views.archive),
+
+    path('del_arc_cmp/',views.del_arc_cmp),
+    path('del_arc_cnv/',views.del_arc_cnv),
+
+    # path('conv_arch/',views.conv_arch),
+    # path('conv_arc_list/',views.conv_arc_list),
 
     ]

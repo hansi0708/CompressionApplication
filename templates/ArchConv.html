@@ -1,0 +1,36 @@
+
+	{% if comb_list %}
+
+		<div class="list-card">
+
+			<div class="lcard1">
+			
+				{% for time,conv_list,filename,dat in comb_list %}
+
+				<div class="lcard2">
+
+					<div class="lcard3">{{filename}}
+					</div>  
+
+					<div class="lcard3">{{dat}} days left
+					</div>
+
+					<button onclick="location.href = '/del_arc_cnv/?z={{conv_list}}'" class="view">Delete</button>
+
+				</div>
+
+				<br>
+
+				{% endfor %}
+
+			</div>
+
+		</div>
+
+	{% else %}
+
+		<div class="header-card">
+			<p>There are no converted files that are archived</p>
+		</div> 
+
+	{% endif %}

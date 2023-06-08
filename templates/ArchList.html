@@ -1,0 +1,51 @@
+{% extends 'UserMaster.html' %}
+{% load static %}
+
+{% block mymessage %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+        $('#myDrop').on('change', function() {
+            var selectedOption = $(this).val();
+            
+            // Redirect to the updated URL with the selected option as a query parameter
+            window.location.href = '/archive/?selected_option=' + selectedOption;
+        });
+    });
+</script>
+<title>Archive COMPRESSED FILES</title>
+
+
+		
+<div class="content">	
+
+	<div class="header-card">
+		<h1>ARCHIVE FILES LIST</h1>
+	</div>
+
+	<div>
+		<!--Name: -->
+		<div class="txt_field">
+              
+			<select type="text" id="myDrop" class = "drop_down" style = "width: 130px; height: 39px" value="Filter" name="Choose Option"  required>
+			  <option value="" disabled selected hidden>Choose Option</option>
+			  <option value="compress">Compression</option>
+			  <option value="convert">Conversion</option>
+			</select>
+				   
+		  </div>
+	</div>
+
+	<div id="dynamicContent">
+		{% if selected_option == "compress" %}
+    			{% include "ArchComp.html" %}
+			{% elif selected_option == "convert" %}
+    			{% include "ArchConv.html" %}
+			{% else %}
+				{% include "ArchComp.html" %}
+			{% endif %}
+	</div>
+
+</div>
+
+{% endblock %}

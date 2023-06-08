@@ -2,8 +2,12 @@
 import os
 import platform
 from PIL import Image
+import PyPDF2
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+import numpy as np
+
+from compression.function import  compress_image, compress_pdf, compress_word
 from .forms import FileForm
 from PDFNetPython3.PDFNetPython import PDFDoc, Optimizer, SDFDoc, PDFNet
 import zlib,sys
@@ -17,6 +21,7 @@ from django.core.files.storage import default_storage
 import uuid
 import zipfile
 from django.contrib import messages
+
 
 
 #FIREBASE CONFIG
@@ -74,32 +79,14 @@ def compressImage(request):
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('/')[-1]
 
-            #Image compression code
-            quality=90
-            
-            #Loading image to memory
-            img = Image.open(uFile.file.path)
-
-            #Print original image shape
-            print("[*] Image shape:", img.size)
-            
-            #Get the original file size in bytes
+            # Get the original file size in bytes
             file_size = os.path.getsize(uFile.file.path)
 
             #Print size before compression/resizing
             print("[*] Size before compression:", get_size_format(file_size))
-
             
-            try:
-                #Save the image with the corresponding quality and optimize set to True
-                img.save(new_filename, quality=quality, optimize=True)
-
-            except OSError:
-                #Convert the image to RGB mode first
-                img = img.convert("RGB")
-
-                #Save the image with the corresponding quality and optimize set to True
-                img.save(new_filename, quality=quality, optimize=True)
+            #IMAGE COMPRESSION
+            compress_image(uFile.file.path,new_filename)
 
             #Get the new file size in bytes
             new_file_size = os.path.getsize(new_filename)
@@ -112,16 +99,25 @@ def compressImage(request):
 
             print(saving_diff)
 
+            comp_per=-(saving_diff/file_size*100)
+            print(comp_per)
+
+            #Print the saving percentage
+            print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
+
+            #uFile.path.delete()
+
             if saving_diff >= 0:
+
+                #Deleting from local storage
+                default_storage.delete(uFile.file.path)
+                default_storage.delete(new_filename)
+
                 data = dict()
                 messages.error(request, "Error: This file cannot be compressed any further.")
-                message  = "This file cannot be compressed any further."
-                return render(request, "ImageCompression.html", {'form':uploadFile,"msg":message})
+                return render(request, "ImageCompression.html", {'form':uploadFile})
             
-            else:
-
-                #Print the saving percentage
-                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
+            else:                
                 
                 idToken=request.session['uid']
                 a=authe.get_account_info(idToken)
@@ -146,6 +142,7 @@ def compressImage(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
+                    'comp_per':comp_per,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
@@ -224,13 +221,16 @@ def pptCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
+            comp_per=-(saving_diff/file_size*100)
+
+            #Print the saving percentage
+            print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
+
             if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "CompressPPT.html", {'form':uploadFile,"msg":message})
             
             else:
-                #Print the saving percentage
-                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
 
                 idToken=request.session['uid']
                 a=authe.get_account_info(idToken)
@@ -255,6 +255,7 @@ def pptCompression(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
+                    'comp_per':comp_per,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
@@ -319,6 +320,7 @@ def wordCompression(request):
             print("[*] Size before compression:", get_size_format(file_size))    
 
             #Word compression code
+            #compress_word(uFile.file.path,new_filename)
             with open(uFile.file.path, mode="rb") as fin, open(new_filename, mode="wb") as fout:
                 data = fin.read()
                 compressed_data = zlib.compress(data, zlib.Z_BEST_COMPRESSION)
@@ -341,13 +343,16 @@ def wordCompression(request):
 
             print(saving_diff)
 
+            comp_per=-(saving_diff/file_size*100)
+
+            #Print the saving percentage
+            print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
+
             if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "CompressWord.html", {'form':uploadFile,"msg":message})
 
             else:
-                #Print the saving percentage
-                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
 
                 idToken=request.session['uid']
                 a=authe.get_account_info(idToken)
@@ -373,6 +378,7 @@ def wordCompression(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
+                    'comp_per':comp_per,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
@@ -406,6 +412,7 @@ def pdfCompression(request):
         uploadFile = FileForm(request.POST, request.FILES)
 
         if uploadFile.is_valid():  
+            print("sfsfd")
             uFile = uploadFile.save(commit=False)
             uFile.file = request.FILES['file']
 
@@ -436,18 +443,8 @@ def pdfCompression(request):
             #Print size before compression/resizing
             print("[*] Size before compression:", get_size_format(file_size))
 
-            #PDF compression code
-            PDFNet.Initialize("demo:1679382800894:7d172aad03000000006e4e8c2e43b0a1edd4e0fe31883bada9d6815484")
-            doc = PDFDoc(uFile.file.path)
-
-            #Optimize PDF with the default settings
-            doc.InitSecurityHandler()
-
-            #Reduce PDF size by removing redundant information and compressing data streams
-            Optimizer.Optimize(doc)
-
-            doc.Save(new_filename, SDFDoc.e_linearized)
-            doc.Close()
+            #PDF COMPRESSION
+            compress_pdf(uFile.file.path,new_filename)
 
             #Get the new file size in bytes
             new_file_size = os.path.getsize(new_filename)
@@ -458,13 +455,17 @@ def pdfCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
+            comp_per=-(saving_diff/file_size*100)
+            print(comp_per)
+
+            #Print the saving percentage
+            print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
+
             if saving_diff >= 0:
                 message  = "This file cannot be compressed any further."
                 return render(request, "CompressPDF.html", {'form':uploadFile,"msg":message})
 
             else:
-                #Print the saving percentage
-                print(f"[+] File size change: {saving_diff/file_size*100:.2f}% of the original file size.")
 
                 idToken=request.session['uid']
                 a=authe.get_account_info(idToken)
@@ -490,6 +491,7 @@ def pdfCompression(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
+                    'comp_per':comp_per,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,

@@ -12,8 +12,6 @@ from django.shortcuts import render
 from .forms import FileForm
 import pdftables_api
 import img2pdf
-
-
 import  jpype     
 import  asposecells   
 from PIL import Image
