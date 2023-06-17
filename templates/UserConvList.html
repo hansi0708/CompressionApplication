@@ -24,11 +24,13 @@
 					<div class="lcard3">{{filename}}
 					</div>  
 
-					<div class="lcard3">{{dat}} 
-					</div>
+					{% comment %} <div class="lcard3">{{dat}} 
+					</div> {% endcomment %}
 
-					<button onclick="location.href = '/conv_details/?z={{conv_list}}'" class="view">View</button>
+					<button onclick="location.href = '/conv_details/?z={{conv_list}}'" class="list-button">View</button>
+					<button onclick="location.href = '/conv_arch/?z={{conv_list}}'" class="list-button">Archive</button>
 
+					
 				</div>
 
 				<br>

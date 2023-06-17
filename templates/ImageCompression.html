@@ -12,6 +12,18 @@
     {% endfor %}
 {% endif %}
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var fileInput = $('#id_file');
+        var functionValue = $('#function').val();
+    
+        // Update accept attribute based on the selected function
+            fileInput.attr('accept', '.jpg','jpeg','png');
+    });
+</script>
+
+
 <div class="content">
 
     <div class="header-card">
@@ -27,6 +39,7 @@
                 
                 {% csrf_token %}  
                 {{ form.as_p }} 
+                <input type="hidden" id="function" value="{{ function }}">
                 
                 <div>
                     <h3>or drop file here</h3>

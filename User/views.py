@@ -5,12 +5,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import pyrebase
 from datetime import datetime
-from django.http.response import HttpResponse
 import pyrebase
 import firebase_admin
 from firebase_admin import credentials, storage
 from django.contrib import messages
 from firebase_admin import auth
+from django.core.mail import send_mail
+
+from CompressionApplication.function import get_size_format
 
 #FIREBASE CONFIG
 config = {
@@ -24,10 +26,10 @@ config = {
   'measurementId': "G-2XZEBYKFC6"
 }
 
-# cred=credentials.Certificate('serviceAccountKey.json')
-# firebase_admin.initialize_app(cred, {
-#     'storageBucket': "compression-tool-6af95.appspot.com"
-# })
+cred=credentials.Certificate('serviceAccountKey.json')
+firebase_admin.initialize_app(cred, {
+    'storageBucket': "compression-tool-6af95.appspot.com"
+})
 
 
 # Initialising database, auth, firebase and storage   
@@ -39,15 +41,7 @@ storage=firebase.storage()
 
 #HOME
 def home(request):
-	idToken=request.session['uid']
-	a=authe.get_account_info(idToken)
-	a=a['users']
-	a=a[0]
-	a=a['localId']
-
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-	return render(request,"Home.html",{"FirstName":FirstName,"LastName":LastName})
+	return render(request,"Home.html")
 
 
 #SIGN IN
@@ -71,16 +65,7 @@ def postsignIn(request):
 	
 	session_id=user['idToken']
 	request.session['uid']=str(session_id)
-
-	idToken=request.session['uid']
-	a=authe.get_account_info(idToken)
-	a=a['users']
-	a=a[0]
-	a=a['localId']
-
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-	return render(request,"Home.html",{"email":email,"FirstName":FirstName,"LastName":LastName})
+	return render(request,"Home.html",{"email":email})
 
 
 #LOGOUT
@@ -118,6 +103,13 @@ def postsignUp(request):
 		
 		uid = user.get('localId')
 
+		# Generate the Firebase email verification link
+		# user = auth.create_user(email,passs)
+		# verification_link = auth.generate_email_verification_link(user.email)
+
+		# # Send the verification link to the user's email
+		# send_verification_email(user.email, verification_link)
+
 		data={
 			'email':email,
 			'Salutation' : name,
@@ -138,6 +130,13 @@ def postsignUp(request):
 		return render(request, "Registration.html")
 	
 	return render(request,"Login.html")
+
+def send_verification_email(email, verification_link):
+    subject = 'Verify your email'
+    message = f'Click the following link to verify your email: {verification_link}'
+    from_email = 'your_email@example.com'
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)
 
 
 #UPDATE PROFILE
@@ -211,10 +210,8 @@ def resetPassword(request):
 	a=a[0]
 	a=a['localId']
 	email = database.child('users').child(a).child('email').get().val()
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
-	return render(request,"ResetPassword.html",{'email':email,'FirstName':FirstName,'LastName':LastName})
+	
+	return render(request,"ResetPassword.html",{'email':email})
 
 def postReset(request):
 	idToken=request.session['uid']
@@ -222,45 +219,35 @@ def postReset(request):
 	a=a['users']
 	a=a[0]
 	a=a['localId']
-
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
+	
 	if request.method == 'POST':
 		email = request.POST.get('email')
-		old_password = request.POST.get('old_password')
 		new_password = request.POST.get('new_password')
-		print(email)
-		print(old_password)
-		print(new_password)
-		
 
 		try:
-			user = authe.sign_in_with_email_and_password(email, old_password)
-			#authe.update_user(user['idToken'], new_password)
-			# print(1111)
-			# user = authe.get_user(uid=None, email=email)
-			# print(1)
-			credentials = authe.EmailAuthProvider.credential(email, old_password)
-			# print(2)
-			authe.reauthenticate_with_credential(user.uid, credentials)
-			# print(3)
-			authe.update_user(user.uid, password=new_password)
-			print(3)
-			
-			data = dict()
-			messages.success(request, "Success: An email to reset password is successfully sent ")
-			return render(request, "ResetPassword.html", {'message':data,'FirstName':FirstName,'LastName':LastName})
-		except Exception as e:
-			error_message = str(e)
-			print(error_message)
+			user = auth.get_user_by_email(email)
+
+		except auth.UserNotFoundError:
+			error_message = str(auth.UserNotFoundError)
 			data = dict()
 			messages.error(request, "Error: Something went wrong, Please check the email you provided is registered or not")
-			return render(request, "ResetPassword.html", {'message':data,'FirstName':FirstName,'LastName':LastName})
+			return render(request, "ResetPassword.html", {'message':data})
+
+		auth.update_user(
+			a,  # Or you can use email=user.email if you retrieved the user by email
+			password=new_password
+		)	
+			
+		data = dict()
+		messages.success(request, "Success: An email to reset password is successfully sent ")
+		return render(request, "Login.html", {'message':data})
+	
+	else:
+		return render(request, "ResetPassword.html", {'message':data})
 
 
 #DASHBOARD
 def dashboard(request):
-	# comp_id=request.GET.get('z')
 
 	idToken=request.session['uid']
 	a=authe.get_account_info(idToken)
@@ -268,17 +255,12 @@ def dashboard(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-	
 	list_comp=[]
 	list_conv=[]
 	comp_list=[]
 	filenames=[]
 	comp_percs=[]
 	conv_list=[]
-	times=[]
-	date=[]
 	count_comp=0
 	count_conv=0
 
@@ -307,9 +289,6 @@ def dashboard(request):
 
 		# Convert the paired data to JSON
 		json_data = json.dumps(paired_data)
-		print(json_data)
-		#comb_list=zip(comp_list,filenames,comp_percs)
-		#print(comb_list)
 
 	all_user_conv=database.child('conversion').shallow().get().val()
 
@@ -324,24 +303,7 @@ def dashboard(request):
 		
 		count_conv=len(conv_list)
 		
-		# for i in conv_list:  
-		# 	time=database.child('conversion').child(i).child('date_time').get().val()                                            
-		# 	times.append(time)
-		
-		# for i in times:
-		# 	i=float(i)
-		# 	dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
-		# 	date.append(dat)
-
-	# months=[]
-	# for i in date:
-	# 	# i=int(i)
-	# 	month=datetime.strftime('%m-%Y')
-	# 	months.append(month)	
-	
 	context = {
-		'FirstName':FirstName,
-		'LastName':LastName,
 		'count_comp':count_comp,
 		'count_conv':count_conv,
 		'data':json_data
@@ -390,9 +352,6 @@ def userCompList(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
 	all_user_comp=database.child('compression').shallow().get().val()
 	
 	list_comp=[]
@@ -421,9 +380,7 @@ def userCompList(request):
 				times.append(time)
 
 			for i in times:
-				temp=float(str(i))
-				dat=datetime.fromtimestamp(temp).strftime('%H:%M %d-%m-%Y')
-				date.append(dat)
+				date.append(i)
 		
 			comb_list=zip(times,comp_list,filenames,date)
 
@@ -433,7 +390,7 @@ def userCompList(request):
 	else:
 		comb_list=[]	
 	
-	return render(request,"UserCompList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName})
+	return render(request,"UserCompList.html",{'comb_list':comb_list})
 
 def comp_details(request):
 	comp_id=request.GET.get('z')
@@ -443,18 +400,12 @@ def comp_details(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
 	filename=database.child('compression').child(comp_id).child('file_name').get().val()
 	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
 	file_size=database.child('compression').child(comp_id).child('file_size').get().val()
 	new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
 	time=database.child('compression').child(comp_id).child('date_time').get().val()
 	comp_per=database.child('compression').child(comp_id).child('comp_per').get().val()
-
-	i=float(str(time))
-	dat=datetime.fromtimestamp(i).strftime('%H:%M %d-%m-%Y')
 
 	context = {
 		'comp_id':comp_id,
@@ -463,10 +414,8 @@ def comp_details(request):
 	    'file_size':get_size_format(file_size),
 	    'new_file_size':get_size_format(new_file_size),
 	    'comp_per':comp_per,
-	    'dat':dat,
-		'FirstName':FirstName,
-		'LastName':LastName
-    }
+	    'dat':time,
+	}
 
 	return render(request,"CompDetails.html",context)
 
@@ -477,8 +426,6 @@ def orgCompDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
-    FirstName = database.child('users').child(a).child('FirstName').get().val()
-    LastName = database.child('users').child(a).child('LastName').get().val()
     
     file_name=database.child('compression').child(comp_id).child('file_name').get().val()
     org_url=database.child('compression').child(comp_id).child('file').get().val()
@@ -504,8 +451,6 @@ def orgCompDow(request):
 		'comp_per':comp_per,
 		'dat':dat,
 		'message':data,
-		'FirstName':FirstName,
-		'LastName':LastName
 	}
     return render(request,"CompDetails.html",context)   
 
@@ -516,8 +461,6 @@ def compDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
-    FirstName = database.child('users').child(a).child('FirstName').get().val()
-    LastName = database.child('users').child(a).child('LastName').get().val()
     new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
     new_url=database.child('compression').child(comp_id).child('new_file').get().val()
     file_name=database.child('compression').child(comp_id).child('file_name').get().val()
@@ -543,8 +486,6 @@ def compDow(request):
 		'comp_per':comp_per,
 		'dat':dat,
 		'message':data,
-		'FirstName':FirstName,
-		'LastName':LastName
 	}
     return render(request,"CompDetails.html",context)
 
@@ -557,10 +498,8 @@ def userConvList(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
 	all_user_conv=database.child('conversion').shallow().get().val()
+	print(all_user_conv)
 	
 	list_conv=[]
 	conv_list=[]
@@ -576,8 +515,11 @@ def userConvList(request):
 		for i in list_conv:
 			conv=database.child('conversion').child(i).child('user_id').get().val()
 			if conv == a: conv_list.append(i)
-
-		if conv_list !=None:
+		
+		if conv_list == None:
+			comb_list=[]
+		
+		else :
 			
 			for i in conv_list:   
 				filename=database.child('conversion').child(i).child('file_name').get().val()                                           
@@ -590,16 +532,16 @@ def userConvList(request):
 			for i in times:
 				dat=datetime.fromtimestamp(i)
 				date.append(dat)
+				print(date)
 			
-			comb_list=zip(times,conv_list,filenames,date)	
-
-		else:
-			comb_list=[]
+			comb_list=zip(times,conv_list,filenames,date)
 
 	else:
-		comb_list=[]		
+		comb_list=[]
+
+	print(comb_list)		
 	
-	return render(request,"UserConvList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName})
+	return render(request,"UserConvList.html",{'comb_list':comb_list})
 
 def conv_details(request):
 	conv_id=request.GET.get('z')
@@ -608,9 +550,7 @@ def conv_details(request):
 	a=a['users']
 	a=a[0]
 	a=a['localId']
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
+	
 	filename=database.child('conversion').child(conv_id).child('file_name').get().val()
 	file_type=database.child('conversion').child(conv_id).child('file_type').get().val()
 	file_size=database.child('conversion').child(conv_id).child('file_size').get().val()
@@ -627,9 +567,7 @@ def conv_details(request):
 	    'file_size':get_size_format(file_size),
 	    'new_file_type':new_file_type,
 	    'dat':dat,
-	    'FirstName':FirstName,
-		'LastName':LastName
-    }
+	}
 
 	return render(request,"ConvDetails.html",context) 
 
@@ -640,8 +578,6 @@ def orgConvDow(request):
     a=a['users']
     a=a[0]
     a=a['localId']
-    FirstName = database.child('users').child(a).child('FirstName').get().val()
-    LastName = database.child('users').child(a).child('LastName').get().val()
     
     file_name=database.child('conversion').child(conv_id).child('file_name').get().val()
     org_url=database.child('conversion').child(conv_id).child('file').get().val()
@@ -665,9 +601,7 @@ def orgConvDow(request):
 	    'new_file_type':new_file_type,
 	    'dat':dat,
 	    'message':data,
-	    'FirstName':FirstName,
-		'LastName':LastName
-    }
+	}
     return render(request,"ConvDetails.html",context)
 
 def convDow(request):
@@ -678,8 +612,6 @@ def convDow(request):
     a=a[0]
     a=a['localId']
     
-    FirstName = database.child('users').child(a).child('FirstName').get().val()
-    LastName = database.child('users').child(a).child('LastName').get().val()
     new_file_name=database.child('conversion').child(conv_id).child('new_file_name').get().val()
     new_url=database.child('conversion').child(conv_id).child('new_file').get().val()
     filename=database.child('conversion').child(conv_id).child('file_name').get().val()
@@ -701,9 +633,7 @@ def convDow(request):
 	    'new_file_type':new_file_type,
 	    'dat':dat,
 	    'message':data,
-	    'FirstName':FirstName,
-		'LastName':LastName
-    }
+	}
     return render(request,"ConvDetails.html",context)
 
 
@@ -727,219 +657,7 @@ def postForgot(request):
 		return render(request, "ForgotPass.html", {'message':data})
 
 
-#GET FILE SIZE
-def get_size_format(b, factor=1024, suffix="B"):
-    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
-        if b < factor:
-            return f"{b:.2f}{unit}{suffix}"
-        b /= factor
-    return f"{b:.2f}Y{suffix}"
-
-
-#COMP ARCHIVE
-def comp_arch(request):
-	comp_id=request.GET.get('z')
-	idToken=request.session['uid']
-	a=authe.get_account_info(idToken)
-	a=a['users']
-	a=a[0]
-	a=a['localId']
-
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
-	filename=database.child('compression').child(comp_id).child('file_name').get().val()
-	new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
-	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
-	file_size=database.child('compression').child(comp_id).child('file_size').get().val()
-	new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
-	time=database.child('compression').child(comp_id).child('date_time').get().val()
-	org_url=database.child('compression').child(comp_id).child('file').get().val()
-	new_url=database.child('compression').child(comp_id).child('new_file').get().val()
-	comp_per=database.child('compression').child(comp_id).child('comp_per').get().val()
-
-	now = datetime.now()
-	arc_date=int(datetime.timestamp(now))
-
-	data={
-		'user_id':a,
-		'date_time':time,
-		'file_name':filename,
-		'new_file_name':new_file_name,
-		'file':org_url,
-		'file_type':file_type,
-		'file_size':file_size,
-		'new_file':new_url,
-		'new_file_size':new_file_size,
-		'comp_per':comp_per,
-		'arc_date':arc_date
-    }
-
-	database.child('compression').child(comp_id).remove()
-	print("deleted")
-
-	#Storing data in compression table in Firebase Realtime Database
-	database.child('archives').child('compression').child(comp_id).set(data)
-	print("stored")
-
-	z='Compression'
-
-	return HttpResponseRedirect('/archive/') 
-
-# def comp_arc_list(request):
-# 	idToken=request.session['uid']
-# 	a=authe.get_account_info(idToken)
-# 	a=a['users']
-# 	a=a[0]
-# 	a=a['localId']
-
-# 	FirstName = database.child('users').child(a).child('FirstName').get().val()
-# 	LastName = database.child('users').child(a).child('LastName').get().val()
-
-# 	all_user_comp=database.child('archives').child('compression').shallow().get().val()
-	
-# 	list_comp=[]
-# 	comp_list=[]
-# 	filenames=[]
-# 	times=[]
-# 	date=[]
-
-# 	if all_user_comp != None:
-
-# 		for i in all_user_comp:                                              
-# 			list_comp.append(i)
-		
-# 		for i in list_comp:
-# 			comp=database.child('archives').child('compression').child(i).child('user_id').get().val()
-# 			if comp == a: comp_list.append(i)
-
-# 		if comp_list !=None:
-
-# 			for i in comp_list:   
-# 				filename=database.child('archives').child('compression').child(i).child('file_name').get().val()                                           
-# 				filenames.append(filename)
-
-# 			for i in all_user_comp:  
-# 				time=database.child('archives').child('compression').child(i).child('date_time').get().val()                                            
-# 				times.append(time)
-			
-# 			print(times)
-
-# 			for i in times:
-# 				dat=datetime.fromtimestamp(i)
-# 				date.append(dat)
-		
-# 			comb_list=zip(times,comp_list,filenames,date)
-
-# 		else:
-# 			comb_list=[]
-
-# 	else:
-# 		comb_list=[]	
-	
-# 	return render(request,"ArchCompList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName})
-
-# def comp_del(request):
-
-
-#CONV ARCHIVE
-def conv_arch(request):
-	conv_id=request.GET.get('z')
-	idToken=request.session['uid']
-	a=authe.get_account_info(idToken)
-	a=a['users']
-	a=a[0]
-	a=a['localId']
-
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
-	filename=database.child('conversion').child(conv_id).child('file_name').get().val()
-	file_type=database.child('conversion').child(conv_id).child('file_type').get().val()
-	file_size=database.child('conversion').child(conv_id).child('file_size').get().val()
-	new_file_type=database.child('conversion').child(conv_id).child('new_file_type').get().val()
-	time=database.child('conversion').child(conv_id).child('date_time').get().val()
-	org_url=database.child('conversion').child(conv_id).child('file').get().val()
-	new_file_name=database.child('conversion').child(conv_id).child('new_file_name').get().val()
-	new_url=database.child('conversion').child(conv_id).child('new_file').get().val()
-
-	now = datetime.now()
-	arc_date=int(datetime.timestamp(now))
-	
-	data={
-		'user_id':a,
-		'date_time':time,
-		'file_name':filename,
-		'new_file_name':new_file_name,
-		'file':org_url,
-		'file_type':file_type,
-		'file_size':file_size,
-		'new_file':new_url,
-		'new_file_type':new_file_type,
-		'arc_date':arc_date
-    }
-
-	database.child('conversion').child(conv_id).remove()
-	print("deleted")
-
-	#Storing data in compression table in Firebase Realtime Database
-	database.child('archives').child('conversion').child(conv_id).set(data)
-	print("stored")
-
-	z='Conversion'
-
-	return HttpResponseRedirect('/archive/') 
-
-# def conv_arc_list(request):
-# 	idToken=request.session['uid']
-# 	a=authe.get_account_info(idToken)
-# 	a=a['users']
-# 	a=a[0]
-# 	a=a['localId']
-
-# 	FirstName = database.child('users').child(a).child('FirstName').get().val()
-# 	LastName = database.child('users').child(a).child('LastName').get().val()
-
-# 	all_user_conv=database.child('archives').child('conversion').shallow().get().val()
-	
-# 	list_conv=[]
-# 	conv_list=[]
-# 	filenames=[]
-# 	times=[]
-# 	date=[]
-
-# 	if all_user_conv != None:
-
-# 		for i in all_user_conv:                                              
-# 			list_conv.append(i)
-		
-# 		for i in list_conv:
-# 			conv=database.child('archives').child('conversion').child(i).child('user_id').get().val()
-# 			if conv == a: conv_list.append(i)
-
-# 		if conv_list != None:
-			
-# 			for i in conv_list:   
-# 				filename=database.child('archives').child('conversion').child(i).child('file_name').get().val()                                           
-# 				filenames.append(filename)
-			
-# 			for i in all_user_conv:  
-# 				time=database.child('archives').child('conversion').child(i).child('date_time').get().val()                                            
-# 				times.append(time)
-			
-# 			for i in times:
-# 				dat=datetime.fromtimestamp(i)
-# 				date.append(dat)
-			
-# 			comb_list=zip(times,conv_list,filenames,date)	
-
-# 		else:
-# 			comb_list=[]
-
-# 	else:
-# 		comb_list=[]		
-	
-	
+#ARCHIVE	
 def archive(request):
 	idToken=request.session['uid']
 	a=authe.get_account_info(idToken)
@@ -947,65 +665,14 @@ def archive(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
-
 	selected_option = request.GET.get('selected_option')
-	print(selected_option)
-
 	
 	filenames=[]
 	times=[]
 	date=[]
 	comb_list=[]
 	
-	if selected_option == 'compress':
-		all_user_comp=database.child('archives').child('compression').shallow().get().val()
-	
-		list_comp=[]
-		comp_list=[]
-
-		if all_user_comp != None:
-
-			for i in all_user_comp:                                              
-				list_comp.append(i)
-			
-			for i in list_comp:
-				comp=database.child('archives').child('compression').child(i).child('user_id').get().val()
-				if comp == a: comp_list.append(i)
-
-			if comp_list !=None:
-
-				for i in comp_list:   
-					filename=database.child('archives').child('compression').child(i).child('file_name').get().val()                                           
-					filenames.append(filename)
-
-				for i in all_user_comp:  
-					time=database.child('archives').child('compression').child(i).child('arc_date').get().val()                                            
-					times.append(time)
-				
-				print(times)
-				
-				now = datetime.now()
-				#now_date=int(datetime.timestamp(now))
-
-				for i in times:
-					
-					dt=datetime.fromtimestamp(i)
-					print(dt)
-					dat=now-dt
-					print(dat)
-					date.append(7-dat.days)
-			
-				comb_list=zip(times,comp_list,filenames,date)
-
-			else:
-				comb_list=[]
-
-		else:
-			comb_list=[]
-
-	elif selected_option == 'convert':
+	if selected_option == 'convert':
 		all_user_conv=database.child('archives').child('conversion').shallow().get().val()
 	
 		list_conv=[]
@@ -1053,7 +720,97 @@ def archive(request):
 		else:
 			comb_list=[]
 	
-	return render(request,"ArchList.html",{'comb_list':comb_list,'FirstName':FirstName,'LastName':LastName,'selected_option': selected_option})
+	else:
+		all_user_comp=database.child('archives').child('compression').shallow().get().val()
+	
+		list_comp=[]
+		comp_list=[]
+
+		if all_user_comp != None:
+
+			for i in all_user_comp:                                              
+				list_comp.append(i)
+			
+			for i in list_comp:
+				comp=database.child('archives').child('compression').child(i).child('user_id').get().val()
+				if comp == a: comp_list.append(i)
+
+			if comp_list !=None:
+
+				for i in comp_list:   
+					filename=database.child('archives').child('compression').child(i).child('file_name').get().val()                                           
+					filenames.append(filename)
+
+				for i in all_user_comp:  
+					time=database.child('archives').child('compression').child(i).child('arc_date').get().val()                                            
+					times.append(time)
+				
+				print(times)
+				
+				now = datetime.now()
+				#now_date=int(datetime.timestamp(now))
+
+				for i in times:
+					
+					dt=datetime.fromtimestamp(i)
+					print(dt)
+					dat=now-dt
+					print(dat)
+					date.append(7-dat.days)
+			
+				comb_list=zip(times,comp_list,filenames,date)
+
+			else:
+				comb_list=[]
+
+		else:
+			comb_list=[]
+
+	return render(request,"ArchList.html",{'comb_list':comb_list,'selected_option': selected_option})
+
+
+#COMP ARCHIVE
+def comp_arch(request):
+	comp_id=request.GET.get('z')
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	filename=database.child('compression').child(comp_id).child('file_name').get().val()
+	new_file_name=database.child('compression').child(comp_id).child('new_file_name').get().val()
+	file_type=database.child('compression').child(comp_id).child('file_type').get().val()
+	file_size=database.child('compression').child(comp_id).child('file_size').get().val()
+	new_file_size=database.child('compression').child(comp_id).child('new_file_size').get().val()
+	time=database.child('compression').child(comp_id).child('date_time').get().val()
+	org_url=database.child('compression').child(comp_id).child('file').get().val()
+	new_url=database.child('compression').child(comp_id).child('new_file').get().val()
+	comp_per=database.child('compression').child(comp_id).child('comp_per').get().val()
+
+	now = datetime.now()
+	arc_date=int(datetime.timestamp(now))
+
+	data={
+		'user_id':a,
+		'date_time':time,
+		'file_name':filename,
+		'new_file_name':new_file_name,
+		'file':org_url,
+		'file_type':file_type,
+		'file_size':file_size,
+		'new_file':new_url,
+		'new_file_size':new_file_size,
+		'comp_per':comp_per,
+		'arc_date':arc_date
+    }
+
+	database.child('compression').child(comp_id).remove()
+
+	#Storing data in compression table in Firebase Realtime Database
+	database.child('archives').child('compression').child(comp_id).set(data)
+	
+	return HttpResponseRedirect('/archive/') 
 
 def del_arc_cmp(request):
 	idToken=request.session['uid']
@@ -1062,8 +819,6 @@ def del_arc_cmp(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
 	comp_id=request.GET.get('z')
 	database.child('archives').child('compression').child(comp_id).remove()
 	filenames=[]
@@ -1098,14 +853,9 @@ def del_arc_cmp(request):
 			print(times)
 			
 			now = datetime.now()
-			#now_date=int(datetime.timestamp(now))
-
+			
 			for i in times:
-				
-				dt=datetime.fromtimestamp(i)
-				print(dt)
-				dat=now-dt
-				print(dat)
+				dat=now-i
 				date.append(7-dat.days)
 		
 			comb_list=zip(times,comp_list,filenames,date)
@@ -1121,12 +871,51 @@ def del_arc_cmp(request):
 	context={
 		'message':data,
 		'comb_list':comb_list,
-		'FirstName':FirstName,
-		'LastName':LastName,
 		'selected_option': 'compress'
 	}
 	return render(request,"ArchList.html",context)
 
+
+#CONV ARCHIVE
+def conv_arch(request):
+	conv_id=request.GET.get('z')
+	idToken=request.session['uid']
+	a=authe.get_account_info(idToken)
+	a=a['users']
+	a=a[0]
+	a=a['localId']
+
+	filename=database.child('conversion').child(conv_id).child('file_name').get().val()
+	file_type=database.child('conversion').child(conv_id).child('file_type').get().val()
+	file_size=database.child('conversion').child(conv_id).child('file_size').get().val()
+	new_file_type=database.child('conversion').child(conv_id).child('new_file_type').get().val()
+	time=database.child('conversion').child(conv_id).child('date_time').get().val()
+	org_url=database.child('conversion').child(conv_id).child('file').get().val()
+	new_file_name=database.child('conversion').child(conv_id).child('new_file_name').get().val()
+	new_url=database.child('conversion').child(conv_id).child('new_file').get().val()
+
+	now = datetime.now()
+	arc_date=now
+	
+	data={
+		'user_id':a,
+		'date_time':time,
+		'file_name':filename,
+		'new_file_name':new_file_name,
+		'file':org_url,
+		'file_type':file_type,
+		'file_size':file_size,
+		'new_file':new_url,
+		'new_file_type':new_file_type,
+		'arc_date':arc_date
+    }
+
+	database.child('conversion').child(conv_id).remove()
+
+	#Storing data in compression table in Firebase Realtime Database
+	database.child('archives').child('conversion').child(conv_id).set(data)
+	
+	return HttpResponseRedirect('/archive/') 
 
 def del_arc_cnv(request):
 	idToken=request.session['uid']
@@ -1135,8 +924,6 @@ def del_arc_cnv(request):
 	a=a[0]
 	a=a['localId']
 
-	FirstName = database.child('users').child(a).child('FirstName').get().val()
-	LastName = database.child('users').child(a).child('LastName').get().val()
 	conv_id=request.GET.get('z')
 	database.child('archives').child('conversion').child(conv_id).remove()
 	filenames=[]
@@ -1185,9 +972,6 @@ def del_arc_cnv(request):
 	context={
 		'message':data,
 		'comb_list':comb_list,
-		'FirstName':FirstName,
-		'LastName':LastName,
 		'selected_option': 'convert'
 	}
 	return render(request,"ArchList.html",context)
-

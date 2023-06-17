@@ -14,8 +14,6 @@
     });
 </script>
 <title>Archive COMPRESSED FILES</title>
-
-
 		
 <div class="content">	
 
@@ -24,26 +22,29 @@
 	</div>
 
 	<div>
-		<!--Name: -->
-		<div class="txt_field">
+		
+		<div class="archive-options">
               
 			<select type="text" id="myDrop" class = "drop_down" style = "width: 130px; height: 39px" value="Filter" name="Choose Option"  required>
-			  <option value="" disabled selected hidden>Choose Option</option>
+			  <option value="compress" disabled selected hidden>Choose Option</option>
 			  <option value="compress">Compression</option>
 			  <option value="convert">Conversion</option>
 			</select>
 				   
-		  </div>
+		</div>
+
 	</div>
 
 	<div id="dynamicContent">
+		
 		{% if selected_option == "compress" %}
     			{% include "ArchComp.html" %}
 			{% elif selected_option == "convert" %}
     			{% include "ArchConv.html" %}
 			{% else %}
 				{% include "ArchComp.html" %}
-			{% endif %}
+		{% endif %}
+
 	</div>
 
 </div>

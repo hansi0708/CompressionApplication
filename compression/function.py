@@ -1,33 +1,21 @@
+import sys
+import zipfile
+import zlib
 import PyPDF2
 from PIL import Image
-import heapq
-import os
-
-import numpy as np
-
 
 def compress_word(input_file,output_file):
-    with open(input_file, 'rb') as file:
-        input_data = file.read()
+    
+    with open(input_file, mode="rb") as fin, open(output_file, mode="wb") as fout:
+        data = fin.read()
+        compressed_data = zlib.compress(data, zlib.Z_BEST_COMPRESSION)
+        print(f"Original size: {sys.getsizeof(data)}")
 
-    compressed_data = []
-    count = 1
+        # Original size: 1000033
+        print(f"Compressed size: {sys.getsizeof(compressed_data)}")
 
-    for i in range(1, len(input_data)):
-        if input_data[i] == input_data[i-1]:
-            count += 1
-        else:
-            compressed_data.append(input_data[i-1])
-            compressed_data.append(min(count, 255))
-            count = 1
-
-    # Append the last character and count
-    compressed_data.append(input_data[-1])
-    compressed_data.append(count)
-
-    with open(output_file, 'wb') as file:
-        file.write(bytes(compressed_data))
-
+        # Compressed size: 1024
+        fout.write(compressed_data)
 
 def compress_image(input_file,output_file):
     #Image compression code
@@ -47,6 +35,10 @@ def compress_image(input_file,output_file):
         img.save(output_file, quality=quality, optimize=True)
     
     img.close()
+
+def compress_ppt(input_file,output_file):
+    with zipfile.ZipFile(output_file, 'w') as jungle_zip:
+        jungle_zip.write(input_file, compress_type=zipfile.ZIP_DEFLATED)
 
 def compress_pdf(input_file,output_file):
     

@@ -1,27 +1,16 @@
-#Import os module
 import os
 import platform
-from PIL import Image
-import PyPDF2
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-import numpy as np
-
-from compression.function import  compress_image, compress_pdf, compress_word
+from CompressionApplication.function import get_size_format
+from compression.function import  compress_image, compress_pdf, compress_ppt, compress_word
 from .forms import FileForm
-from PDFNetPython3.PDFNetPython import PDFDoc, Optimizer, SDFDoc, PDFNet
-import zlib,sys
 import pyrebase
 from firebase_admin import storage
-from compress_pptx.compress_pptx import CompressPptx
-import time
-from datetime import datetime, timezone
-import pytz
+from datetime import datetime
 from django.core.files.storage import default_storage
 import uuid
-import zipfile
 from django.contrib import messages
-
 
 
 #FIREBASE CONFIG
@@ -47,12 +36,14 @@ storage=firebase.storage()
 # IMAGE COMPRESSION
 def imageCompression(request):
     uploadFile = FileForm()
+    uploadFile.set_function_context('imageCompression')
     return render(request,"ImageCompression.html",{'form':uploadFile})
      
 def compressImage(request):
             
     if request.method == 'POST':  
         uploadFile = FileForm(request.POST, request.FILES) 
+        uploadFile.set_function_context('imageCompression')
 
         if uploadFile.is_valid():
             uFile = uploadFile.save(commit=False)
@@ -100,12 +91,10 @@ def compressImage(request):
             print(saving_diff)
 
             comp_per=-(saving_diff/file_size*100)
-            print(comp_per)
+            perc=round(comp_per,2)
 
             #Print the saving percentage
             print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
-
-            #uFile.path.delete()
 
             if saving_diff >= 0:
 
@@ -131,8 +120,8 @@ def compressImage(request):
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
                 now = datetime.now()
-                millis=int(datetime.timestamp(now))
-                print(millis)
+                print(now)
+                millis= now.strftime('%Y-%m-%d %H:%M:%S')
 
                 org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
                 new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
@@ -142,14 +131,13 @@ def compressImage(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
-                    'comp_per':comp_per,
+                    'comp_per':perc,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
                     'new_file':new_url,
                     'new_file_size':new_file_size
                 }
-
                 
                 #Storing data in compression table in Firebase Realtime Database
                 database.child('compression').child(comp_id).set(data)  
@@ -162,6 +150,7 @@ def compressImage(request):
              
     else:  
         uploadFile = FileForm()
+        uploadFile.set_function_context('imageCompression')
     
     return render(request,"ImageCompression.html",{'form':uploadFile})
 
@@ -169,12 +158,14 @@ def compressImage(request):
 # PPT COMPRESSION
 def compressPPT(request):
     uploadFile = FileForm()
+    uploadFile.set_function_context('compressPPT')
     return render(request,"CompressPPT.html",{'form':uploadFile})
 	 
 def pptCompression(request):
 
     if request.method == 'POST':
         uploadFile = FileForm(request.POST, request.FILES)
+        uploadFile.set_function_context('compressPPT')
 
         if uploadFile.is_valid():
             uFile = uploadFile.save(commit=False)
@@ -197,6 +188,7 @@ def pptCompression(request):
             if platform.system() == "Windows":
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
+
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('/')[-1] 
@@ -208,9 +200,7 @@ def pptCompression(request):
             print("[*] Size before compression:", get_size_format(file_size))
 
             #PPT compression code
-            # CompressPptx(uFile.file.path,new_filename).run()
-            with zipfile.ZipFile(new_filename, 'w') as jungle_zip:
-                jungle_zip.write(uFile.file.path, compress_type=zipfile.ZIP_DEFLATED)
+            compress_ppt(uFile.file.path,new_filename)
 
             #Get the new file size in bytes
             new_file_size = os.path.getsize(new_filename)
@@ -222,6 +212,8 @@ def pptCompression(request):
             saving_diff = new_file_size - file_size
 
             comp_per=-(saving_diff/file_size*100)
+            perc=round(comp_per,2)
+            print(perc)
 
             #Print the saving percentage
             print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
@@ -243,9 +235,8 @@ def pptCompression(request):
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-                tz =pytz.timezone('Asia/Kolkata')
-                time_now=datetime.now(timezone.utc).astimezone(tz)
-                millis=int(time.mktime(time_now.timetuple()))
+                now = datetime.now()
+                millis= now.strftime('%Y-%m-%d %H:%M:%S')
 
                 org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
                 new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
@@ -255,7 +246,7 @@ def pptCompression(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
-                    'comp_per':comp_per,
+                    'comp_per':perc,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
@@ -274,6 +265,7 @@ def pptCompression(request):
     
     else:  
         uploadFile = FileForm()  
+        uploadFile.set_function_context('compressPPT')
 
     return render(request,"CompressPPT.html",{'form':uploadFile})
 
@@ -281,12 +273,14 @@ def pptCompression(request):
 # WORD COMPRESSION           
 def compressWord(request):
     uploadFile = FileForm()
+    uploadFile.set_function_context('compressWord')
     return render(request,"CompressWord.html",{'form':uploadFile})
            
 def wordCompression(request):
 
     if request.method == 'POST':  
         uploadFile = FileForm(request.POST, request.FILES) 
+        uploadFile.set_function_context('compressWord')
         
         if uploadFile.is_valid():
             uFile = uploadFile.save(commit=False)
@@ -309,6 +303,7 @@ def wordCompression(request):
             if platform.system() == "Windows":
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
+
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('/')[-1] 
@@ -320,18 +315,8 @@ def wordCompression(request):
             print("[*] Size before compression:", get_size_format(file_size))    
 
             #Word compression code
-            #compress_word(uFile.file.path,new_filename)
-            with open(uFile.file.path, mode="rb") as fin, open(new_filename, mode="wb") as fout:
-                data = fin.read()
-                compressed_data = zlib.compress(data, zlib.Z_BEST_COMPRESSION)
-                print(f"Original size: {sys.getsizeof(data)}")
-
-                # Original size: 1000033
-                print(f"Compressed size: {sys.getsizeof(compressed_data)}")
-
-                # Compressed size: 1024
-                fout.write(compressed_data)
-
+            compress_word(uFile.file.path,new_filename)
+            
             #Get the new file size in bytes
             new_file_size = os.path.getsize(new_filename)
             
@@ -341,9 +326,8 @@ def wordCompression(request):
             #Calculate the saving bytes
             saving_diff = new_file_size - file_size
 
-            print(saving_diff)
-
             comp_per=-(saving_diff/file_size*100)
+            ccc=round(comp_per,2)
 
             #Print the saving percentage
             print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
@@ -366,9 +350,8 @@ def wordCompression(request):
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-                tz =pytz.timezone('Asia/Kolkata')
-                time_now=datetime.now(timezone.utc).astimezone(tz)
-                millis=int(time.mktime(time_now.timetuple()))
+                now = datetime.now()
+                millis= now.strftime('%Y-%m-%d %H:%M:%S')
 
                 org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
                 new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
@@ -378,7 +361,7 @@ def wordCompression(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
-                    'comp_per':comp_per,
+                    'comp_per':ccc,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
@@ -396,7 +379,8 @@ def wordCompression(request):
                 return HttpResponseRedirect('/userCompList/') 
         
     else:  
-        uploadFile = FileForm()  
+        uploadFile = FileForm() 
+        uploadFile.set_function_context('compressWord') 
 
     return render(request,"CompressWord.html",{'form':uploadFile})
 
@@ -404,12 +388,14 @@ def wordCompression(request):
 # PDF COMPRESSION
 def CompressPDF(request):
     uploadFile = FileForm()
+    uploadFile.set_function_context('compressPDF')
     return render(request,"CompressPDF.html",{'form':uploadFile})
 
 def pdfCompression(request):
 
     if request.method == 'POST': 
         uploadFile = FileForm(request.POST, request.FILES)
+        uploadFile.set_function_context('compressPDF')
 
         if uploadFile.is_valid():  
             print("sfsfd")
@@ -433,6 +419,7 @@ def pdfCompression(request):
             if platform.system() == "Windows":
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('\\')[-1] 
+
             elif platform.system() == "Linux" :
                 file_name= uFile.file.url.split('/')[-1]
                 new_file_name= new_filename.split('/')[-1] 
@@ -457,6 +444,8 @@ def pdfCompression(request):
 
             comp_per=-(saving_diff/file_size*100)
             print(comp_per)
+            ccc=round(comp_per,2)
+            print(ccc)
 
             #Print the saving percentage
             print(f"[+] File size change: {comp_per:.2f}% of the original file size.")
@@ -479,9 +468,8 @@ def pdfCompression(request):
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).put(uFile.file.path)
                 storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).put(new_filename)
 
-                tz =pytz.timezone('Asia/Kolkata')
-                time_now=datetime.now(timezone.utc).astimezone(tz)
-                millis=int(time.mktime(time_now.timetuple()))
+                now = datetime.now()
+                millis= now.strftime('%Y-%m-%d %H:%M:%S')
 
                 org_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+file_name).get_url(idToken)
                 new_url=storage.child("/comp_files/"+a+"/"+str(comp_id)+"/"+new_file_name).get_url(idToken)
@@ -491,7 +479,7 @@ def pdfCompression(request):
                     'date_time':millis,
                     'file_name':file_name,
                     'new_file_name':new_file_name,
-                    'comp_per':comp_per,
+                    'comp_per':ccc,
                     'file':org_url,
                     'file_type':file_type,
                     'file_size':file_size,
@@ -510,13 +498,6 @@ def pdfCompression(request):
         
     else:
         uploadFile = FileForm()  
+        uploadFile.set_function_context('compressPDF')
     
     return render(request,"CompressPDF.html",{'form':uploadFile})
-
-
-def get_size_format(b, factor=1024, suffix="B"):
-    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
-        if b < factor:
-            return f"{b:.2f}{unit}{suffix}"
-        b /= factor
-    return f"{b:.2f}Y{suffix}"

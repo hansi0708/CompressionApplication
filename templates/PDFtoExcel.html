@@ -1,10 +1,21 @@
 {% extends 'UserMaster.html' %}  
 {% block mymessage %}
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var fileInput = $('#id_file');
+        var functionValue = $('#function').val();
+    
+        // Update accept attribute based on the selected function
+            fileInput.attr('accept', '.pdf');
+    });
+</script>
+
 <div class="content">
 
     <div class="header-card">
-		</h1>PDF to EXCEL Converter</h1>
+		<h1>PDF to EXCEL Converter</h1>
         <p>Pull data straight from PDF into Excel spreadsheets into a few short seconds.</p>
         <br>
 	</div>
@@ -13,10 +24,12 @@
         
         <div class="container2">
 
-            <form class="dropzone" method="post" action="/imageCompression/compressImage/" enctype="multipart/form-data">  
+            <form class="dropzone" method="post" action="/PDFtoJPG/pdf2excel/" enctype="multipart/form-data">  
                 
                 {% csrf_token %}  
                 {{ form.as_p }} 
+
+                <input type="hidden" id="function" value="{{ function }}">
                 
                 <div>
                     <h3>or drop file here</h3>

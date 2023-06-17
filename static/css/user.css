@@ -251,86 +251,6 @@ header .rightNav{
 }
 
 
-
-
-
-/* 
-
-.user-container .center{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  
-  background: white;
-  border-radius: 10px;
-  box-shadow: 10px 10px 15px rgba(0,0,0,0.05);
-}
-
-
-.user-container .center h1{
-  text-align: center;
-  padding: 20px 0;
-  border-bottom: 1px solid silver;
-}
-
-.user-container .center form{
-  padding: 0 40px;
-  box-sizing: border-box;
-}
-
-.user-container .content .cards {
-  width: 77vw;
-  margin-top: 2%;
-  display: flex;
-  /* align-items: center;
-  flex-wrap: wrap;
-  /* display: flex; 
-  /* font-family: 'poppins', sans-serif;
-  /* justify-content: space-around; 
-  flex-direction: row;
-}
-.user-container .content .cardsbtn {
-  width: 77vw;
-  margin-top: 2%;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  /* display: flex; 
-  font-family: 'poppins', sans-serif;
-  justify-content: space-around;
-  flex-direction: row;
-} 
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .user-container .content .header-card p{
-  position: relative;
-  background: white;
-  color: #2691d9;
-  margin-bottom: 2%;
-} */
-
-
-
-
-
-
-
 /* OPERATIONS */
 
 .user-container .content .header-card h1{
@@ -466,6 +386,50 @@ header .rightNav{
 
 
 /* LIST */
+
+.user-container .content .archive-options{
+  width: 100%;
+  position: relative;
+  border-bottom: 2px solid #adadad;
+  margin: 30px 0;
+  margin-bottom: 5%;
+}
+
+.user-container .content .archive-options .drop_down{
+  width: 100%;
+  padding: 0 5px;
+  height: 40px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  outline: none;
+  scroll-behavior: smooth;
+}
+
+.user-container .content .archive-options .drop_down option{
+  width: 100%;
+  padding: 0 5px;
+  height: 40px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.user-container .content .archive-options select:focus ~ label,
+.user-container .content .archive-options select:valid ~ label{
+  top: -5px;
+  color: #2691d9;
+}
+
+#drop_down{
+  width: 130px; height: 39px
+}
+
+.user-container .content .archive-options select:focus ~ span::before,
+.user-container .content .archive-options select:valid ~ span::before{
+  width: 100%;
+}
 
 .user-container .content .list-card {
   display: flex;

@@ -2,6 +2,28 @@
 <title>PDF Compression</title>
 {% block mymessage %}
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var fileInput = $('#id_file');
+        var functionValue = $('#function').val();
+    
+        // Update accept attribute based on the selected function
+            fileInput.attr('accept', '.doc','docx');
+    });
+</script> {% endcomment %}
+
 
 <div class="content">
 
@@ -19,6 +41,8 @@
                 
                 {% csrf_token %}  
                 {{ form.as_p }} 
+
+                <input type="hidden" id="function" value="{{ function }}">
                 
                 <div>
                     <h3>or drop file here</h3>
